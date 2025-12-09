@@ -3,353 +3,1025 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apache Spark: Bajo el Capó</title>
+    <title>Apache Spark: Arquitectura y Optimización</title>
     
     <!-- Reveal.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/night.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/white.min.css">
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Swiss-style Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --spark-orange: #E25A1C;
+            --off-white: #FAFAF8;
+            --dark-bg: #1A1A1A;
+            --dark-surface: #2A2A2A;
+            --grid-gray: #E0E0E0;
+            --text-primary: #0A0A0A;
+            --text-secondary: #666666;
+        }
+
+        /* Universal Box Sizing */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* Swiss Design Typography */
+        .reveal {
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            font-weight: 300;
+            background: var(--off-white);
+            color: var(--text-primary);
+        }
+
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-transform: none;
+            margin: 0;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        .reveal h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1.1;
+        }
+
+        .reveal h2 {
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            line-height: 1.2;
+        }
+
+        .reveal h3 {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            line-height: 1.3;
+        }
+
+        .reveal p, .reveal li {
+            font-size: clamp(0.9rem, 1.5vw, 1.3rem);
+            line-height: 1.6;
+            font-weight: 300;
+            overflow-wrap: break-word;
+        }
+
+        .reveal code {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--dark-bg);
+            color: var(--off-white);
+            padding: 0.2em 0.5em;
+            border-radius: 3px;
+            font-size: 0.85em;
+            word-break: break-all;
+        }
+
+        /* Swiss Grid System - Responsive with FR units */
+        .grid-container {
+            display: grid;
+            gap: 2rem;
+            width: 100%;
+            height: 100%;
+            padding: 1rem;
+        }
+
+        .grid-2col {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3col {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-bento {
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+        }
+
+        /* Bento Box Components - No Overflow */
+        .bento-card {
+            background: white;
+            border: 1px solid var(--grid-gray);
+            padding: clamp(1rem, 2vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        .bento-card:hover {
+            border-color: var(--spark-orange);
+            transform: translateY(-2px);
+        }
+
+        .bento-large {
+            grid-column: span 4;
+            grid-row: span 3;
+        }
+
+        .bento-medium {
+            grid-column: span 3;
+            grid-row: span 2;
+        }
+
+        .bento-small {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        /* Spark Orange Accent */
+        .accent {
+            color: var(--spark-orange);
+        }
+
+        .accent-bg {
+            background: var(--spark-orange);
+            color: white;
+        }
+
+        .accent-border {
+            border-left: 4px solid var(--spark-orange);
+            padding-left: 1.5rem;
+        }
+
+        /* Typography Utilities */
+        .text-large {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .text-mono {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            overflow-wrap: break-word;
+        }
+
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+
+        /* Geometric Diagrams - Responsive & Contained */
+        .diagram-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .cylinder {
+            width: clamp(100px, 15vw, 150px);
+            height: clamp(150px, 25vh, 250px);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .cylinder-top {
+            width: 100%;
+            height: calc(100% / 6.25);
+            border: 2px solid var(--text-primary);
+            border-radius: 50%;
+            background: white;
+        }
+
+        .cylinder-body {
+            width: 100%;
+            height: calc(100% / 1.19);
+            border-left: 2px solid var(--text-primary);
+            border-right: 2px solid var(--text-primary);
+            margin-top: calc(-100% / 12.5);
+        }
+
+        .cylinder-bottom {
+            width: 100%;
+            height: calc(100% / 6.25);
+            border: 2px solid var(--text-primary);
+            border-radius: 50%;
+            background: white;
+            margin-top: calc(-100% / 12.5);
+        }
+
+        /* Row-oriented slices (horizontal) */
+        .row-slices {
+            position: absolute;
+            top: calc(100% / 6.25);
+            width: 100%;
+            height: calc(100% / 1.19);
+        }
+
+        .row-slice {
+            height: 12%;
+            border-top: 1px dashed var(--text-secondary);
+            margin: 4% 0;
+        }
+
+        /* Column-oriented slices (vertical) */
+        .col-slices {
+            position: absolute;
+            top: calc(100% / 6.25);
+            width: 100%;
+            height: calc(100% / 1.19);
+            display: flex;
+        }
+
+        .col-slice {
+            flex: 1;
+            border-right: 1px dashed var(--spark-orange);
+            margin: 0 2%;
+        }
+
+        /* DAG Visualization - Responsive */
+        .dag-node {
+            width: clamp(80px, 12vw, 120px);
+            height: clamp(50px, 8vh, 80px);
+            border: 2px solid var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            font-weight: 700;
+            padding: 0.5rem;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .dag-arrow {
+            width: clamp(30px, 5vw, 60px);
+            height: 2px;
+            background: var(--text-primary);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .dag-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid var(--text-primary);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        /* Architecture Boxes - Flex Centered */
+        .arch-box {
+            border: 2px solid var(--text-primary);
+            padding: clamp(1rem, 2vw, 2rem);
+            background: white;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .arch-box-accent {
+            border-color: var(--spark-orange);
+            background: rgba(226, 90, 28, 0.05);
+        }
+
+        /* Partition Grid - Responsive */
+        .partition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 0.5rem;
+            padding: 1rem;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .partition-cell {
+            aspect-ratio: 1;
+            border: 1px solid var(--grid-gray);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.5rem, 1vw, 0.7rem);
+            font-weight: 700;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .partition-cell-active {
+            background: var(--spark-orange);
+            color: white;
+            border-color: var(--spark-orange);
+        }
+
+        /* Number callouts - Responsive */
+        .number-callout {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(40px, 6vw, 60px);
+            height: clamp(40px, 6vw, 60px);
+            border: 3px solid var(--text-primary);
+            border-radius: 50%;
+            font-size: clamp(1.2rem, 2.5vw, 2rem);
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Formula Box - Responsive & No Overflow */
+        .formula-box {
+            background: var(--dark-bg);
+            color: var(--off-white);
+            padding: clamp(1rem, 2vw, 2rem);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: clamp(0.9rem, 1.8vw, 1.5rem);
+            text-align: center;
+            border: 3px solid var(--spark-orange);
+            margin: 2rem 0;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        /* List styles */
+        .reveal ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .reveal li::before {
+            content: "–";
+            color: var(--spark-orange);
+            font-weight: 700;
+            display: inline-block;
+            width: 1.5em;
+            margin-left: -1.5em;
+        }
+
+        /* Slide backgrounds - Prevent overflow */
+        .reveal .slides section {
+            padding: clamp(1rem, 3vw, 3rem);
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        /* Pre/Code blocks - Prevent overflow */
+        .reveal pre {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .reveal pre code {
+            display: block;
+            padding: 1rem;
+            max-width: 100%;
+            overflow-x: auto;
+            font-size: clamp(0.6rem, 1vw, 0.85rem);
+            line-height: 1.4;
+        }
+
+        /* Images - Always contained */
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Flex containers for centering */
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* Speaker notes style */
+        .speaker-note {
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 2rem;
+            padding: 1rem;
+            border-left: 2px solid var(--grid-gray);
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .grid-2col, .grid-3col {
+                grid-template-columns: 1fr;
+            }
+            
+            .bento-large, .bento-medium, .bento-small {
+                grid-column: span 6;
+                grid-row: auto;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="reveal">
     <div class="slides">
 
-        <!-- SLIDE 1: Title -->
+        <!-- SLIDE 1: Título -->
         <section>
-            <div class="center-xy">
-                <div style="margin-bottom: 30px;">
-                    <i class="fa-solid fa-bolt" style="font-size: 120px; color: #fbbf24; filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4));"></i>
-                </div>
-                <h1>Apache Spark:<br>Bajo el Capó</h1>
-                <p class="subtitle" style="font-size: 1.5em; color: #94a3b8;">De programar en "Local" a pensar en "Distribuido".<br>Guía esencial para Data Scientists & Gen AI.</p>
-            </div>
-        </section>
-
-        <!-- SLIDE 2: The Problem (Single Node vs Distributed) -->
-        <section>
-            <h2>El Muro de la RAM</h2>
-            <div class="grid-2">
-                <div class="card danger">
-                    <div class="icon-large" style="color: #ef4444;"><i class="fa-solid fa-laptop-code"></i></div>
-                    <h3>Mentalidad "Single Node"</h3>
-                    <p class="tag" style="background: #450a0a; color: #fca5a5;">Pandas / Excel / Laptop</p>
-                    <ul style="margin-top: 20px;">
-                        <li>Todo el dato debe caber en TU memoria RAM.</li>
-                        <li>Si el dato crece, tu código falla (OOM).</li>
-                        <li>Procesamiento secuencial (1 fila a la vez).</li>
-                    </ul>
-                </div>
-                <div class="card success">
-                    <div class="icon-large" style="color: #22c55e;"><i class="fa-solid fa-network-wired"></i></div>
-                    <h3>Mentalidad "Distribuida"</h3>
-                    <p class="tag" style="background: #064e3b; color: #34d399;">Apache Spark</p>
-                    <ul style="margin-top: 20px;">
-                        <li>El dato es más grande que la RAM de una máquina.</li>
-                        <li><strong>Divide y Vencerás:</strong> Romper el problema en trozos pequeños.</li>
-                        <li>Si el dato crece, agregas más máquinas.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 3: The Orchestra (Driver & Workers) -->
-        <section>
-            <h2>La Orquesta (Arquitectura)</h2>
-            <div class="grid-2">
-                <div class="text-left">
-                    <div style="margin-bottom: 40px;">
-                        <h3 style="color: #60a5fa;"><i class="fa-solid fa-user-tie"></i> El Driver (El Director)</h3>
-                        <p>Es tu notebook. Contiene tu código.</p>
-                        <p>Crea el plan de ejecución.</p>
-                        <p style="color: #ef4444; font-weight: bold;">NO toca los datos pesados.</p>
-                    </div>
-                    <div>
-                        <h3 style="color: #34d399;"><i class="fa-solid fa-users"></i> Los Executors (Los Músicos)</h3>
-                        <p>Viven en los nodos del cluster.</p>
-                        <p>Ejecutan las tareas en paralelo.</p>
-                        <p>Tienen los datos en su RAM.</p>
-                    </div>
-                </div>
-                <div class="img-container">
-                    <img src="https://spark.apache.org/docs/latest/img/cluster-overview.png" alt="Spark Architecture">
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 4: Lazy Evaluation -->
-        <section>
-            <h2>El Superpoder: "Ser Perezoso"</h2>
-            <div class="grid-2">
-                <div class="center-xy">
-                    <i class="fa-solid fa-person-running" style="font-size: 80px; color: #ef4444; margin-bottom: 20px;"></i>
-                    <h3 style="color: #ef4444;">Eager (Ansioso)</h3>
-                    <p><em>Pandas / Python Nativo</em></p>
-                    <pre class="bad-code"><code>
-df = read_csv("data.csv") # ¡LEE YA!
-df = df.filter(col > 5)   # ¡FILTRA YA!
-                    </code></pre>
-                    <p style="margin-top: 10px;">Ineficiente: Lee todo para luego tirar la mitad.</p>
-                </div>
-                <div class="center-xy" style="border-left: 1px solid #334155;">
-                    <i class="fa-solid fa-bed" style="font-size: 80px; color: #22c55e; margin-bottom: 20px;"></i>
-                    <h3 style="color: #22c55e;">Lazy (Perezoso)</h3>
-                    <p><em>Spark</em></p>
-                    <pre class="good-code"><code>
-df = read("data")   # "Anotado."
-df = df.filter(...) # "Anotado."
-df.write(...)       # ¡ACCIÓN!
-                    </code></pre>
-                    <p style="margin-top: 10px;">Inteligente: Solo lee lo que necesita al final.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 5: The Catalyst Optimizer -->
-        <section>
-            <h2>Tu Copiloto Invisible: Catalyst</h2>
-            <div class="grid-2">
-                <div class="text-left">
-                    <h3>¿Qué pasa cuando ejecutas código?</h3>
-                    <p>Spark no ejecuta tu código línea por línea ciegamente. Lo reescribe.</p>
-                    <ul style="margin-top: 30px;">
-                        <li style="margin-bottom: 20px;"><strong style="color: #fbbf24;">Predicate Pushdown:</strong> Si filtras por fecha al final, Spark mueve ese filtro al principio para leer menos datos.</li>
-                        <li><strong style="color: #fbbf24;">Column Pruning:</strong> Si solo usas 2 columnas, Spark ignora las otras 100 desde el disco.</li>
-                    </ul>
-                </div>
-                <div class="card center-xy" style="background: rgba(251, 191, 36, 0.05); border-color: #fbbf24;">
-                    <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 60px; color: #fbbf24; margin-bottom: 20px;"></i>
-                    <p style="font-size: 1.5em; text-align: center;">
-                        "Tú dices <strong>QUÉ</strong> quieres.<br>
-                        Catalyst decide <strong>CÓMO</strong> hacerlo."
+            <div class="flex-center" style="height: 100%; flex-direction: column;">
+                <p class="text-secondary" style="font-size: clamp(0.8rem, 1vw, 1rem); margin-bottom: 1rem;">MASTERCLASS TÉCNICA</p>
+                <h1 style="margin-bottom: 2rem; text-align: center;">
+                    Apache Spark:<br>
+                    <span class="accent">Arquitectura</span> y Optimización
+                </h1>
+                <div style="margin-top: 3rem; max-width: 90%;">
+                    <p class="text-secondary" style="font-size: clamp(1rem, 1.5vw, 1.2rem); text-align: center;">
+                        Del paradigma single-node al pensamiento distribuido
                     </p>
                 </div>
             </div>
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Bienvenidos. Hoy vamos a cambiar fundamentalmente la forma en que piensan sobre el procesamiento de datos. 
+                Durante años han dominado Pandas – una herramienta brillante para análisis en memoria. 
+                Pero cuando escalan a 10 millones de registros o más, necesitan un cambio de paradigma. 
+                No se trata de aprender nueva sintaxis; se trata de entender cómo funciona un sistema distribuido por dentro. 
+                Al final de esta sesión, van a escribir código Spark que no solo funcione, sino que sea fundamentalmente eficiente."
+            </aside>
         </section>
 
-        <!-- SLIDE 6: The Villain (Shuffle) -->
+        <!-- SLIDE 2: Single Node vs Distributed -->
         <section>
-            <h2>El Enemigo: El Shuffle</h2>
-            <div class="grid-2">
-                <div class="text-left">
-                    <h3>¿Por qué mi Job es lento?</h3>
-                    <p>El 90% de las veces es por mover datos a través de la red.</p>
-                    <div class="card danger" style="margin-top: 20px;">
-                        <h4>Operaciones que causan Shuffle:</h4>
-                        <ul style="font-family: 'JetBrains Mono', monospace;">
-                            <li>GROUP BY</li>
-                            <li>JOIN</li>
-                            <li>DISTINCT</li>
-                            <li>ORDER BY</li>
+            <h2 style="margin-bottom: 2rem; text-align: center;">El Cambio Mental: <span class="accent">Single Node → Distributed</span></h2>
+            
+            <div class="grid-container grid-2col">
+                <!-- Pandas/Single Node -->
+                <div class="bento-card">
+                    <div>
+                        <h3 style="margin-bottom: 1.5rem;">Pandas (Single Node)</h3>
+                        <div style="margin: 1.5rem 0;">
+                            <div class="arch-box" style="min-height: clamp(150px, 20vh, 200px);">
+                                <div style="text-align: center;">
+                                    <div style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem;">💻</div>
+                                    <p class="text-mono" style="margin: 0;">CPU + RAM</p>
+                                    <p style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 0.5rem;">
+                                        Todo en una máquina
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
+                            <li>Iteración explícita (.apply, .iterrows)</li>
+                            <li>Límite: RAM disponible</li>
+                            <li>Ejecución inmediata</li>
                         </ul>
                     </div>
-                    <p style="margin-top: 20px; color: #94a3b8;">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Consejo: Filtra (reduce datos) ANTES de hacer Join.
-                    </p>
+                    <div class="formula-box" style="font-size: clamp(0.9rem, 1.5vw, 1.2rem);">
+                        Velocidad = f(CPU cores)
+                    </div>
                 </div>
-                <div class="img-container">
-                    <img src="https://miro.medium.com/v2/resize:fit:1400/1*d6sVSpqj88XWdC-w52T9Sg.png" alt="Shuffle Diagram">
-                </div>
-            </div>
-        </section>
 
-        <!-- SLIDE 7: Partitioning (The Golden Rule) -->
-        <section>
-            <h2>La Regla de Oro: Particionamiento</h2>
-            <div class="center-xy">
-                <div style="display: flex; gap: 40px; align-items: center; margin-bottom: 60px;">
-                    <div class="card center-xy" style="width: 200px; height: 150px;">
-                        <span style="font-size: 3em; font-weight: 800; color: #60a5fa;">1</span>
-                        <span>Partición</span>
-                    </div>
-                    <i class="fa-solid fa-arrow-right" style="font-size: 40px; color: #475569;"></i>
-                    <div class="card center-xy" style="width: 200px; height: 150px;">
-                        <span style="font-size: 3em; font-weight: 800; color: #60a5fa;">1</span>
-                        <span>Core (CPU)</span>
-                    </div>
-                    <i class="fa-solid fa-arrow-right" style="font-size: 40px; color: #475569;"></i>
-                    <div class="card center-xy" style="width: 200px; height: 150px;">
-                        <span style="font-size: 3em; font-weight: 800; color: #60a5fa;">1</span>
-                        <span>Task</span>
-                    </div>
-                </div>
-                
-                <p style="font-size: 1.5em; max-width: 900px; text-align: center;">
-                    Si tienes un cluster de <strong>100 cores</strong> pero tu dataframe tiene <strong>1 partición</strong>...<br>
-                    <span style="color: #ef4444; font-weight: bold;">99 cores estarán de vacaciones.</span>
-                </p>
-            </div>
-        </section>
-
-        <!-- SLIDE 8: Skew Example -->
-        <section>
-            <h2>El Asesino Silencioso: Data Skew</h2>
-            <div class="grid-2">
-                <div class="text-left">
-                    <h3>¿Qué es el Skew?</h3>
-                    <p>Cuando una partición es mucho más grande que las demás.</p>
-                    <p><strong>Síntoma:</strong> El job llega al 99% y se queda ahí por horas.</p>
-                    <div class="card warning" style="margin-top: 20px;">
-                        <h4>Ejemplo Clásico</h4>
-                        <p>Hacer <code>GROUP BY country</code> y el 90% de tus usuarios son de "US".</p>
-                        <p>Un solo core procesará "US" mientras los demás terminan en segundos.</p>
-                    </div>
-                </div>
-                <div class="card center-xy">
-                    <div style="display: flex; align-items: flex-end; gap: 10px; height: 200px; width: 100%;">
-                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
-                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
-                        <div style="width: 20%; height: 100%; background: #ef4444; border-radius: 4px; position: relative;">
-                            <span style="position: absolute; top: -30px; left: 0; width: 100%; text-align: center; color: #ef4444; font-weight: bold;">¡Lento!</span>
+                <!-- Spark/Distributed -->
+                <div class="bento-card">
+                    <div>
+                        <h3 style="margin-bottom: 1.5rem;">Spark (Distributed)</h3>
+                        <div style="margin: 1.5rem 0;">
+                            <div class="flex-center" style="gap: clamp(0.5rem, 1vw, 1rem);">
+                                <div class="arch-box-accent" style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1.5rem, 2.5vw, 2rem); padding: 0.5rem;">💻</div>
+                                <div class="arch-box" style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1rem, 2vw, 1.5rem); padding: 0.5rem;">⚙️</div>
+                                <div class="arch-box" style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1rem, 2vw, 1.5rem); padding: 0.5rem;">⚙️</div>
+                                <div class="arch-box" style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1rem, 2vw, 1.5rem); padding: 0.5rem;">⚙️</div>
+                            </div>
+                            <div style="text-align: center; margin-top: 1rem;">
+                                <p class="text-mono" style="margin: 0;">
+                                    <span class="accent">Driver</span> + Workers (Executors)
+                                </p>
+                            </div>
                         </div>
-                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
-                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
+                        <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
+                            <li>Transformaciones declarativas</li>
+                            <li>Límite: Cluster (escalable)</li>
+                            <li>Lazy evaluation (plan + acción)</li>
+                        </ul>
                     </div>
-                    <p style="margin-top: 20px;">Tiempos de Ejecución por Task</p>
+                    <div class="formula-box" style="font-size: clamp(0.9rem, 1.5vw, 1.2rem);">
+                        Velocidad = f(Particiones × Cores)
+                    </div>
                 </div>
             </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Aquí está el cambio fundamental. En Pandas, ustedes piensan: 'Tengo un DataFrame, voy a iterar sobre él, aplicar una función, y obtener un resultado'. 
+                Es intuitivo porque es secuencial. Pero miren la fórmula de velocidad: están limitados por los cores de una sola máquina.<br><br>
+                
+                Spark cambia todo. Ya no le dicen al sistema CÓMO iterar. Le dicen QUÉ quieren (un filtro, una agregación), 
+                y Spark construye un plan de ejecución distribuido. La velocidad ahora depende de cuántas particiones pueden procesar en paralelo. 
+                Si tienen 8 cores y 8 particiones, procesan todo simultáneamente. Si tienen 1 partición... bueno, acaban de convertir Spark en Pandas caro.<br><br>
+                
+                Este es el insight número uno: Spark no es una versión grande de Pandas. Es un motor de ejecución distribuido con un optimizador de consultas (Catalyst). 
+                Piensen en SQL, no en Python loops."
+            </aside>
         </section>
 
-        <!-- SLIDE 9: UDFs Comparison -->
+        <!-- SLIDE 3: Row vs Columnar Storage -->
         <section>
-            <h2>Funciones: Lo Bueno, Lo Malo y Lo Feo</h2>
-            <div class="grid-3">
-                <div class="card success">
-                    <h3>1. Spark Native</h3>
-                    <p class="tag" style="background: #064e3b; color: #34d399;">Recomendado</p>
-                    <pre class="good-code" style="font-size: 0.6em;"><code>
-import pyspark.sql.functions as F
-df.withColumn("upper", F.upper(col("s")))
-                    </code></pre>
-                    <ul style="font-size: 0.8em; margin-top: 10px;">
-                        <li>Ejecuta en JVM (Rápido).</li>
-                        <li>Catalyst lo optimiza.</li>
-                        <li>Sin serialización Python.</li>
-                    </ul>
-                </div>
-                <div class="card warning">
-                    <h3>2. Pandas UDF</h3>
-                    <p class="tag" style="background: #78350f; color: #fcd34d;">Aceptable</p>
-                    <pre class="good-code" style="font-size: 0.6em;"><code>
-@pandas_udf("string")
-def upper_udf(s: pd.Series):
-    return s.str.upper()
-                    </code></pre>
-                    <ul style="font-size: 0.8em; margin-top: 10px;">
-                        <li>Usa Apache Arrow.</li>
-                        <li>Vectorizado (Batch).</li>
-                        <li>Bueno para ML.</li>
-                    </ul>
-                </div>
-                <div class="card danger">
-                    <h3>3. Python UDF</h3>
-                    <p class="tag" style="background: #450a0a; color: #fca5a5;">Evitar</p>
-                    <pre class="bad-code" style="font-size: 0.6em;"><code>
-@udf("string")
-def upper_udf(s):
-    return s.upper()
-                    </code></pre>
-                    <ul style="font-size: 0.8em; margin-top: 10px;">
-                        <li>Fila por fila (Lento).</li>
-                        <li>Serialización costosa.</li>
-                        <li>Caja negra.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+            <div style="height: 100%; display: flex; flex-direction: column; padding: 2rem;">
+                <h2 style="margin: 0 0 2rem 0; text-align: center; flex-shrink: 0;">
+                    Almacenamiento: <span class="accent">Row-Oriented vs Columnar</span>
+                </h2>
 
-        <!-- SLIDE 10: Spark & Gen AI -->
-        <section>
-            <span class="badge" style="background: #8b5cf6; color: white;">Nuevo Paradigma</span>
-            <h2>Spark en la Era de Gen AI</h2>
-            <div class="grid-2">
-                <div class="text-left">
-                    <p>Spark no es solo para tablas SQL. Es el motor de pre-procesamiento para LLMs.</p>
-                    <ul style="margin-top: 30px;">
-                        <li style="margin-bottom: 20px;">
-                            <strong style="color: #a78bfa;">Batch Inference:</strong><br>
-                            Pasar 1 millón de prompts a un modelo (vía `pandas_udf`).
-                        </li>
-                        <li style="margin-bottom: 20px;">
-                            <strong style="color: #a78bfa;">RAG Data Prep:</strong><br>
-                            Leer PDFs masivos, chunking y tokenización en paralelo antes de enviar a Vector DB.
-                        </li>
-                    </ul>
-                </div>
-                <div class="card" style="border-color: #8b5cf6; background: rgba(139, 92, 246, 0.05);">
-                    <h3>Ejemplo: Inferencia Masiva</h3>
-                    <pre class="good-code" style="font-size: 0.7em;"><code>
-@pandas_udf("string")
-def predecir_batch(textos: pd.Series) -> pd.Series:
-    # Carga el modelo UNA vez por Executor
-    model = load_model() 
-    return textos.apply(model.predict)
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; flex: 1; min-height: 0;">
+                    <!-- Row-Oriented -->
+                    <div style="background: white; border: 1px solid var(--grid-gray); padding: 1.5rem; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 1rem; min-height: 0; overflow: hidden;">
+                        <h3 style="margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 700;">
+                            Row-Oriented (CSV, Teradata)
+                        </h3>
+                        
+                        <div style="display: flex; justify-content: center; align-items: center; min-height: 140px;">
+                            <div style="width: clamp(90px, 13vw, 130px); height: clamp(120px, 20vh, 160px); position: relative; flex-shrink: 0;">
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white;"></div>
+                                <div style="width: 100%; height: 68%; border-left: 2px solid var(--text-primary); border-right: 2px solid var(--text-primary); margin-top: -8%; position: relative;">
+                                    <div style="position: absolute; top: 0; width: 100%; height: 100%;">
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.05);"></div>
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.1);"></div>
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.05);"></div>
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.1);"></div>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white; margin-top: -8%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.68rem, 1vw, 0.82rem); line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word;">
+                            Row1: [id, nombre, edad, ciudad, ...20 cols]<br>
+                            Row2: [id, nombre, edad, ciudad, ...20 cols]<br>
+                            Row3: [id, nombre, edad, ciudad, ...20 cols]
+                        </div>
+                        
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: clamp(0.75rem, 1.05vw, 0.92rem); line-height: 1.7;">
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Lee registros completos</li>
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Bueno para: OLTP, transacciones</li>
+                            <li><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Malo para: Analytics (lees datos innecesarios)</li>
+                        </ul>
+                        
+                        <div style="background: var(--dark-bg); color: white; padding: 1rem; overflow-wrap: break-word; word-wrap: break-word;">
+                            <p style="margin: 0; font-size: clamp(0.72rem, 1.05vw, 0.88rem); line-height: 1.5;">
+                                <strong>SELECT edad FROM tabla</strong><br>
+                                <span style="color: var(--spark-orange);">❌ Lee las 20 columnas</span>
+                            </p>
+                        </div>
+                    </div>
 
-# Spark distribuye los textos en batches
-df.withColumn("prediccion", predecir_batch("texto"))
-                    </code></pre>
+                    <!-- Columnar -->
+                    <div style="background: white; border: 1px solid var(--grid-gray); padding: 1.5rem; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 1rem; min-height: 0; overflow: hidden;">
+                        <h3 style="margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 700;">
+                            Columnar (Parquet)
+                        </h3>
+                        
+                        <div style="display: flex; justify-content: center; align-items: center; min-height: 140px;">
+                            <div style="width: clamp(90px, 13vw, 130px); height: clamp(120px, 20vh, 160px); position: relative; flex-shrink: 0;">
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white;"></div>
+                                <div style="width: 100%; height: 68%; border-left: 2px solid var(--text-primary); border-right: 2px solid var(--text-primary); margin-top: -8%; position: relative;">
+                                    <div style="position: absolute; top: 0; width: 100%; height: 100%; display: flex;">
+                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.1);"></div>
+                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.2);"></div>
+                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.1);"></div>
+                                        <div style="flex: 1; margin: 0 2%; background: rgba(226,90,28,0.2);"></div>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white; margin-top: -8%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.68rem, 1vw, 0.82rem); line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word;">
+                            Col_id: [1, 2, 3, 4, ...]<br>
+                            Col_edad: [25, 30, 45, 22, ...]<br>
+                            Col_ciudad: ["NY", "LA", ...]
+                        </div>
+                        
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: clamp(0.75rem, 1.05vw, 0.92rem); line-height: 1.7;">
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Lee solo las columnas necesarias</li>
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Bueno para: Analytics, Agregaciones</li>
+                            <li><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Compresión brutal (valores repetidos)</li>
+                        </ul>
+                        
+                        <div style="background: var(--spark-orange); color: white; padding: 1rem; overflow-wrap: break-word; word-wrap: break-word;">
+                            <p style="margin: 0; font-size: clamp(0.72rem, 1.05vw, 0.88rem); line-height: 1.5;">
+                                <strong>SELECT edad FROM tabla</strong><br>
+                                ✓ Lee SOLO la columna 'edad' (Projection Pushdown)
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- SLIDE 11: Anti-Patterns -->
-        <section>
-            <h2>Los 3 Pecados Capitales</h2>
-            <div class="grid-2-top">
-                <div class="card danger">
-                    <h3>1. .collect()</h3>
-                    <p>Intentar traer 100GB a la RAM de tu driver.</p>
-                    <p><strong>Consecuencia:</strong> Driver OOM Crash.</p>
-                </div>
-                <div class="card danger">
-                    <h3>2. Bucles `for`</h3>
-                    <p>Iterar filas con Python nativo.</p>
-                    <p><strong>Consecuencia:</strong> No usas Spark, usas Python lento.</p>
-                </div>
-                <div class="card danger">
-                    <h3>3. UDFs Innecesarias</h3>
-                    <p>Escribir funciones Python para cosas que Spark ya sabe hacer.</p>
-                    <p><strong>Consecuencia:</strong> Caja negra para Catalyst.</p>
-                </div>
-                <div class="card success">
-                    <h3>La Mentalidad Correcta</h3>
-                    <p style="font-size: 1.2em; color: #34d399;">
-                        "Dile a Spark QUÉ hacer, no CÓMO iterar."
+                <div style="border-left: 4px solid var(--spark-orange); padding: 1rem 1.5rem; margin-top: 1.5rem; background: white; flex-shrink: 0;">
+                    <p style="margin: 0; font-size: clamp(1.1rem, 1.9vw, 1.6rem); font-weight: 700; line-height: 1.3;">
+                        Insight: Con 20 columnas, Parquet puede ser <span class="accent">20x más rápido</span> que CSV para queries analíticas.
                     </p>
                 </div>
             </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Ahora hablemos de por qué Parquet es mágico. Imaginen que tienen una tabla con 10 millones de filas y 20 columnas. 
+                Ustedes solo necesitan calcular el promedio de 'edad'.<br><br>
+                
+                En un formato row-oriented como CSV o Teradata tradicional, el sistema lee cada registro completo – las 20 columnas – 
+                solo para extraer una. Es como comprar todo el supermercado cuando solo necesitan leche.<br><br>
+                
+                Parquet almacena los datos por columna. Cuando Spark ve 'SELECT edad', activa algo llamado 'Projection Pushdown': 
+                lee ÚNICAMENTE los bytes de la columna 'edad'. Esto no es solo una mejora incremental – es un cambio de orden de magnitud. 
+                En nuestro caso real, pasar de CSV a Parquet redujo el tiempo de lectura de 45 segundos a 2 segundos.<br><br>
+                
+                Bonus: como todos los valores de una columna están juntos (ej: 'ciudad' = ['NY', 'NY', 'LA', 'NY'...]), 
+                la compresión es increíblemente efectiva. Parquet usa algoritmos como RLE (Run-Length Encoding) y dictionary encoding. 
+                Un archivo Parquet puede ser 10x más pequeño que el CSV equivalente.<br><br>
+                
+                Por eso en Databricks, SIEMPRE guarden sus datos procesados como Parquet o Delta (que es Parquet con transacciones ACID)."
+            </aside>
         </section>
 
-        <!-- SLIDE 12: Closing -->
+        <!-- SLIDE 4: Lazy Evaluation & DAG -->
         <section>
-            <div class="center-xy">
-                <h1 style="font-size: 4em; margin-bottom: 40px;">El Poder es Tuyo</h1>
-                <p style="font-size: 1.5em; max-width: 800px; color: #cbd5e1; text-align: center;">
-                    Spark es una herramienta compleja, pero dominarla te permite procesar el mundo.
-                </p>
-                <div style="margin-top: 60px; display: flex; gap: 60px;">
-                    <div class="center-xy">
-                        <i class="fa-solid fa-layer-group" style="font-size: 50px; color: #60a5fa; margin-bottom: 15px;"></i>
-                        <span style="font-size: 1em; color: #94a3b8;">Piensa en Bloques</span>
+            <h2 style="margin-bottom: 2rem; text-align: center;">Lazy Evaluation: <span class="accent">El Plan antes de la Acción</span></h2>
+
+            <div class="grid-container" style="grid-template-columns: 2fr 1fr; gap: clamp(1.5rem, 3vw, 3rem);">
+                <!-- Left: DAG Diagram -->
+                <div>
+                    <h3 style="margin-bottom: 1.5rem;">El DAG (Directed Acyclic Graph)</h3>
+                    <div style="display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 2rem); align-items: center;">
+                        <!-- Transformations -->
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                            <div class="dag-node" style="background: rgba(226,90,28,0.1);">
+                                read.parquet()
+                            </div>
+                            <div class="dag-arrow"></div>
+                            <div class="dag-node">
+                                .filter()
+                            </div>
+                            <div class="dag-arrow"></div>
+                            <div class="dag-node">
+                                .groupBy()
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <p class="text-secondary" style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
+                                Transformaciones (lazy – no ejecutan nada)
+                            </p>
+                        </div>
+                        <div style="font-size: clamp(2rem, 4vw, 3rem); color: var(--spark-orange);">↓</div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="dag-node accent-bg">
+                                .count() / .show()
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <p class="text-secondary" style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
+                                Acción (trigger – ejecuta todo el DAG)
+                            </p>
+                        </div>
                     </div>
-                    <div class="center-xy">
-                        <i class="fa-solid fa-forward" style="font-size: 50px; color: #60a5fa; margin-bottom: 15px;"></i>
-                        <span style="font-size: 1em; color: #94a3b8;">Sé Perezoso</span>
+
+                    <div class="accent-border" style="margin-top: 1.5rem; padding: clamp(1rem, 2vw, 1.5rem); overflow: hidden;">
+                        <p style="margin: 0; font-size: clamp(0.85rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                            <strong>Catalyst Optimizer:</strong> Analiza el DAG completo y lo reescribe para eficiencia máxima 
+                            (predicate pushdown, column pruning, join reordering).
+                        </p>
                     </div>
-                    <div class="center-xy">
-                        <i class="fa-solid fa-microchip" style="font-size: 50px; color: #60a5fa; margin-bottom: 15px;"></i>
-                        <span style="font-size: 1em; color: #94a3b8;">Distribuye</span>
+                </div>
+
+                <!-- Right: Code Example -->
+                <div class="bento-card">
+                    <h3 style="margin-bottom: 1rem;">Ejemplo</h3>
+                    <pre style="background: var(--dark-bg); color: var(--off-white); padding: clamp(1rem, 2vw, 1.5rem); font-size: clamp(0.7rem, 1vw, 0.85rem); overflow-x: auto;"><code>df = spark.read.parquet("data.parquet")
+# ✓ Lazy (no ejecuta)
+
+df2 = df.filter(col("edad") > 25)
+# ✓ Lazy (solo añade al DAG)
+
+df3 = df2.groupBy("ciudad").count()
+# ✓ Lazy (acumula transformaciones)
+
+df3.show()
+# ❌ ACCIÓN → Ejecuta todo el DAG</code></pre>
+
+                    <div style="background: var(--spark-orange); color: white; padding: 1rem; margin-top: 1rem; overflow: hidden;">
+                        <p style="margin: 0; font-size: clamp(0.75rem, 1.1vw, 0.9rem); overflow-wrap: break-word;">
+                            <strong>⚡ Ventaja:</strong> Catalyst puede optimizar el plan completo antes de ejecutar. 
+                            Si detecta que solo necesitas 3 columnas, NO leerá las otras 17.
+                        </p>
                     </div>
                 </div>
             </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Esto es lo que confunde a la gente que viene de Pandas. En Pandas, cuando escriben df.filter(...), 
+                el sistema ejecuta inmediatamente. En Spark, NADA se ejecuta hasta que llaman a una 'acción' como .show(), .count(), o .write().<br><br>
+                
+                ¿Por qué es esto brillante? Porque Spark construye un grafo dirigido acíclico (DAG) de todas las transformaciones que quieren hacer. 
+                Luego, el Catalyst Optimizer – que es esencialmente un motor de optimización de consultas SQL – analiza ese DAG completo y lo reescribe.<br><br>
+                
+                Ejemplo práctico: Ustedes escriben .filter(col('edad') > 25) después de leer un Parquet. Catalyst detecta esto y hace 'predicate pushdown': 
+                en lugar de leer TODOS los datos y luego filtrar, lee SOLO las particiones donde edad > 25 está almacenado (gracias a los metadatos de Parquet).<br><br>
+                
+                O imaginen que seleccionan 3 columnas al final. Catalyst hace 'column pruning': reescribe el plan para que NUNCA se lean las otras columnas. 
+                Esto no es magia – es un optimizador de consultas de clase SQL Server/Oracle, pero para código Python.<br><br>
+                
+                Regla de oro: Mientras más transformaciones encadenen antes de la acción, más oportunidades tiene Catalyst de optimizar. 
+                No ejecuten .count() en loops – están destruyendo el plan de optimización."
+            </aside>
+        </section>
+
+        <!-- SLIDE 5: Anatomía - Driver, Workers, Executors -->
+        <section>
+            <h2 style="margin-bottom: 2rem; text-align: center;">Anatomía de un Cluster: <span class="accent">Driver → Executors → Tasks</span></h2>
+
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <!-- Driver -->
+                <div style="margin-bottom: clamp(1.5rem, 3vw, 3rem);">
+                    <div class="arch-box-accent" style="padding: clamp(1rem, 2vw, 2rem); margin-bottom: 1rem; overflow: hidden;">
+                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
+                            <div class="number-callout accent-bg" style="color: white; border-color: var(--spark-orange);">1</div>
+                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
+                                <h3 style="margin-bottom: 0.5rem;">Driver (Cerebro)</h3>
+                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                                    Orquesta todo. Crea el DAG, lo optimiza con Catalyst, y divide el trabajo en Tasks.
+                                </p>
+                                <p class="text-mono" style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.1vw, 0.9rem); color: var(--text-secondary); overflow-wrap: break-word;">
+                                    Vive en tu notebook de Databricks
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Executors -->
+                <div style="margin-bottom: clamp(1.5rem, 3vw, 3rem);">
+                    <div class="arch-box" style="padding: clamp(1rem, 2vw, 2rem); margin-bottom: 1rem; border-color: var(--text-primary); overflow: hidden;">
+                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
+                            <div class="number-callout" style="border-color: var(--text-primary);">2</div>
+                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
+                                <h3 style="margin-bottom: 0.5rem;">Executors (Trabajadores)</h3>
+                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                                    Procesos JVM distribuidos en el cluster. Cada uno tiene N cores y RAM asignada.
+                                </p>
+                                <p class="text-mono" style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.1vw, 0.9rem); color: var(--text-secondary); overflow-wrap: break-word;">
+                                    Ej: 4 executors × 8 cores cada uno = 32 cores totales
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks -->
+                <div>
+                    <div class="arch-box" style="padding: clamp(1rem, 2vw, 2rem); border-color: var(--text-primary); overflow: hidden;">
+                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
+                            <div class="number-callout" style="border-color: var(--text-primary);">3</div>
+                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
+                                <h3 style="margin-bottom: 0.5rem;">Tasks (Unidad Atómica)</h3>
+                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                                    Cada Task procesa UNA partición en UN core. Si tienes 32 cores y 100 particiones, 
+                                    se ejecutan 32 Tasks en paralelo, luego otras 32, hasta completar las 100.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-box" style="margin-top: clamp(1.5rem, 3vw, 3rem); font-size: clamp(1.2rem, 2.5vw, 1.8rem);">
+                    1 Partición = 1 Task = 1 Core (en un momento dado)
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Vamos a desmitificar la arquitectura. Cuando ejecutan un job de Spark, hay tres niveles de jerarquía:<br><br>
+                
+                1. <strong>El Driver</strong> – Este es su notebook de Databricks. El driver no procesa datos. Su trabajo es: 
+                (a) Parsear su código, (b) Construir el DAG, (c) Pasárselo a Catalyst para optimizarlo, 
+                (d) Dividir el trabajo en 'Stages' y 'Tasks', y (e) Enviar esas Tasks a los Executors. 
+                Piensen en el driver como el arquitecto que diseña el plano, pero no construye la casa.<br><br>
+                
+                2. <strong>Los Executors</strong> – Son procesos JVM que viven en las máquinas del cluster. 
+                En Databricks, cuando configuran un cluster con '4 workers de 8 cores', están creando 4 executors, 
+                cada uno con 8 cores. Esos executors reciben las Tasks del driver y las ejecutan en paralelo.<br><br>
+                
+                3. <strong>Las Tasks</strong> – Esta es la unidad atómica de trabajo. Cada Task procesa exactamente UNA partición de datos. 
+                Si tienen 100 particiones y 32 cores totales, Spark ejecuta 32 Tasks simultáneamente. 
+                Cuando esas 32 terminan, ejecuta otras 32, y así hasta completar las 100.<br><br>
+                
+                La fórmula mágica: 1 Partición = 1 Task = 1 Core. Esta es la base del paralelismo en Spark. 
+                Si tienen 1000 particiones pero solo 8 cores, van a ejecutar 125 waves (rondas) de 8 tasks. 
+                Si tienen 2 particiones y 32 cores, 30 cores van a estar ociosos. El balanceo de particiones ES el performance tuning."
+            </aside>
+        </section>
+
+        <!-- SLIDE 6: Particiones y Best Practices -->
+        <section>
+            <h2 style="margin-bottom: 2rem; text-align: center;">Particiones: <span class="accent">La Clave para 10M de Registros</span></h2>
+
+            <div class="grid-container" style="grid-template-columns: 1fr 1fr; gap: clamp(1rem, 2vw, 2rem);">
+                <!-- Left: The Problem -->
+                <div class="bento-card">
+                    <h3 style="margin-bottom: 1rem;">❌ El Error Común: Over-Partitioning</h3>
+                    <div class="partition-grid" style="margin: 1.5rem 0;">
+                        <div class="partition-cell">1</div>
+                        <div class="partition-cell">2</div>
+                        <div class="partition-cell">3</div>
+                        <div class="partition-cell">4</div>
+                        <div class="partition-cell">5</div>
+                        <div class="partition-cell">6</div>
+                        <div class="partition-cell">7</div>
+                        <div class="partition-cell">8</div>
+                        <div class="partition-cell">...</div>
+                        <div class="partition-cell">...</div>
+                        <div class="partition-cell">...</div>
+                        <div class="partition-cell">...</div>
+                        <div class="partition-cell">...</div>
+                        <div class="partition-cell">...</div>
+                        <div class="partition-cell">2000</div>
+                        <div class="partition-cell" style="grid-column: span 8; background: var(--dark-bg); color: white; font-size: clamp(0.7rem, 1vw, 0.85rem);">
+                            2000 particiones × 10,000 rows cada una
+                        </div>
+                    </div>
+                    <p style="font-size: clamp(0.85rem, 1.2vw, 1rem); margin-top: 1rem; overflow-wrap: break-word;">
+                        <strong>Problema:</strong> Cada Task tiene overhead (scheduling, serialización). 
+                        Si una partición tiene solo 5,000 filas, el overhead de gestión es mayor que el procesamiento real.
+                    </p>
+                    <div style="background: rgba(226,90,28,0.1); border-left: 4px solid var(--spark-orange); padding: 1rem; margin-top: 1rem; overflow: hidden;">
+                        <p style="margin: 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem); overflow-wrap: break-word;">
+                            <strong>Resultado:</strong> Job lento debido a task overhead, no a procesamiento de datos.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: The Solution -->
+                <div class="bento-card">
+                    <h3 style="margin-bottom: 1rem;">✓ La Regla de Oro para 10M Registros</h3>
+                    <div class="formula-box" style="font-size: clamp(1rem, 1.8vw, 1.3rem); margin: 1.5rem 0;">
+                        Particiones = Cores × 2 a 4
+                    </div>
+                    <p style="font-size: clamp(0.85rem, 1.2vw, 1rem); margin-bottom: 1rem; overflow-wrap: break-word;">
+                        Si tienes 32 cores → <strong class="accent">64 a 128 particiones</strong>
+                    </p>
+                    <div style="background: var(--dark-bg); color: white; padding: clamp(1rem, 2vw, 1.5rem); margin: 1.5rem 0; overflow-x: auto;">
+                        <p class="text-mono" style="margin: 0; font-size: clamp(0.7rem, 1vw, 0.9rem);">
+                            df = spark.read.parquet("data")<br>
+                            &nbsp;&nbsp;.repartition(128)  # Explicit<br>
+                            <br>
+                            # O configura globalmente:<br>
+                            spark.conf.set(<br>
+                            &nbsp;&nbsp;"spark.sql.shuffle.partitions",<br>
+                            &nbsp;&nbsp;128<br>
+                            )
+                        </p>
+                    </div>
+                    <div style="background: rgba(0,200,100,0.1); border-left: 4px solid #00C864; padding: 1rem; overflow: hidden;">
+                        <p style="margin: 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem); overflow-wrap: break-word;">
+                            <strong>Resultado:</strong> Cada partición tiene ~78K-156K filas. Balance perfecto entre paralelismo y overhead.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom: Shuffle Avoidance -->
+            <div class="accent-border" style="margin-top: 2rem; padding: clamp(1rem, 2vw, 2rem); background: white; border: 2px solid var(--grid-gray); overflow: hidden;">
+                <h3 style="margin-bottom: 1rem;">⚡ Bonus: Evitar Shuffles Innecesarios</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: clamp(1rem, 2vw, 2rem);">
+                    <div>
+                        <p style="margin-bottom: 0.5rem;"><strong class="accent">Operaciones que causan Shuffle:</strong></p>
+                        <ul style="font-size: clamp(0.85rem, 1.2vw, 1rem);">
+                            <li>groupBy(), join(), distinct()</li>
+                            <li>repartition(), coalesce() (con aumento)</li>
+                            <li>orderBy() global</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="margin-bottom: 0.5rem;"><strong class="accent">Estrategia de Optimización:</strong></p>
+                        <ul style="font-size: clamp(0.85rem, 1.2vw, 1rem);">
+                            <li>Filtrar ANTES de join (reduce datos a mover)</li>
+                            <li>Usar broadcast() para tablas < 10MB</li>
+                            <li>Particionar por clave de join si es recurrente</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Llegamos al tema más crítico para optimización: las particiones. Este es donde veo el 90% de los errores en producción.<br><br>
+                
+                Escenario común: Tienen una tabla de 10 millones de registros. Spark por defecto usa 200 particiones (spark.sql.shuffle.partitions). 
+                Eso significa 50,000 filas por partición. Suena razonable, ¿verdad? Pero luego alguien lee en un blog 'más particiones = más paralelismo' 
+                y lo aumentan a 2000. Ahora cada partición tiene 5,000 filas.<br><br>
+                
+                El problema: Cada Task tiene overhead. Spark necesita schedulear la task, serializarla, enviarla al executor, deserializarla, 
+                ejecutarla, y recoger el resultado. Ese overhead puede ser de 100-200ms. Si el procesamiento real de 5,000 filas toma 50ms, 
+                están gastando MÁS tiempo en overhead que en trabajo real. Es como contratar 100 personas para que cada una mueva una caja: 
+                el tiempo de coordinarlas supera el beneficio.<br><br>
+                
+                La regla de oro: Particiones = Cores × 2 a 4. ¿Por qué el multiplicador? Porque permite que mientras un core termina una task, 
+                ya tenga otra lista para ejecutar (evita idle time). Para un cluster de 32 cores, 64-128 particiones es óptimo. 
+                Eso da ~78K-156K filas por partición en un dataset de 10M – el sweet spot para balancear paralelismo y overhead.<br><br>
+                
+                Y el tema del shuffle: cuando hacen groupBy() o join(), Spark necesita redistribuir datos por la red para agrupar registros con la misma clave. 
+                Eso es costoso. La estrategia: (1) Filtren lo más posible ANTES del shuffle para reducir datos a mover. 
+                (2) Si están juntando una tabla grande con una pequeña (< 10MB), usen broadcast() para copiar la tabla pequeña a cada executor 
+                en lugar de shufflear la grande. (3) Si hacen joins recurrentes en la misma clave, consideren pre-particionar los datos con .partitionBy() 
+                al guardarlos como Parquet. Eso elimina el shuffle en queries posteriores.<br><br>
+                
+                Resumen ejecutivo: Para 10M de registros en un cluster de 32 cores, usen 64-128 particiones, guarden como Parquet particionado por la clave de negocio más común, 
+                y eviten shuffles innecesarios filtrando temprano. Eso es el 80% del performance tuning."
+            </aside>
+        </section>
+
+        <!-- SLIDE 7: Checklist Final -->
+        <section>
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: clamp(1.5rem, 3vw, 3rem);">
+                <h2 style="margin-bottom: clamp(1.5rem, 3vw, 3rem); text-align: center;">Checklist: <span class="accent">Spark Eficiente para 10M Registros</span></h2>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 40%, 400px), 1fr)); gap: clamp(1rem, 2vw, 2rem);">
+                    <div class="bento-card" style="border-width: 2px; overflow: hidden;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--spark-orange);">✓ Formato de Datos</h3>
+                        <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
+                            <li>Siempre usar Parquet (o Delta Lake)</li>
+                            <li>Particionar por columnas de filtrado frecuente</li>
+                            <li>Evitar CSV en producción</li>
+                        </ul>
+                    </div>
+
+                    <div class="bento-card" style="border-width: 2px; overflow: hidden;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--spark-orange);">✓ Particiones</h3>
+                        <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
+                            <li>Configurar shuffle.partitions = cores × 2-4</li>
+                            <li>~100K-200K filas por partición (ideal)</li>
+                            <li>Usar .coalesce() al escribir resultados pequeños</li>
+                        </ul>
+                    </div>
+
+                    <div class="bento-card" style="border-width: 2px; overflow: hidden;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--spark-orange);">✓ Transformaciones</h3>
+                        <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
+                            <li>Pensar declarativo, NO iterativo</li>
+                            <li>Filtrar lo antes posible en el pipeline</li>
+                            <li>Usar funciones nativas de Spark (no UDFs Python)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bento-card" style="border-width: 2px; overflow: hidden;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--spark-orange);">✓ Joins & Shuffles</h3>
+                        <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
+                            <li>Broadcast joins para tablas < 10MB</li>
+                            <li>Reducir datos antes de join</li>
+                            <li>Pre-particionar datos recurrentes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="formula-box" style="margin-top: clamp(1.5rem, 3vw, 3rem); font-size: clamp(1rem, 2vw, 1.5rem);">
+                    Spark Eficiente = Formato Correcto + Particiones Balanceadas + Lazy Thinking
+                </div>
+
+                <p class="text-secondary" style="text-align: center; margin-top: clamp(1rem, 2vw, 2rem); font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                    Preguntas → Discusión → Implementación en sus pipelines
+                </p>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Para cerrar, aquí está su checklist de acción inmediata para optimizar sus pipelines de Databricks:<br><br>
+                
+                1. <strong>Formato:</strong> Esta semana, identifiquen sus tablas CSV más usadas y conviertan a Parquet particionado. 
+                El ROI es inmediato – verán mejoras de 5-10x en lectura.<br><br>
+                
+                2. <strong>Particiones:</strong> Revisen su configuración de spark.sql.shuffle.partitions. 
+                Si está en 200 (default) y tienen 32+ cores, suban a 64-128. Si tienen over-partitioning (2000+), bajen drásticamente.<br><br>
+                
+                3. <strong>Código:</strong> Busquen .iterrows(), .apply(), bucles for sobre DataFrames. Esos son anti-patterns de Pandas. 
+                Reescriban usando .select(), .filter(), .groupBy() – transformaciones que Catalyst puede optimizar.<br><br>
+                
+                4. <strong>Joins:</strong> Identifiquen sus tablas de lookup pequeñas (países, categorías) y marquen con broadcast(). 
+                Para joins grandes recurrentes, particionen al escribir con .partitionBy('clave_común').<br><br>
+                
+                La mentalidad final: Spark no es Pandas grande. Es un motor de consultas distribuido con un optimizador de clase SQL. 
+                Tratenlo como tal – escriban código declarativo, dejen que Catalyst optimice, y diseñen para paralelismo. 
+                Con estas prácticas, sus jobs de 10M de registros deberían ejecutar en minutos, no horas.<br><br>
+                
+                Ahora, abramos para preguntas. ¿Qué casos de uso específicos tienen? Vamos a aplicar estos principios a sus pipelines reales."
+            </aside>
         </section>
 
     </div>
@@ -363,13 +1035,15 @@ df.withColumn("prediccion", predecir_batch("texto"))
         progress: true,
         center: true,
         hash: true,
-        transition: 'slide', // none/fade/slide/convex/concave/zoom
-        backgroundTransition: 'fade',
-        width: 1280,
-        height: 720,
-        margin: 0.1,
+        transition: 'fade',
+        backgroundTransition: 'none',
+        width: 1920,
+        height: 1080,
+        margin: 0.04,
         minScale: 0.2,
-        maxScale: 2.0
+        maxScale: 2.0,
+        slideNumber: 'c/t',
+        showNotes: false
     });
 </script>
 
