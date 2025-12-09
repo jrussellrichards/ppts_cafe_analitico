@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark: El Motor de la Escala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="stage">
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide active">
+        <div class="content center-xy">
+            <div style="margin-bottom: 30px;">
+                <i class="fa-solid fa-bolt" style="font-size: 120px; color: #fbbf24; filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4));"></i>
+            </div>
+            <h1>Apache Spark:<br>Bajo el Capó</h1>
+            <p class="subtitle">De programar en "Local" a pensar en "Distribuido".<br>Guía esencial para Data Scientists & Gen AI.</p>
+            <div style="margin-top: 60px; color: #64748b; font-size: 20px;">
+                <i class="fa-solid fa-keyboard"></i> Usa las flechas para navegar
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: The Problem (Single Node vs Distributed) -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">El Muro de la RAM</h2>
+            <div class="grid-2">
+                <div class="card danger">
+                    <div class="icon-large" style="color: #ef4444;"><i class="fa-solid fa-laptop-code"></i></div>
+                    <h3>Mentalidad "Single Node"</h3>
+                    <p class="tag" style="background: #450a0a; color: #fca5a5;">Pandas / Excel / Laptop</p>
+                    <ul style="margin-top: 20px;">
+                        <li>Todo el dato debe caber en TU memoria RAM.</li>
+                        <li>Si el dato crece, tu código falla (OOM).</li>
+                        <li>Procesamiento secuencial (1 fila a la vez).</li>
+                    </ul>
+                </div>
+                <div class="card success">
+                    <div class="icon-large" style="color: #22c55e;"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3>Mentalidad "Distribuida"</h3>
+                    <p class="tag" style="background: #064e3b; color: #34d399;">Apache Spark</p>
+                    <ul style="margin-top: 20px;">
+                        <li>El dato es más grande que la RAM de una máquina.</li>
+                        <li><strong>Divide y Vencerás:</strong> Romper el problema en trozos pequeños.</li>
+                        <li>Si el dato crece, agregas más máquinas.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: The Orchestra (Driver & Workers) -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">La Orquesta (Arquitectura)</h2>
+            <div class="grid-2">
+                <div>
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: #60a5fa;"><i class="fa-solid fa-user-tie"></i> El Driver (El Director)</h3>
+                        <p>Es tu notebook. Contiene tu código.</p>
+                        <p>Crea el plan de ejecución.</p>
+                        <p style="color: #ef4444; font-weight: bold;">NO toca los datos pesados.</p>
+                    </div>
+                    <div>
+                        <h3 style="color: #34d399;"><i class="fa-solid fa-users"></i> Los Executors (Los Músicos)</h3>
+                        <p>Viven en los nodos del cluster.</p>
+                        <p>Ejecutan las tareas en paralelo.</p>
+                        <p>Tienen los datos en su RAM.</p>
+                    </div>
+                </div>
+                <div class="img-container">
+                    <!-- Conceptual diagram of Driver sending tasks to Executors -->
+                    <img src="https://spark.apache.org/docs/latest/img/cluster-overview.png" alt="Spark Architecture">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: Lazy Evaluation -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">El Superpoder: "Ser Perezoso"</h2>
+            <div class="grid-2">
+                <div class="center-xy">
+                    <i class="fa-solid fa-person-running" style="font-size: 80px; color: #ef4444; margin-bottom: 20px;"></i>
+                    <h3 style="color: #ef4444;">Eager (Ansioso)</h3>
+                    <p><em>Pandas / Python Nativo</em></p>
+                    <pre class="bad-code" style="font-size: 18px; width: 100%;">
+df = read_csv("data.csv") # ¡LEE YA!
+df = df.filter(col > 5)   # ¡FILTRA YA!</pre>
+                    <p style="font-size: 20px; margin-top: 10px;">Ineficiente: Lee todo para luego tirar la mitad.</p>
+                </div>
+                <div class="center-xy" style="border-left: 1px solid #334155;">
+                    <i class="fa-solid fa-bed" style="font-size: 80px; color: #22c55e; margin-bottom: 20px;"></i>
+                    <h3 style="color: #22c55e;">Lazy (Perezoso)</h3>
+                    <p><em>Spark</em></p>
+                    <pre class="good-code" style="font-size: 18px; width: 100%;">
+df = read("data")   # "Anotado."
+df = df.filter(...) # "Anotado."
+df.write(...)       # ¡ACCIÓN! Optimiza y ejecuta.</pre>
+                    <p style="font-size: 20px; margin-top: 10px;">Inteligente: Solo lee lo que necesita al final.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: The Catalyst Optimizer -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">Tu Copiloto Invisible: Catalyst</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>¿Qué pasa cuando ejecutas código?</h3>
+                    <p>Spark no ejecuta tu código línea por línea ciegamente. Lo reescribe.</p>
+                    <ul style="margin-top: 30px;">
+                        <li style="margin-bottom: 20px;"><strong style="color: #fbbf24;">Predicate Pushdown:</strong> Si filtras por fecha al final, Spark mueve ese filtro al principio para leer menos datos.</li>
+                        <li><strong style="color: #fbbf24;">Column Pruning:</strong> Si solo usas 2 columnas, Spark ignora las otras 100 desde el disco.</li>
+                    </ul>
+                </div>
+                <div class="card center-xy" style="background: rgba(251, 191, 36, 0.05); border-color: #fbbf24;">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 60px; color: #fbbf24; margin-bottom: 20px;"></i>
+                    <p style="font-size: 28px; text-align: center;">
+                        "Tú dices <strong>QUÉ</strong> quieres.<br>
+                        Catalyst decide <strong>CÓMO</strong> hacerlo."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: The Villain (Shuffle) -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">El Enemigo: El Shuffle</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>¿Por qué mi Job es lento?</h3>
+                    <p>El 90% de las veces es por mover datos a través de la red.</p>
+                    <div class="card danger" style="margin-top: 20px;">
+                        <h4>Operaciones que causan Shuffle (Wide Transformations):</h4>
+                        <ul style="font-family: 'JetBrains Mono', monospace; font-size: 20px;">
+                            <li>GROUP BY</li>
+                            <li>JOIN</li>
+                            <li>DISTINCT</li>
+                            <li>ORDER BY</li>
+                        </ul>
+                    </div>
+                    <p style="margin-top: 20px; font-size: 20px; color: #94a3b8;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Consejo: Filtra (reduce datos) ANTES de hacer Join.
+                    </p>
+                </div>
+                <div class="img-container">
+                    <img src="https://miro.medium.com/v2/resize:fit:1400/1*d6sVSpqj88XWdC-w52T9Sg.png" alt="Shuffle Diagram">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Partitioning (The Golden Rule) -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">La Regla de Oro: Particionamiento</h2>
+            <div class="center-xy" style="height: 100%;">
+                <div style="display: flex; gap: 40px; align-items: center; margin-bottom: 60px;">
+                    <div class="card center-xy" style="width: 250px; height: 200px;">
+                        <span style="font-size: 80px; font-weight: 800; color: #60a5fa;">1</span>
+                        <span>Partición</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 40px; color: #475569;"></i>
+                    <div class="card center-xy" style="width: 250px; height: 200px;">
+                        <span style="font-size: 80px; font-weight: 800; color: #60a5fa;">1</span>
+                        <span>Core (CPU)</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 40px; color: #475569;"></i>
+                    <div class="card center-xy" style="width: 250px; height: 200px;">
+                        <span style="font-size: 80px; font-weight: 800; color: #60a5fa;">1</span>
+                        <span>Task</span>
+                    </div>
+                </div>
+                
+                <p style="font-size: 32px; max-width: 900px; text-align: center;">
+                    Si tienes un cluster de <strong>100 cores</strong> pero tu dataframe tiene <strong>1 partición</strong>...<br>
+                    <span style="color: #ef4444; font-weight: bold;">99 cores estarán de vacaciones.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Skew Example -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">El Asesino Silencioso: Data Skew</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>¿Qué es el Skew?</h3>
+                    <p>Cuando una partición es mucho más grande que las demás.</p>
+                    <p><strong>Síntoma:</strong> El job llega al 99% y se queda ahí por horas.</p>
+                    <div class="card warning" style="margin-top: 20px;">
+                        <h4>Ejemplo Clásico</h4>
+                        <p>Hacer <code>GROUP BY country</code> y el 90% de tus usuarios son de "US".</p>
+                        <p>Un solo core procesará "US" mientras los demás terminan en segundos.</p>
+                    </div>
+                </div>
+                <div class="card center-xy">
+                    <div style="display: flex; align-items: flex-end; gap: 10px; height: 200px; width: 100%;">
+                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
+                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
+                        <div style="width: 20%; height: 100%; background: #ef4444; border-radius: 4px; position: relative;">
+                            <span style="position: absolute; top: -30px; left: 0; width: 100%; text-align: center; color: #ef4444; font-weight: bold;">¡Lento!</span>
+                        </div>
+                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
+                        <div style="width: 20%; height: 20%; background: #34d399; border-radius: 4px;"></div>
+                    </div>
+                    <p style="margin-top: 20px;">Tiempos de Ejecución por Task</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: UDFs Comparison -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">Funciones: Lo Bueno, Lo Malo y Lo Feo</h2>
+            <div class="grid-3">
+                <div class="card success">
+                    <h3>1. Spark Native</h3>
+                    <p class="tag" style="background: #064e3b; color: #34d399;">Recomendado</p>
+                    <pre class="good-code" style="font-size: 14px;">
+import pyspark.sql.functions as F
+df.withColumn("upper", F.upper(col("s")))</pre>
+                    <ul style="font-size: 18px; margin-top: 10px;">
+                        <li>Ejecuta en JVM (Rápido).</li>
+                        <li>Catalyst lo optimiza.</li>
+                        <li>Sin serialización Python.</li>
+                    </ul>
+                </div>
+                <div class="card warning">
+                    <h3>2. Pandas UDF</h3>
+                    <p class="tag" style="background: #78350f; color: #fcd34d;">Aceptable</p>
+                    <pre class="good-code" style="font-size: 14px;">
+@pandas_udf("string")
+def upper_udf(s: pd.Series):
+    return s.str.upper()</pre>
+                    <ul style="font-size: 18px; margin-top: 10px;">
+                        <li>Usa Apache Arrow.</li>
+                        <li>Vectorizado (Batch).</li>
+                        <li>Bueno para ML/Librerías complejas.</li>
+                    </ul>
+                </div>
+                <div class="card danger">
+                    <h3>3. Python UDF</h3>
+                    <p class="tag" style="background: #450a0a; color: #fca5a5;">Evitar</p>
+                    <pre class="bad-code" style="font-size: 14px;">
+@udf("string")
+def upper_udf(s):
+    return s.upper()</pre>
+                    <ul style="font-size: 18px; margin-top: 10px;">
+                        <li>Fila por fila (Lento).</li>
+                        <li>Serialización costosa.</li>
+                        <li>Caja negra para Catalyst.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: Spark & Gen AI -->
+    <div class="slide">
+        <div class="content">
+            <span class="badge" style="background: #8b5cf6; color: white;">Nuevo Paradigma</span>
+            <h2 class="slide-title">Spark en la Era de Gen AI</h2>
+            <div class="grid-2">
+                <div>
+                    <p>Spark no es solo para tablas SQL. Es el motor de pre-procesamiento para LLMs.</p>
+                    <ul style="margin-top: 30px;">
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #a78bfa;">Batch Inference:</strong><br>
+                            Pasar 1 millón de prompts a un modelo (vía `pandas_udf`).
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #a78bfa;">RAG Data Prep:</strong><br>
+                            Leer PDFs masivos, chunking y tokenización en paralelo antes de enviar a Vector DB.
+                        </li>
+                    </ul>
+                </div>
+                <div class="card" style="border-color: #8b5cf6; background: rgba(139, 92, 246, 0.05);">
+                    <h3>Ejemplo: Inferencia Masiva</h3>
+                    <pre class="good-code" style="font-size: 16px;">
+import pandas as pd
+from pyspark.sql.functions import pandas_udf
+
+@pandas_udf("string")
+def predecir_batch(textos: pd.Series) -> pd.Series:
+    # Carga el modelo UNA vez por Executor
+    model = load_model() 
+    return textos.apply(model.predict)
+
+# Spark distribuye los textos en batches
+df.withColumn("prediccion", predecir_batch("texto"))</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 11: Anti-Patterns -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="slide-title">Los 3 Pecados Capitales</h2>
+            <div class="grid-2-top">
+                <div class="card danger">
+                    <h3>1. .collect()</h3>
+                    <p>Intentar traer 100GB a la RAM de tu driver.</p>
+                    <p><strong>Consecuencia:</strong> Driver OOM Crash.</p>
+                    <p><strong>Solución:</strong> <code>.take(5)</code> o escribir a disco.</p>
+                </div>
+                <div class="card danger">
+                    <h3>2. Bucles `for`</h3>
+                    <p>Iterar filas con Python nativo.</p>
+                    <p><strong>Consecuencia:</strong> No usas Spark, usas Python lento en un solo nodo.</p>
+                    <p><strong>Solución:</strong> Usar funciones nativas de Spark (`pyspark.sql.functions`).</p>
+                </div>
+                <div class="card danger">
+                    <h3>3. UDFs Innecesarias</h3>
+                    <p>Escribir funciones Python para cosas que Spark ya sabe hacer (sumar, limpiar strings).</p>
+                    <p><strong>Consecuencia:</strong> Spark no puede optimizar tu código Python (Caja negra).</p>
+                </div>
+                <div class="card success">
+                    <h3>La Mentalidad Correcta</h3>
+                    <p style="font-size: 24px; color: #34d399;">
+                        "Dile a Spark QUÉ hacer, no CÓMO iterar."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 12: Closing -->
+    <div class="slide">
+        <div class="content center-xy">
+            <h1 style="font-size: 70px; margin-bottom: 40px;">El Poder es Tuyo</h1>
+            <p style="font-size: 32px; max-width: 800px; color: #cbd5e1; text-align: center;">
+                Spark es una herramienta compleja, pero dominarla te permite procesar el mundo.
+            </p>
+            <div style="margin-top: 60px; display: flex; gap: 60px;">
+                <div class="center-xy">
+                    <i class="fa-solid fa-layer-group" style="font-size: 50px; color: #60a5fa; margin-bottom: 15px;"></i>
+                    <span style="font-size: 20px; color: #94a3b8;">Piensa en Bloques</span>
+                </div>
+                <div class="center-xy">
+                    <i class="fa-solid fa-forward" style="font-size: 50px; color: #60a5fa; margin-bottom: 15px;"></i>
+                    <span style="font-size: 20px; color: #94a3b8;">Sé Perezoso</span>
+                </div>
+                <div class="center-xy">
+                    <i class="fa-solid fa-microchip" style="font-size: 50px; color: #60a5fa; margin-bottom: 15px;"></i>
+                    <span style="font-size: 20px; color: #94a3b8;">Distribuye</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+    <button id="prevBtn" class="btn" title="Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+    <span class="page-num" id="pageNum">1 / 12</span>
+    <button id="nextBtn" class="btn" title="Siguiente"><i class="fa-solid fa-chevron-right"></i></button>
+    <div style="width: 1px; height: 20px; background: #334155; margin: 0 10px;"></div>
+    <button id="fsBtn" class="btn" title="Pantalla Completa"><i class="fa-solid fa-expand"></i></button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const pageNum = document.getElementById('pageNum');
+        const stage = document.getElementById('stage');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const fsBtn = document.getElementById('fsBtn');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+            pageNum.textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Dynamic Scaling
+        function scaleStage() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const targetWidth = 1280;
+            const targetHeight = 720;
+
+            const scale = Math.min(
+                windowWidth / targetWidth,
+                windowHeight / targetHeight
+            );
+
+            stage.style.transform = `scale(${scale})`;
+        }
+
+        // Event Listeners
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+        fsBtn.addEventListener('click', toggleFullscreen);
+
+        window.addEventListener('resize', scaleStage);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'f') toggleFullscreen();
+        });
+
+        // Init
+        scaleStage();
+        updateSlide();
+    });
+</script>
+
+</body>
+</html>
