@@ -473,12 +473,75 @@
                 </aside>
             </section>
 
+            <!-- SLIDE: The Hook (Emotional Pain) -->
+            <section>
+                <div
+                    style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin-bottom: 3rem;">
+                        El Cuello de Botella de la IA
+                    </h2>
 
+                    <div class="fragment">
+                        <div
+                            style="font-size: clamp(6rem, 15vw, 12rem); font-weight: 700; line-height: 1; color: var(--spark-orange);">
+                            80%
+                        </div>
+                        <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); margin-top: 1rem; font-weight: 300;">
+                            del tiempo se pierde en <span class="accent" style="font-weight: 700;">Data Prep</span>
+                        </p>
+                    </div>
 
-            </aside>
+                    <div class="fragment" style="margin-top: 4rem; max-width: 800px;">
+                        <p
+                            style="font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-secondary); font-style: italic;">
+                            "Viernes: Script corriendo... 🤞<br>
+                            Lunes: <span style="color: #DC2626; font-weight: 700;">Out Of Memory Error</span> 💥"
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    "Levanten la mano si han dejado un script corriendo el viernes, cruzaron los dedos, y el lunes
+                    vieron un Out Of Memory Error. Estamos construyendo Ferraris (Agentes de IA) y alimentándolos con
+                    combustible a cuentagotas (Pandas local)."
+                </aside>
             </section>
 
+            <!-- SLIDE: The Revelation (Spark as OS) -->
+            <section>
+                <div
+                    style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div class="fragment" style="margin-bottom: 2rem;">
+                        <!-- Simple Spark-like Star Symbol -->
+                        <div style="font-size: clamp(5rem, 10vw, 8rem); color: var(--spark-orange);">
+                            ✨ Apache Spark
+                        </div>
+                    </div>
 
+                    <h2 class="fragment"
+                        style="font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 700; margin-bottom: 2rem;">
+                        El Sistema Operativo del <span class="accent">Big Data</span>
+                    </h2>
+
+                    <div class="fragment"
+                        style="background: var(--dark-bg); color: white; padding: 2rem; border-left: 6px solid var(--spark-orange); max-width: 900px;">
+                        <p style="font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.4; margin: 0;">
+                            La diferencia entre procesar lo que cabe en tu <span style="color: #10B981;">RAM</span><br>
+                            y procesar lo que cabe en el <span class="accent">Mundo</span>.
+                        </p>
+                    </div>
+
+                    <p class="fragment"
+                        style="margin-top: 3rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">
+                        (El motor que te permite dormir los fines de semana 😴)
+                    </p>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    "Spark no es una librería más. Es un Sistema Operativo distribuido. Es la diferencia entre jugar en
+                    el patio y jugar en el estadio. Pero para usarlo, debemos olvidar lo que sabemos de Pandas..."
+                </aside>
+            </section>
 
             <!-- SLIDE 2: Single Node vs Distributed -->
             <section>
@@ -640,6 +703,85 @@
                     "Ya tenemos las máquinas del cluster listas. ¿Pero quién es quién en este zoológico? No es una caja
                     negra. Tenemos un cerebro (el Driver) y muchos músculos (los Executors). Hook importante: Ya tenemos
                     las máquinas, ¿pero cómo les hablamos?"
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Sin Shuffle vs Con Shuffle -->
+            <section>
+                <h2 style="margin-bottom: 1.5rem; text-align: center;">El Secreto del Rendimiento: <span
+                        class="accent">Shuffle vs No Shuffle</span></h2>
+
+                <div class="grid-container" style="grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+
+                    <!-- Left: SIN SHUFFLE -->
+                    <div class="bento-card fragment" style="border-top: 4px solid #10B981;">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: clamp(2rem, 3vw, 2.5rem); margin-bottom: 0.5rem;">✅</div>
+                            <h3 style="margin: 0; color: #10B981;">Sin Shuffle</h3>
+                            <p class="text-mono" style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">Narrow
+                                Transformation</p>
+                        </div>
+
+                        <img src="spark_no_shuffle.png" alt="Operación sin shuffle - datos locales"
+                            style="max-width: 100%; height: auto; border: 1px solid var(--grid-gray); border-radius: 4px; margin-bottom: 1rem;">
+
+                        <pre
+                            style="background: var(--dark-bg); color: var(--off-white); padding: 0.8rem; font-size: clamp(0.7rem, 1vw, 0.85rem); margin: 0; border-radius: 4px;"><code class="language-python"># Cada partición se procesa LOCALMENTE
+df_filtered = df.filter(col("monto") > 1000)
+
+# También: .select(), .withColumn(), .map()</code></pre>
+
+                        <div
+                            style="background: rgba(16, 185, 129, 0.1); padding: 1rem; margin-top: 1rem; border-radius: 4px;">
+                            <p style="margin: 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                <strong style="color: #10B981;">⚡ Rápido:</strong> Los datos NO se mueven entre nodos
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right: CON SHUFFLE -->
+                    <div class="bento-card fragment" style="border-top: 4px solid var(--spark-orange);">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: clamp(2rem, 3vw, 2.5rem); margin-bottom: 0.5rem;">⚠️</div>
+                            <h3 style="margin: 0; color: var(--spark-orange);">Con Shuffle</h3>
+                            <p class="text-mono" style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">Wide
+                                Transformation</p>
+                        </div>
+
+                        <img src="spark_with_shuffle.png" alt="Operación con shuffle - redistribución de datos"
+                            style="max-width: 100%; height: auto; border: 1px solid var(--grid-gray); border-radius: 4px; margin-bottom: 1rem;">
+
+                        <pre
+                            style="background: var(--dark-bg); color: var(--off-white); padding: 0.8rem; font-size: clamp(0.7rem, 1vw, 0.85rem); margin: 0; border-radius: 4px;"><code class="language-python"># Datos se REDISTRIBUYEN por clave
+df_grouped = df.groupBy("ciudad").count()
+
+# También: .join(), .repartition(), .distinct()</code></pre>
+
+                        <div
+                            style="background: rgba(226, 90, 28, 0.1); padding: 1rem; margin-top: 1rem; border-radius: 4px;">
+                            <p style="margin: 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                <strong style="color: var(--spark-orange);">🐢 Costoso:</strong> Transferencia masiva
+                                por red entre nodos
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Insight -->
+                <div class="formula-box fragment" style="margin-top: 1.5rem; font-size: clamp(1rem, 1.6vw, 1.3rem);">
+                    Regla de Oro: <span class="accent">Minimiza los shuffles = Maximiza el rendimiento</span>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    "Aquí está el secreto que separa a los que escriben código lento de los que escriben código rápido.
+                    A la izquierda: operaciones SIN shuffle. Cada executor procesa sus datos localmente, sin hablar con
+                    nadie.
+                    A la derecha: operaciones CON shuffle. Los datos tienen que viajar por la red para reagruparse.
+                    Un groupBy puede mover terabytes entre máquinas. Un filter no mueve nada.
+                    ¿La regla de oro? Filtra ANTES de agrupar. Reduce datos ANTES del shuffle.
+                    Esto puede ser la diferencia entre un job de 5 minutos y uno de 5 horas."
                 </aside>
             </section>
 
