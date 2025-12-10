@@ -478,6 +478,58 @@
                 </aside>
             </section>
 
+
+            <!-- SLIDE: Agenda / Roadmap -->
+            <section>
+                <h2 style="margin-bottom: 3rem; text-align: center;">Nuestra <span class="accent">Ruta</span> Hoy</h2>
+
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 800px; width: 100%;">
+                        
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">1</div>
+                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
+                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">El Problema: ¿Por qué necesitamos Spark?</p>
+                            </div>
+                        </div>
+
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">2</div>
+                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
+                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">La Arquitectura: Driver, Executors, Particiones</p>
+                            </div>
+                        </div>
+
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">3</div>
+                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
+                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">El Lenguaje: Transformaciones, Acciones, Lazy Eval</p>
+                            </div>
+                        </div>
+
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">4</div>
+                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
+                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">Las Trampas: Challenges Interactivos</p>
+                            </div>
+                        </div>
+
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">5</div>
+                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
+                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">Las Mejores Prácticas: Optimización Real</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
             <!-- SLIDE: The Hook (Emotional Pain) -->
             <section>
                 <div
@@ -514,39 +566,121 @@
 
             <!-- SLIDE: The Revelation (Spark as OS) -->
             <section>
-                <div
-                    style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <div class="fragment" style="margin-bottom: 2rem;">
-                        <!-- Simple Spark-like Star Symbol -->
-                        <div style="font-size: clamp(5rem, 10vw, 8rem); color: var(--spark-orange);">
-                            ✨ Apache Spark
-                        </div>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <img src="https://spark.apache.org/images/spark-logo-trademark.png" alt="Apache Spark" style="height: clamp(80px, 12vw, 120px); filter: drop-shadow(0 4px 20px rgba(226, 90, 28, 0.3));">
                     </div>
 
-                    <h2 class="fragment"
-                        style="font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 700; margin-bottom: 2rem;">
+                    <h2 class="fragment" style="font-size: clamp(2.5rem, 4.5vw, 4rem); font-weight: 700; margin-bottom: 1rem;">
                         El Sistema Operativo del <span class="accent">Big Data</span>
                     </h2>
 
-                    <div class="fragment"
-                        style="background: var(--dark-bg); color: white; padding: 2rem; border-left: 6px solid var(--spark-orange); max-width: 900px;">
-                        <p style="font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.4; margin: 0;">
-                            La diferencia entre procesar lo que cabe en tu <span style="color: #10B981;">RAM</span><br>
-                            y procesar lo que cabe en el <span class="accent">Mundo</span>.
-                        </p>
+                    <p class="fragment" style="font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--text-secondary); margin-bottom: 3rem;">
+                        Un motor unificado para procesamiento distribuido a gran escala
+                    </p>
+
+                    <div class="fragment" style="display: flex; gap: clamp(1rem, 3vw, 3rem); flex-wrap: wrap; justify-content: center; margin-bottom: 2rem;">
+                        <div style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 150px;">
+                            <div style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--spark-orange);">100×</div>
+                            <div style="font-size: clamp(0.8rem, 1.2vw, 1rem); margin-top: 0.5rem;">más rápido que Pandas</div>
+                        </div>
+                        <div style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 150px;">
+                            <div style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--spark-orange);">PB+</div>
+                            <div style="font-size: clamp(0.8rem, 1.2vw, 1rem); margin-top: 0.5rem;">de datos procesables</div>
+                        </div>
+                        <div style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 150px;">
+                            <div style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--spark-orange);">1</div>
+                            <div style="font-size: clamp(0.8rem, 1.2vw, 1rem); margin-top: 0.5rem;">API unificada</div>
+                        </div>
                     </div>
 
-                    <p class="fragment"
-                        style="margin-top: 3rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">
-                        (El motor que te permite dormir los fines de semana 😴)
+                    <div class="fragment" style="background: white; border: 2px solid var(--spark-orange); padding: 1.5rem 2.5rem; border-radius: 8px; max-width: 800px;">
+                        <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); line-height: 1.5; margin: 0; color: var(--text-primary);">
+                            La diferencia entre procesar lo que cabe en tu <strong style="color: #10B981;">RAM</strong><br>
+                            y procesar lo que cabe en el <strong class="accent">Mundo</strong>.
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+            <!-- SLIDE: Una API, Múltiples Lenguajes -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin-bottom: 1rem;">
+                        Una API, <span class="accent">Múltiples Lenguajes</span>
+                    </h2>
+
+                    <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); color: var(--text-secondary); max-width: 800px;">
+                        Escribe en el lenguaje que prefieras, Spark ejecuta igual de rápido
+                    </p>
+
+                    <div class="fragment" style="display: flex; gap: clamp(1.5rem, 4vw, 3rem); flex-wrap: wrap; justify-content: center; margin: 2rem 0;">
+                        
+                        <!-- Python -->
+                        <div style="background: white; border: 3px solid #3776AB; padding: 2rem; border-radius: 12px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(3rem, 6vw, 4rem); margin-bottom: 1rem;">🐍</div>
+                            <div style="font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700; color: #3776AB;">PySpark</div>
+                            <div style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 0.5rem;">Data Science</div>
+                        </div>
+
+                        <!-- SQL -->
+                        <div style="background: white; border: 3px solid var(--spark-orange); padding: 2rem; border-radius: 12px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(3rem, 6vw, 4rem); margin-bottom: 1rem;">📊</div>
+                            <div style="font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700; color: var(--spark-orange);">Spark SQL</div>
+                            <div style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 0.5rem;">Analytics</div>
+                        </div>
+
+                        <!-- Scala -->
+                        <div style="background: white; border: 3px solid #DC322F; padding: 2rem; border-radius: 12px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(3rem, 6vw, 4rem); margin-bottom: 1rem;">⚡</div>
+                            <div style="font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700; color: #DC322F;">Scala</div>
+                            <div style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 0.5rem;">Performance</div>
+                        </div>
+
+                        <!-- R -->
+                        <div style="background: white; border: 3px solid #276DC3; padding: 2rem; border-radius: 12px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(3rem, 6vw, 4rem); margin-bottom: 1rem;">📈</div>
+                            <div style="font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700; color: #276DC3;">SparkR</div>
+                            <div style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 0.5rem;">Estadística</div>
+                        </div>
+                    </div>
+
+                    <div class="fragment" style="background: var(--dark-bg); color: white; padding: 1.5rem 2.5rem; border-radius: 8px; max-width: 700px;">
+                        <p style="font-size: clamp(1rem, 1.5vw, 1.2rem); margin: 0; font-style: italic;">
+                            "El mismo Catalyst Optimizer optimiza <strong style="color: var(--spark-orange);">cualquier</strong> lenguaje"
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Primer Cambio Mental -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    <div style="font-size: clamp(5rem, 12vw, 10rem);">🧠</div>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;">
+                        Primer <span class="accent">Cambio Mental</span>
+                    </h2>
+                    <p style="font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--text-secondary);">
+                        De una máquina a muchas
                     </p>
                 </div>
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
-                    "Spark no es una librería más. Es un Sistema Operativo distribuido. Es la diferencia entre jugar en
-                    el patio y jugar en el estadio. Pero para usarlo, debemos olvidar lo que sabemos de Pandas..."
+                    [El relato lo haces tú]
                 </aside>
             </section>
+
 
             <!-- SLIDE 2: Single Node vs Distributed -->
             <section>
@@ -626,6 +760,169 @@
                 </aside>
             </section>
 
+
+            <!-- SLIDE: Particiones -->
+            <section>
+                <h2 style="margin-bottom: 3rem; text-align: center;"><span class="accent">Particiones</span></h2>
+
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3rem;">
+                    
+                    <!-- DataFrame Completo -->
+                    <div class="fragment" style="text-align: center;">
+                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">DataFrame (10 GB)</p>
+                        <div style="background: var(--spark-orange); color: white; padding: clamp(2rem, 4vw, 3rem); border-radius: 8px; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; min-width: clamp(300px, 60vw, 600px);">
+                            📊 DATASET COMPLETO
+                        </div>
+                    </div>
+
+                    <!-- Flecha hacia abajo -->
+                    <div class="fragment" style="font-size: clamp(2rem, 4vw, 3rem); color: var(--text-secondary);">
+                        ↓
+                    </div>
+
+                    <!-- Particiones divididas -->
+                    <div class="fragment" style="text-align: center;">
+                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">Dividido en Particiones (~128 MB c/u)</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; max-width: clamp(400px, 80vw, 800px);">
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P1
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P2
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P3
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P4
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P5
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                ...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Segundo Cambio Mental -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    <div style="font-size: clamp(5rem, 12vw, 10rem);">📊</div>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;">
+                        Segundo <span class="accent">Cambio Mental</span>
+                    </h2>
+                    <p style="font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--text-secondary);">
+                        De filas a columnas
+                    </p>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Almacenamiento Columnar vs Filas -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;">
+                        Almacenamiento: <span class="accent">Columnar</span> vs Filas
+                    </h2>
+
+                    <div style="display: flex; gap: clamp(2rem, 5vw, 4rem); flex-wrap: wrap; justify-content: center; align-items: flex-start; margin: 1rem 0;">
+                        
+                        <!-- Row-based -->
+                        <div class="fragment" style="text-align: center;">
+                            <p style="font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary); margin-bottom: 1rem;">📄 Por Filas (CSV, JDBC)</p>
+                            <div style="background: var(--dark-bg); padding: 1rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.7rem, 1vw, 0.9rem); color: white; text-align: left;">
+                                <div style="padding: 0.3rem; border-bottom: 1px solid #444;">👤 Ana, 28, Santiago, 5000</div>
+                                <div style="padding: 0.3rem; border-bottom: 1px solid #444;">👤 Bob, 35, Lima, 7500</div>
+                                <div style="padding: 0.3rem; border-bottom: 1px solid #444;">👤 Carla, 42, Bogotá, 6200</div>
+                                <div style="padding: 0.3rem;">👤 ...</div>
+                            </div>
+                            <p style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: #DC2626; margin-top: 1rem;">❌ Lee TODO para cada fila</p>
+                        </div>
+
+                        <!-- Columnar -->
+                        <div class="fragment" style="text-align: center;">
+                            <p style="font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary); margin-bottom: 1rem;">📊 Columnar (Parquet, Delta)</p>
+                            <div style="background: var(--dark-bg); padding: 1rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.7rem, 1vw, 0.9rem); color: white; text-align: left;">
+                                <div style="padding: 0.3rem; border-bottom: 1px solid #444; color: var(--spark-orange);">💰 renta: 5000, 7500, 6200, ...</div>
+                                <div style="padding: 0.3rem; border-bottom: 1px solid #444; opacity: 0.4;">nombre: Ana, Bob, Carla, ...</div>
+                                <div style="padding: 0.3rem; border-bottom: 1px solid #444; opacity: 0.4;">edad: 28, 35, 42, ...</div>
+                                <div style="padding: 0.3rem; opacity: 0.4;">ciudad: Santiago, Lima, ...</div>
+                            </div>
+                            <p style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: #10B981; margin-top: 1rem;">✅ Lee SOLO columnas necesarias</p>
+                        </div>
+                    </div>
+
+                    <div class="fragment" style="background: white; border: 2px solid var(--spark-orange); padding: 1.5rem 2rem; border-radius: 8px; max-width: 700px;">
+                        <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); margin: 0;">
+                            <strong class="accent">Parquet + .select()</strong> = solo lees lo que necesitas
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Ejemplo Columnar en Acción -->
+            <section>
+                <h2 style="margin-bottom: 2rem; text-align: center;">Columnar en <span class="accent">Acción</span></h2>
+
+                <div class="grid-container" style="grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                    
+                    <!-- Malo -->
+                    <div class="bento-card fragment" style="border-top: 4px solid #DC2626;">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: 2rem;">❌</div>
+                            <h3 style="margin: 0.5rem 0 0 0; color: #DC2626;">Lee TODO</h3>
+                        </div>
+                        <pre style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); margin: 0; border-radius: 4px; overflow-x: auto;"><code class="language-python"># 👎 Lee las 20 columnas
+df = spark.table("clientes")
+df.filter(col("activo") == True)</code></pre>
+                        <p style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 1rem; text-align: center;">
+                            20 columnas × 10M filas = <strong style="color: #DC2626;">~20 GB</strong>
+                        </p>
+                    </div>
+
+                    <!-- Bueno -->
+                    <div class="bento-card fragment" style="border-top: 4px solid #10B981;">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: 2rem;">✅</div>
+                            <h3 style="margin: 0.5rem 0 0 0; color: #10B981;">Lee SOLO lo necesario</h3>
+                        </div>
+                        <pre style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); margin: 0; border-radius: 4px; overflow-x: auto;"><code class="language-python"># 👍 Lee solo 2 columnas
+df = spark.table("clientes")
+df.select("id", "renta").filter(col("activo") == True)</code></pre>
+                        <p style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 1rem; text-align: center;">
+                            2 columnas × 10M filas = <strong style="color: #10B981;">~2 GB</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="formula-box fragment" style="margin-top: 2rem; font-size: clamp(1rem, 1.6vw, 1.3rem);">
+                    Column Pruning: Spark <span class="accent">automáticamente</span> ignora columnas no usadas
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
 
 
             <!-- SLIDE 5: Anatomía - Driver, Workers, Executors -->
@@ -708,58 +1005,6 @@
                     "Ya tenemos las máquinas del cluster listas. ¿Pero quién es quién en este zoológico? No es una caja
                     negra. Tenemos un cerebro (el Driver) y muchos músculos (los Executors). Hook importante: Ya tenemos
                     las máquinas, ¿pero cómo les hablamos?"
-                </aside>
-            </section>
-
-
-            <!-- SLIDE: Particiones -->
-            <section>
-                <h2 style="margin-bottom: 3rem; text-align: center;"><span class="accent">Particiones</span></h2>
-
-                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3rem;">
-                    
-                    <!-- DataFrame Completo -->
-                    <div class="fragment" style="text-align: center;">
-                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">DataFrame (10 GB)</p>
-                        <div style="background: var(--spark-orange); color: white; padding: clamp(2rem, 4vw, 3rem); border-radius: 8px; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; min-width: clamp(300px, 60vw, 600px);">
-                            📊 DATASET COMPLETO
-                        </div>
-                    </div>
-
-                    <!-- Flecha hacia abajo -->
-                    <div class="fragment" style="font-size: clamp(2rem, 4vw, 3rem); color: var(--text-secondary);">
-                        ↓
-                    </div>
-
-                    <!-- Particiones divididas -->
-                    <div class="fragment" style="text-align: center;">
-                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">Dividido en Particiones (~128 MB c/u)</p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; max-width: clamp(400px, 80vw, 800px);">
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P1
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P2
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P3
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P4
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P5
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                ...
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <aside class="notes">
-                    <strong>Script del Orador:</strong><br>
-                    [El relato lo haces tú]
                 </aside>
             </section>
 
@@ -887,6 +1132,29 @@
             </section>
 
 
+            <!-- SLIDE: Celebración - Ya entendemos Spark -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(6rem, 15vw, 12rem); margin-bottom: 2rem;">🎉</div>
+                    <h2 style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; margin-bottom: 1.5rem;">
+                        ¡Ya sabes cómo funciona <span class="accent">Spark</span>!
+                    </h2>
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); color: var(--text-secondary); max-width: 800px; line-height: 1.6;">
+                        Particiones → Workers → Tasks → Resultado
+                    </p>
+                    <div class="fragment" style="margin-top: 3rem;">
+                        <p style="font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-secondary);">
+                            Ahora aprendamos a <span class="accent" style="font-weight: 700;">hablarle</span> correctamente...
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
             <!-- SLIDE: Transformaciones vs Acciones -->
             <section>
                 <h2 style="margin-bottom: 2rem; text-align: center;">El Vocabulario de Spark: <span
@@ -949,6 +1217,113 @@
                     "Ya sabemos que tenemos un Driver y muchos Executors. Pero, ¿cómo le dice el Driver a los Executors
                     qué hacer? No usamos bucles for. Usamos un vocabulario específico dividido en dos mundos:
                     Transformaciones (planos) y Acciones (gatillos). El Driver no mueve un dedo hasta ver una Acción."
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Perezoso - Intro a Lazy Evaluation -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(8rem, 20vw, 15rem); margin-bottom: 2rem;">🦥</div>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;">
+                        Spark es <span class="accent">perezoso</span>
+                    </h2>
+                    <p class="fragment" style="font-size: clamp(1.2rem, 2vw, 1.8rem); color: var(--text-secondary); margin-top: 1.5rem;">
+                        (y eso es algo muy bueno)
+                    </p>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Lazy Evaluation -->
+            <section>
+                <h2 style="margin-bottom: 3rem; text-align: center;"><span class="accent">Lazy Evaluation</span></h2>
+
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem;">
+                    
+                    <!-- Código de ejemplo -->
+                    <div style="width: 100%; max-width: 900px;">
+                        <pre style="background: var(--dark-bg); color: var(--off-white); padding: clamp(1.5rem, 3vw, 2rem); font-size: clamp(0.85rem, 1.3vw, 1.1rem); border-radius: 8px; line-height: 1.8;"><code class="language-python"># 1. Leer datos
+df = spark.table("ventas")
+
+# 2. Filtrar
+df_filtrado = df.filter(col("monto") > 1000)
+
+# 3. Agrupar
+df_agrupado = df_filtrado.groupBy("ciudad").sum("monto")
+
+# 4. Mostrar resultado
+df_agrupado.show()  <span style="color: var(--spark-orange);">← AQUÍ EJECUTA TODO</span></code></pre>
+                    </div>
+
+                    <!-- Visual flow -->
+                    <div class="fragment" style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+                        <div style="background: rgba(16, 185, 129, 0.2); border: 2px solid #10B981; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500; color: #10B981; margin-bottom: 0.5rem;">Transformaciones</div>
+                            <div style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Construyen el plan</div>
+                            <div style="margin-top: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-family: 'IBM Plex Mono', monospace; color: #10B981;">
+                                .read()<br>
+                                .filter()<br>
+                                .groupBy()
+                            </div>
+                        </div>
+
+                        <div style="font-size: clamp(2rem, 4vw, 3rem); color: var(--spark-orange);">→</div>
+
+                        <div style="background: rgba(226, 90, 28, 0.2); border: 2px solid var(--spark-orange); padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500; color: var(--spark-orange); margin-bottom: 0.5rem;">Acción</div>
+                            <div style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Ejecuta el plan</div>
+                            <div style="margin-top: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-family: 'IBM Plex Mono', monospace; color: var(--spark-orange);">
+                                .show()<br>
+                                .count()<br>
+                                .write()
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key insight -->
+                    <div class="fragment formula-box" style="margin-top: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                        💡 Nada se ejecuta hasta que llega una <span class="accent">Acción</span>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Catalyst Optimizer -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    <div style="font-size: clamp(5rem, 12vw, 10rem);">⚙️</div>
+                    <h2 style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700;">
+                        <span class="accent">Catalyst</span> Optimizer
+                    </h2>
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); color: var(--text-secondary); max-width: 900px; line-height: 1.6;">
+                        Spark analiza tu código completo <strong>antes</strong> de ejecutar<br>
+                        y lo reescribe para máxima eficiencia
+                    </p>
+                    <div class="fragment" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem;">
+                        <div style="background: var(--dark-bg); color: var(--off-white); padding: 1rem 1.5rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.8rem, 1.2vw, 1rem);">
+                            Predicate Pushdown
+                        </div>
+                        <div style="background: var(--dark-bg); color: var(--off-white); padding: 1rem 1.5rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.8rem, 1.2vw, 1rem);">
+                            Column Pruning
+                        </div>
+                        <div style="background: var(--dark-bg); color: var(--off-white); padding: 1rem 1.5rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.8rem, 1.2vw, 1rem);">
+                            Join Reordering
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
                 </aside>
             </section>
 
@@ -1137,64 +1512,168 @@ df_grouped = df.groupBy("ciudad").count()
             </section>
 
 
-            <!-- SLIDE: Lazy Evaluation -->
+            <!-- SLIDE: Operaciones que generan Shuffle -->
             <section>
-                <h2 style="margin-bottom: 3rem; text-align: center;"><span class="accent">Lazy Evaluation</span></h2>
-
-                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem;">
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
                     
-                    <!-- Código de ejemplo -->
-                    <div style="width: 100%; max-width: 900px;">
-                        <pre style="background: var(--dark-bg); color: var(--off-white); padding: clamp(1.5rem, 3vw, 2rem); font-size: clamp(0.85rem, 1.3vw, 1.1rem); border-radius: 8px; line-height: 1.8;"><code class="language-python"># 1. Leer datos
-df = spark.table("ventas")
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;">
+                        ⚠️ Operaciones que <span class="accent">Generan Shuffle</span>
+                    </h2>
 
-# 2. Filtrar
-df_filtrado = df.filter(col("monto") > 1000)
-
-# 3. Agrupar
-df_agrupado = df_filtrado.groupBy("ciudad").sum("monto")
-
-# 4. Mostrar resultado
-df_agrupado.show()  <span style="color: var(--spark-orange);">← AQUÍ EJECUTA TODO</span></code></pre>
-                    </div>
-
-                    <!-- Visual flow -->
-                    <div class="fragment" style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;">
-                        <div style="background: rgba(16, 185, 129, 0.2); border: 2px solid #10B981; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 180px;">
-                            <div style="font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500; color: #10B981; margin-bottom: 0.5rem;">Transformaciones</div>
-                            <div style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Construyen el plan</div>
-                            <div style="margin-top: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-family: 'IBM Plex Mono', monospace; color: #10B981;">
-                                .read()<br>
-                                .filter()<br>
-                                .groupBy()
-                            </div>
+                    <div style="display: flex; gap: clamp(1rem, 3vw, 2rem); flex-wrap: wrap; justify-content: center; margin: 1rem 0;">
+                        
+                        <div class="fragment" style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 140px; border-left: 4px solid var(--spark-orange);">
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 700;">.groupBy()</div>
                         </div>
 
-                        <div style="font-size: clamp(2rem, 4vw, 3rem); color: var(--spark-orange);">→</div>
+                        <div class="fragment" style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 140px; border-left: 4px solid var(--spark-orange);">
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 700;">.join()</div>
+                        </div>
 
-                        <div style="background: rgba(226, 90, 28, 0.2); border: 2px solid var(--spark-orange); padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 180px;">
-                            <div style="font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500; color: var(--spark-orange); margin-bottom: 0.5rem;">Acción</div>
-                            <div style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Ejecuta el plan</div>
-                            <div style="margin-top: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-family: 'IBM Plex Mono', monospace; color: var(--spark-orange);">
-                                .show()<br>
-                                .count()<br>
-                                .write()
-                            </div>
+                        <div class="fragment" style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 140px; border-left: 4px solid var(--spark-orange);">
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 700;">.distinct()</div>
+                        </div>
+
+                        <div class="fragment" style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 140px; border-left: 4px solid var(--spark-orange);">
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 700;">.repartition()</div>
+                        </div>
+
+                        <div class="fragment" style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 140px; border-left: 4px solid var(--spark-orange);">
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 700;">.orderBy()</div>
+                        </div>
+
+                        <div class="fragment" style="background: var(--dark-bg); color: white; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 140px; border-left: 4px solid var(--spark-orange);">
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 700;">.reduceByKey()</div>
                         </div>
                     </div>
 
-                    <!-- Key insight -->
-                    <div class="fragment formula-box" style="margin-top: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem);">
-                        💡 Nada se ejecuta hasta que llega una <span class="accent">Acción</span>
+                    <div class="fragment" style="background: white; border: 3px solid var(--spark-orange); padding: 2rem 3rem; border-radius: 12px; margin-top: 1rem;">
+                        <p style="font-size: clamp(1.5rem, 2.5vw, 2rem); margin: 0; font-weight: 700;">
+                            🎯 Usa <span class="accent">sabiamente</span>
+                        </p>
                     </div>
                 </div>
-
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
                     [El relato lo haces tú]
                 </aside>
             </section>
 
+
+            <!-- SLIDE: Técnicas para Reducir Shuffle -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;">
+                        🛠️ Técnicas para <span class="accent">Reducir Shuffle</span>
+                    </h2>
+
+                    <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); color: var(--text-secondary); max-width: 800px;">
+                        Estrategias para mantener los datos locales
+                    </p>
+
+                    <div class="fragment" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 1000px; width: 100%;">
+                        
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📦</div>
+                            <div style="font-weight: 700; font-size: clamp(1rem, 1.5vw, 1.2rem);">Particionamiento</div>
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">partitionBy()</div>
+                        </div>
+
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔀</div>
+                            <div style="font-weight: 700; font-size: clamp(1rem, 1.5vw, 1.2rem);">Z-Order</div>
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">OPTIMIZE ZORDER BY</div>
+                        </div>
+
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📡</div>
+                            <div style="font-weight: 700; font-size: clamp(1rem, 1.5vw, 1.2rem);">Broadcast Join</div>
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">broadcast()</div>
+                        </div>
+
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">💾</div>
+                            <div style="font-weight: 700; font-size: clamp(1rem, 1.5vw, 1.2rem);">Bucketing</div>
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">bucketBy()</div>
+                        </div>
+
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗜️</div>
+                            <div style="font-weight: 700; font-size: clamp(1rem, 1.5vw, 1.2rem);">Coalesce</div>
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">coalesce(n)</div>
+                        </div>
+
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
+                            <div style="font-weight: 700; font-size: clamp(1rem, 1.5vw, 1.2rem);">Filter First</div>
+                            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">df.filter().groupBy()</div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Cuándo usar Spark -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 3rem;">
+                    
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;">
+                        Spark <span class="accent">NO</span> es para todo
+                    </h2>
+
+                    <div style="display: flex; gap: clamp(2rem, 5vw, 4rem); flex-wrap: wrap; justify-content: center;">
+                        
+                        <!-- Bueno para -->
+                        <div class="fragment" style="text-align: left;">
+                            <div style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem;">✅</div>
+                            <ul style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); list-style: none; padding: 0; line-height: 2;">
+                                <li>Análisis de datos masivos</li>
+                                <li>ETL / Pipelines de datos</li>
+                                <li>ML a escala</li>
+                                <li>Procesamiento batch</li>
+                            </ul>
+                        </div>
+
+                        <!-- Malo para -->
+                        <div class="fragment" style="text-align: left;">
+                            <div style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem;">❌</div>
+                            <ul style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); list-style: none; padding: 0; line-height: 2; color: var(--text-secondary);">
+                                <li>Updates fila por fila</li>
+                                <li>OLTP / Transacciones</li>
+                                <li>Datos pequeños (&lt;1GB)</li>
+                                <li>Baja latencia (&lt;1s)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Transición a Challenges -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(4rem, 10vw, 8rem); margin-bottom: 2rem;">🎯</div>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin-bottom: 2rem;">
+                        Pongamos a <span class="accent">Prueba</span><br>lo Aprendido
+                    </h2>
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); color: var(--text-secondary); max-width: 800px;">
+                        3 desafíos interactivos para identificar errores comunes
+                    </p>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
 
 
             <!-- CHALLENGE SLIDE 1: La trampa de la memoria -->
@@ -1623,6 +2102,113 @@ df_resultado = (df
                 </aside>
             </section>
 
+
+            <!-- CHALLENGE SLIDE 4: El SELECT * mortal -->
+            <section data-background-color="#1e1e1e">
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                    <div style="background: #E25A1C; color: #ffffff; padding: 1rem 2rem; margin-bottom: 2rem; text-align: center; display: inline-block; align-self: flex-start;">
+                        <h2 style="margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: 0.05em;">
+                            ⚠️ CHALLENGE #4: ¿Cuántos datos leerás?
+                        </h2>
+                    </div>
+
+                    <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444;">
+                        <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; margin-bottom: 2rem; color: #ffffff; line-height: 1.5;">
+                            🎯 <strong>Objetivo:</strong> "¿Cuál es la renta de cada cliente propenso?"
+                        </p>
+
+                        <div style="background: rgba(226, 90, 28, 0.15); padding: 1.5rem; margin-bottom: 2rem; border-radius: 8px;">
+                            <p style="margin: 0; font-size: clamp(1rem, 1.4vw, 1.2rem); color: #ffffff;">
+                                <strong>Tabla:</strong> clientes_propensos • <strong>10M filas</strong> • <strong>20 columnas</strong>
+                            </p>
+                        </div>
+
+                        <pre style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Código de tu colega
+df = spark.table("clientes_propensos")
+
+display(df)  # ¿Qué tan malo es esto?</code></pre>
+
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <p style="font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; margin: 0; color: #ffffff;">
+                                ¿Cuántos GB se leen? 🤔
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    "Un caso común: solo necesitas UNA columna pero lees TODAS. ¿Cuánto cuesta ese error?"
+                </aside>
+            </section>
+
+
+            <!-- CHALLENGE SLIDE 4 - RESPUESTA -->
+            <section data-background-color="#1e1e1e">
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                    <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444; position: relative; overflow: hidden;">
+                        <!-- Sello "WASTE" -->
+                        <div style="position: absolute; top: -20px; right: -20px; transform: rotate(15deg); background: #E25A1C; color: #ffffff; padding: 1.5rem 3rem; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; border: 8px solid #B8450F; box-shadow: 0 10px 30px rgba(226, 90, 28, 0.5); letter-spacing: 0.1em;">
+                            💸 19× MÁS
+                        </div>
+
+                        <h3 style="font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 700; margin-bottom: 2rem; color: #ffffff;">
+                            ⚠️ El costo del SELECT *
+                        </h3>
+
+                        <!-- Cálculo visual -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                            <div style="background: rgba(220, 38, 38, 0.2); padding: 2rem; border-radius: 8px; border: 2px solid #DC2626;">
+                                <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); color: #ffffff;">❌ <strong>SELECT *</strong></p>
+                                <p style="margin: 0; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: #DC2626;">~20 GB</p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem); color: #ffffff;">20 columnas × 10M filas</p>
+                            </div>
+                            <div style="background: rgba(16, 185, 129, 0.2); padding: 2rem; border-radius: 8px; border: 2px solid #10B981;">
+                                <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); color: #ffffff;">✅ <strong>SELECT renta</strong></p>
+                                <p style="margin: 0; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: #10B981;">~1 GB</p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem); color: #ffffff;">1 columna × 10M filas</p>
+                            </div>
+                        </div>
+
+                        <div style="background: #4A90E2; color: #ffffff; padding: 2rem;">
+                            <p style="margin: 0 0 1rem 0; font-size: clamp(1.1rem, 1.5vw, 1.3rem); font-weight: 700;">
+                                ✅ La solución:
+                            </p>
+                            <pre style="background: #000000; color: #10B981; padding: 1.5rem; margin: 0; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Solo lee la columna que necesitas
+df = spark.table("clientes_propensos").select("id_cliente", "renta")
+
+# Parquet/Delta = Column Pruning automático</code></pre>
+                        </div>
+                    </div>
+
+                    <p style="text-align: center; color: #ffffff; font-size: clamp(1rem, 1.5vw, 1.3rem); margin-top: 2rem; font-style: italic; line-height: 1.5;">
+                        Regla de oro: <strong>Nunca</strong> uses SELECT * en producción. Especifica las columnas.
+                    </p>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    "Parquet es columnar: solo lee las columnas que pides. SELECT * lee TODO. En este caso, 19x más datos de los necesarios."
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Transición a Optimizaciones -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(4rem, 10vw, 8rem); margin-bottom: 2rem;">⚡</div>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin-bottom: 2rem;">
+                        <span class="accent">Optimizaciones</span><br>para el Mundo Real
+                    </h2>
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); color: var(--text-secondary); max-width: 800px;">
+                        Best practices para pasar de código funcional a código eficiente
+                    </p>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
 
 
             <!-- SLIDE CENTRAL: Entendiendo las Particiones (Analogía Supermercado) -->
@@ -2336,6 +2922,7 @@ df_vectorized = df.withColumn(
 
     <!-- Reveal.js JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/notes/notes.min.js"></script>
     <script>
         Reveal.initialize({
             controls: true,
@@ -2350,7 +2937,8 @@ df_vectorized = df.withColumn(
             minScale: 0.2,
             maxScale: 2.0,
             slideNumber: 'c/t',
-            showNotes: false
+            showNotes: false,
+            plugins: [ RevealNotes ]
         });
     </script>
 
