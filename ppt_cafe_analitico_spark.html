@@ -453,6 +453,11 @@
             <!-- SLIDE 1: Título -->
             <section>
                 <div class="flex-center" style="height: 100%; flex-direction: column;">
+                    <!-- Apache Spark Logo -->
+                    <img src="https://spark.apache.org/images/spark-logo-trademark.png" 
+                         alt="Apache Spark Logo" 
+                         style="width: clamp(200px, 30vw, 400px); margin-bottom: 2rem;">
+                    
                     <p class="text-secondary" style="font-size: clamp(0.8rem, 1vw, 1rem); margin-bottom: 1rem;">
                         MASTERCLASS TÉCNICA</p>
                     <h1 style="margin-bottom: 2rem; text-align: center;">
@@ -707,6 +712,352 @@
             </section>
 
 
+            <!-- SLIDE: Particiones -->
+            <section>
+                <h2 style="margin-bottom: 3rem; text-align: center;"><span class="accent">Particiones</span></h2>
+
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3rem;">
+                    
+                    <!-- DataFrame Completo -->
+                    <div class="fragment" style="text-align: center;">
+                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">DataFrame (10 GB)</p>
+                        <div style="background: var(--spark-orange); color: white; padding: clamp(2rem, 4vw, 3rem); border-radius: 8px; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; min-width: clamp(300px, 60vw, 600px);">
+                            📊 DATASET COMPLETO
+                        </div>
+                    </div>
+
+                    <!-- Flecha hacia abajo -->
+                    <div class="fragment" style="font-size: clamp(2rem, 4vw, 3rem); color: var(--text-secondary);">
+                        ↓
+                    </div>
+
+                    <!-- Particiones divididas -->
+                    <div class="fragment" style="text-align: center;">
+                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">Dividido en Particiones (~128 MB c/u)</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; max-width: clamp(400px, 80vw, 800px);">
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P1
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P2
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P3
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P4
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                P5
+                            </div>
+                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
+                                ...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Flujo de Ejecución -->
+            <section>
+                <h2 style="margin-bottom: 2.5rem; text-align: center;"><span class="accent">Flujo de Ejecución</span></h2>
+
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; padding: 1.5rem;">
+                    
+                    <!-- 1. Query + Acción en Driver -->
+                    <div class="fragment" style="text-align: center; width: 100%; max-width: 700px;">
+                        <div style="background: var(--dark-bg); color: var(--off-white); padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 0.8rem; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.85rem, 1.2vw, 1rem); text-align: left;">
+                            df = spark.table("ventas")<br>
+                            &nbsp;&nbsp;.filter(col("monto") > 10000)<br>
+                            &nbsp;&nbsp;.show() <span style="color: var(--spark-orange);">← ACCIÓN</span>
+                        </div>
+                        <p style="margin: 0; font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Driver</p>
+                    </div>
+
+                    <!-- Flecha -->
+                    <div class="fragment" style="font-size: clamp(1.8rem, 2.5vw, 2.2rem); color: var(--text-secondary);">
+                        ↓
+                    </div>
+
+                    <!-- 2. División en Particiones -->
+                    <div class="fragment" style="text-align: center;">
+                        <p style="margin-bottom: 1rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); color: var(--text-secondary);">Datos divididos en Particiones</p>
+                        <div style="display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap;">
+                            <div style="background: #3B82F6; color: white; padding: 0.8rem 1.2rem; border-radius: 6px; font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 500;">
+                                P1
+                            </div>
+                            <div style="background: #3B82F6; color: white; padding: 0.8rem 1.2rem; border-radius: 6px; font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 500;">
+                                P2
+                            </div>
+                            <div style="background: #3B82F6; color: white; padding: 0.8rem 1.2rem; border-radius: 6px; font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 500;">
+                                P3
+                            </div>
+                            <div style="background: #3B82F6; color: white; padding: 0.8rem 1.2rem; border-radius: 6px; font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 500;">
+                                P4
+                            </div>
+                            <div style="background: #3B82F6; color: white; padding: 0.8rem 1.2rem; border-radius: 6px; font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 500;">
+                                P5
+                            </div>
+                            <div style="background: #3B82F6; color: white; padding: 0.8rem 1.2rem; border-radius: 6px; font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 500;">
+                                P6
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flecha -->
+                    <div class="fragment" style="font-size: clamp(1.8rem, 2.5vw, 2.2rem); color: var(--text-secondary);">
+                        ↓
+                    </div>
+
+                    <!-- 2. Distribución a Workers -->
+                    <div class="fragment" style="width: 100%; max-width: 900px;">
+                        <p style="text-align: center; margin-bottom: 1.5rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); color: var(--text-secondary);">Workers (Executors)</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem;">
+                            <!-- Worker 1 -->
+                            <div style="background: var(--dark-surface); padding: 1.5rem; border-radius: 8px; border: 2px solid #10B981;">
+                                <div style="text-align: center; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 600; color: #10B981; margin-bottom: 1rem;">
+                                    Worker 1
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.8rem; border-radius: 4px; text-align: center; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                        Task → P1
+                                    </div>
+                                    <div style="background: #10B981; color: white; padding: 0.8rem; border-radius: 4px; text-align: center; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                        Task → P2
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Worker 2 -->
+                            <div style="background: var(--dark-surface); padding: 1.5rem; border-radius: 8px; border: 2px solid #10B981;">
+                                <div style="text-align: center; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 600; color: #10B981; margin-bottom: 1rem;">
+                                    Worker 2
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.8rem; border-radius: 4px; text-align: center; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                        Task → P3
+                                    </div>
+                                    <div style="background: #10B981; color: white; padding: 0.8rem; border-radius: 4px; text-align: center; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                        Task → P4
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Worker 3 -->
+                            <div style="background: var(--dark-surface); padding: 1.5rem; border-radius: 8px; border: 2px solid #10B981;">
+                                <div style="text-align: center; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 600; color: #10B981; margin-bottom: 1rem;">
+                                    Worker 3
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.8rem; border-radius: 4px; text-align: center; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                        Task → P5
+                                    </div>
+                                    <div style="background: #10B981; color: white; padding: 0.8rem; border-radius: 4px; text-align: center; font-size: clamp(0.8rem, 1.1vw, 0.95rem);">
+                                        Task → P6
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flecha -->
+                    <div class="fragment" style="font-size: clamp(2rem, 3vw, 2.5rem); color: var(--text-secondary);">
+                        ↓
+                    </div>
+
+                    <!-- 3. Resultado al Driver -->
+                    <div class="fragment" style="text-align: center;">
+                        <div style="background: #10B981; color: white; padding: 1.5rem 3rem; border-radius: 8px; font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 700; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                            ✓ RESULTADO
+                        </div>
+                        <p style="margin-top: 0.5rem; font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Driver</p>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Transformaciones vs Acciones -->
+            <section>
+                <h2 style="margin-bottom: 2rem; text-align: center;">El Vocabulario de Spark: <span
+                        class="accent">Transformaciones vs. Acciones</span></h2>
+
+                <div class="grid-container grid-2col">
+                    <!-- Transformaciones -->
+                    <div class="bento-card fragment">
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div style="font-size: clamp(3rem, 5vw, 4rem); margin-bottom: 0.5rem;">🗺️</div>
+                            <h3 style="margin-bottom: 1rem;">Transformaciones</h3>
+                        </div>
+                        <div style="flex: 1;">
+                            <p style="font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin-bottom: 1rem;">
+                                <strong>Instrucciones (Lazy)</strong><br>
+                                Son promesas de cálculo. Crean un nuevo DataFrame a partir del anterior.
+                            </p>
+                            <div
+                                style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;">
+                                <code style="color: #10B981;">.select()</code><br>
+                                <code style="color: #10B981;">.filter()</code><br>
+                                <code style="color: #10B981;">.groupBy()</code><br>
+                                <code style="color: #10B981;">.withColumn()</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="bento-card fragment" style="border-left: 4px solid var(--spark-orange);">
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div style="font-size: clamp(3rem, 5vw, 4rem); margin-bottom: 0.5rem;">🚀</div>
+                            <h3 style="margin-bottom: 1rem;">Acciones</h3>
+                        </div>
+                        <div style="flex: 1;">
+                            <p style="font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin-bottom: 1rem;">
+                                <strong>Ejecución (Eager)</strong><br>
+                                Disparan el trabajo real. Devuelven un resultado al driver o escriben a disco.
+                            </p>
+                            <div
+                                style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;">
+                                <code style="color: var(--spark-orange);">.count()</code><br>
+                                <code style="color: var(--spark-orange);">.show()</code><br>
+                                <code style="color: var(--spark-orange);">.write()</code><br>
+                                <code style="color: var(--spark-orange);">.collect()</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insight -->
+                <div class="fragment"
+                    style="margin-top: 2rem; background: var(--off-white); border: 2px solid var(--spark-orange); padding: 1.5rem; text-align: center;">
+                    <p style="margin: 0; font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700;">
+                        <span class="accent">Insight:</span> Spark no mueve un dedo hasta que ve una Acción.
+                    </p>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    "Ya sabemos que tenemos un Driver y muchos Executors. Pero, ¿cómo le dice el Driver a los Executors
+                    qué hacer? No usamos bucles for. Usamos un vocabulario específico dividido en dos mundos:
+                    Transformaciones (planos) y Acciones (gatillos). El Driver no mueve un dedo hasta ver una Acción."
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Transformaciones Narrow vs Wide -->
+            <section>
+                <h2 style="margin-bottom: 2rem; text-align: center;">Tipos de Transformaciones: <span class="accent">Narrow vs Wide</span></h2>
+
+                <div class="grid-container" style="grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+
+                    <!-- Left: NARROW Transformations -->
+                    <div class="bento-card fragment" style="border-top: 4px solid #10B981;">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: clamp(2.5rem, 4vw, 3rem); margin-bottom: 0.5rem;">🔗</div>
+                            <h3 style="margin: 0; color: #10B981;">Narrow Transformations</h3>
+                            <p class="text-mono" style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">1:1 Dependency</p>
+                        </div>
+
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.2rem; border-radius: 4px; margin-bottom: 1rem;">
+                            <p style="margin: 0 0 0.5rem 0; font-size: clamp(0.9rem, 1.2vw, 1.1rem); font-weight: 500;">
+                                <strong>Definición:</strong>
+                            </p>
+                            <p style="margin: 0; font-size: clamp(0.85rem, 1.1vw, 1rem); line-height: 1.5;">
+                                Cada partición de entrada genera <span class="accent">exactamente una</span> partición de salida. Los datos permanecen en el mismo nodo.
+                            </p>
+                        </div>
+
+                        <pre style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; font-size: clamp(0.7rem, 1vw, 0.85rem); margin: 0 0 1rem 0; border-radius: 4px;"><code class="language-python"># Ejemplos de Narrow Transformations
+df.filter(col("edad") > 18)
+df.select("nombre", "ciudad")
+df.withColumn("nuevo", col("viejo") * 2)
+df.map(lambda x: x.upper())</code></pre>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="color: #10B981; font-size: 1.2rem;">✓</span>
+                                <span style="font-size: clamp(0.8rem, 1.1vw, 0.95rem);">Procesamiento local</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="color: #10B981; font-size: 1.2rem;">✓</span>
+                                <span style="font-size: clamp(0.8rem, 1.1vw, 0.95rem);">Pipeline optimizable</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="color: #10B981; font-size: 1.2rem;">✓</span>
+                                <span style="font-size: clamp(0.8rem, 1.1vw, 0.95rem);">Sin transferencia de red</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: WIDE Transformations -->
+                    <div class="bento-card fragment" style="border-top: 4px solid var(--spark-orange);">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: clamp(2.5rem, 4vw, 3rem); margin-bottom: 0.5rem;">🌐</div>
+                            <h3 style="margin: 0; color: var(--spark-orange);">Wide Transformations</h3>
+                            <p class="text-mono" style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">N:N Dependency</p>
+                        </div>
+
+                        <div style="background: rgba(226, 90, 28, 0.1); padding: 1.2rem; border-radius: 4px; margin-bottom: 1rem;">
+                            <p style="margin: 0 0 0.5rem 0; font-size: clamp(0.9rem, 1.2vw, 1.1rem); font-weight: 500;">
+                                <strong>Definición:</strong>
+                            </p>
+                            <p style="margin: 0; font-size: clamp(0.85rem, 1.1vw, 1rem); line-height: 1.5;">
+                                Cada partición de salida puede depender de <span class="accent">múltiples particiones</span> de entrada. Requiere reorganizar datos entre nodos.
+                            </p>
+                        </div>
+
+                        <pre style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; font-size: clamp(0.7rem, 1vw, 0.85rem); margin: 0 0 1rem 0; border-radius: 4px;"><code class="language-python"># Ejemplos de Wide Transformations
+df.groupBy("categoria").count()
+df.orderBy("fecha")
+df1.join(df2, "id")
+df.distinct()</code></pre>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="color: var(--spark-orange); font-size: 1.2rem;">⚠</span>
+                                <span style="font-size: clamp(0.8rem, 1.1vw, 0.95rem);">Shuffle de datos (costoso)</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="color: var(--spark-orange); font-size: 1.2rem;">⚠</span>
+                                <span style="font-size: clamp(0.8rem, 1.1vw, 0.95rem);">Uso intensivo de red</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="color: var(--spark-orange); font-size: 1.2rem;">⚠</span>
+                                <span style="font-size: clamp(0.8rem, 1.1vw, 0.95rem);">Nueva etapa (stage boundary)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Insight -->
+                <div class="formula-box fragment" style="margin-top: 1.5rem; font-size: clamp(1rem, 1.6vw, 1.3rem);">
+                    💡 Clave: <span class="accent">Wide = Shuffle = Punto de Sincronización</span>
+                </div>
+
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    "Antes de hablar de shuffle, necesitan entender esta distinción fundamental.
+                    
+                    Narrow Transformations: Una partición de entrada produce una partición de salida. Es como procesar una hoja de Excel: todo se queda local. Filter, select, withColumn... todo es narrow.
+                    
+                    Wide Transformations: Aquí es donde la cosa se pone interesante. Para hacer un groupBy por 'ciudad', necesito reunir TODAS las filas de 'Madrid' que están repartidas en diferentes máquinas. Eso significa mover datos por la red.
+                    
+                    Esta diferencia es crítica porque las Wide Transformations crean 'stage boundaries' - puntos donde Spark tiene que parar, barajar datos, y empezar una nueva etapa de procesamiento.
+                    
+                    Narrow = pipeline eficiente. Wide = checkpoint costoso."
+                </aside>
+            </section>
+
+
             <!-- SLIDE: Sin Shuffle vs Con Shuffle -->
             <section>
                 <h2 style="margin-bottom: 1.5rem; text-align: center;">El Secreto del Rendimiento: <span
@@ -786,161 +1137,61 @@ df_grouped = df.groupBy("ciudad").count()
             </section>
 
 
-            <!-- SLIDE: Transformaciones vs Acciones -->
+            <!-- SLIDE: Lazy Evaluation -->
             <section>
-                <h2 style="margin-bottom: 2rem; text-align: center;">El Vocabulario de Spark: <span
-                        class="accent">Transformaciones vs. Acciones</span></h2>
+                <h2 style="margin-bottom: 3rem; text-align: center;"><span class="accent">Lazy Evaluation</span></h2>
 
-                <div class="grid-container grid-2col">
-                    <!-- Transformaciones -->
-                    <div class="bento-card fragment">
-                        <div style="text-align: center; margin-bottom: 1.5rem;">
-                            <div style="font-size: clamp(3rem, 5vw, 4rem); margin-bottom: 0.5rem;">🗺️</div>
-                            <h3 style="margin-bottom: 1rem;">Transformaciones</h3>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem;">
+                    
+                    <!-- Código de ejemplo -->
+                    <div style="width: 100%; max-width: 900px;">
+                        <pre style="background: var(--dark-bg); color: var(--off-white); padding: clamp(1.5rem, 3vw, 2rem); font-size: clamp(0.85rem, 1.3vw, 1.1rem); border-radius: 8px; line-height: 1.8;"><code class="language-python"># 1. Leer datos
+df = spark.table("ventas")
+
+# 2. Filtrar
+df_filtrado = df.filter(col("monto") > 1000)
+
+# 3. Agrupar
+df_agrupado = df_filtrado.groupBy("ciudad").sum("monto")
+
+# 4. Mostrar resultado
+df_agrupado.show()  <span style="color: var(--spark-orange);">← AQUÍ EJECUTA TODO</span></code></pre>
+                    </div>
+
+                    <!-- Visual flow -->
+                    <div class="fragment" style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+                        <div style="background: rgba(16, 185, 129, 0.2); border: 2px solid #10B981; padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500; color: #10B981; margin-bottom: 0.5rem;">Transformaciones</div>
+                            <div style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Construyen el plan</div>
+                            <div style="margin-top: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-family: 'IBM Plex Mono', monospace; color: #10B981;">
+                                .read()<br>
+                                .filter()<br>
+                                .groupBy()
+                            </div>
                         </div>
-                        <div style="flex: 1;">
-                            <p style="font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin-bottom: 1rem;">
-                                <strong>Instrucciones (Lazy)</strong><br>
-                                Son promesas de cálculo. Crean un nuevo DataFrame a partir del anterior.
-                            </p>
-                            <div
-                                style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;">
-                                <code style="color: #10B981;">.select()</code><br>
-                                <code style="color: #10B981;">.filter()</code><br>
-                                <code style="color: #10B981;">.groupBy()</code><br>
-                                <code style="color: #10B981;">.withColumn()</code>
+
+                        <div style="font-size: clamp(2rem, 4vw, 3rem); color: var(--spark-orange);">→</div>
+
+                        <div style="background: rgba(226, 90, 28, 0.2); border: 2px solid var(--spark-orange); padding: 1.5rem 2rem; border-radius: 8px; text-align: center; min-width: 180px;">
+                            <div style="font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500; color: var(--spark-orange); margin-bottom: 0.5rem;">Acción</div>
+                            <div style="font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary);">Ejecuta el plan</div>
+                            <div style="margin-top: 1rem; font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-family: 'IBM Plex Mono', monospace; color: var(--spark-orange);">
+                                .show()<br>
+                                .count()<br>
+                                .write()
                             </div>
                         </div>
                     </div>
 
-                    <!-- Acciones -->
-                    <div class="bento-card fragment" style="border-left: 4px solid var(--spark-orange);">
-                        <div style="text-align: center; margin-bottom: 1.5rem;">
-                            <div style="font-size: clamp(3rem, 5vw, 4rem); margin-bottom: 0.5rem;">🚀</div>
-                            <h3 style="margin-bottom: 1rem;">Acciones</h3>
-                        </div>
-                        <div style="flex: 1;">
-                            <p style="font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin-bottom: 1rem;">
-                                <strong>Ejecución (Eager)</strong><br>
-                                Disparan el trabajo real. Devuelven un resultado al driver o escriben a disco.
-                            </p>
-                            <div
-                                style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;">
-                                <code style="color: var(--spark-orange);">.count()</code><br>
-                                <code style="color: var(--spark-orange);">.show()</code><br>
-                                <code style="color: var(--spark-orange);">.write()</code><br>
-                                <code style="color: var(--spark-orange);">.collect()</code>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Insight -->
-                <div class="fragment"
-                    style="margin-top: 2rem; background: var(--off-white); border: 2px solid var(--spark-orange); padding: 1.5rem; text-align: center;">
-                    <p style="margin: 0; font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700;">
-                        <span class="accent">Insight:</span> Spark no mueve un dedo hasta que ve una Acción.
-                    </p>
-                </div>
-
-                <aside class="notes">
-                    <strong>Script del Orador:</strong><br>
-                    "Ya sabemos que tenemos un Driver y muchos Executors. Pero, ¿cómo le dice el Driver a los Executors
-                    qué hacer? No usamos bucles for. Usamos un vocabulario específico dividido en dos mundos:
-                    Transformaciones (planos) y Acciones (gatillos). El Driver no mueve un dedo hasta ver una Acción."
-                </aside>
-            </section>
-
-
-
-            <!-- SLIDE 4: Lazy Evaluation & DAG -->
-            <section>
-                <h2 style="margin-bottom: 2rem; text-align: center;">Lazy Evaluation: <span class="accent">El Plan antes
-                        de la Acción</span></h2>
-
-                <div class="grid-container" style="grid-template-columns: 2fr 1fr; gap: clamp(1.5rem, 3vw, 3rem);">
-                    <!-- Left: DAG Diagram -->
-                    <div>
-                        <h3 style="margin-bottom: 1.5rem;">El DAG (Directed Acyclic Graph)</h3>
-                        <div
-                            style="display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 2rem); align-items: center;">
-                            <!-- Transformations -->
-                            <div
-                                style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                                <div class="dag-node fragment" style="background: rgba(226,90,28,0.1);">
-                                    read.parquet()
-                                </div>
-                                <div class="dag-arrow fragment"></div>
-                                <div class="dag-node fragment">
-                                    .filter()
-                                </div>
-                                <div class="dag-arrow fragment"></div>
-                                <div class="dag-node fragment">
-                                    .groupBy()
-                                </div>
-                            </div>
-                            <div style="text-align: center;">
-                                <p class="text-secondary"
-                                    style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
-                                    Transformaciones (lazy – no ejecutan nada)
-                                </p>
-                            </div>
-                            <div class="fragment"
-                                style="font-size: clamp(2rem, 4vw, 3rem); color: var(--spark-orange);">↓</div>
-                            <div class="fragment" style="display: flex; align-items: center; gap: 1rem;">
-                                <div class="dag-node accent-bg">
-                                    .count() / .show()
-                                </div>
-                            </div>
-                            <div class="fragment" style="text-align: center;">
-                                <p class="text-secondary"
-                                    style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
-                                    Acción (trigger – ejecuta todo el DAG)
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="accent-border fragment"
-                            style="margin-top: 1.5rem; padding: clamp(1rem, 2vw, 1.5rem); overflow: hidden;">
-                            <p style="margin: 0; font-size: clamp(0.85rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
-                                <strong>Catalyst Optimizer:</strong> Analiza el DAG completo y lo reescribe para
-                                eficiencia máxima
-                                (predicate pushdown, column pruning, join reordering).
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Right: Code Example -->
-                    <div class="bento-card fragment">
-                        <h3 style="margin-bottom: 1rem;">Ejemplo</h3>
-                        <pre
-                            style="background: var(--dark-bg); color: var(--off-white); padding: clamp(1rem, 2vw, 1.5rem); font-size: clamp(0.7rem, 1vw, 0.85rem); overflow-x: auto;"><code>df = spark.read.parquet("data.parquet")
-# ✓ Lazy (no ejecuta)
-
-df2 = df.filter(col("edad") > 25)
-# ✓ Lazy (solo añade al DAG)
-
-df3 = df2.groupBy("ciudad").count()
-# ✓ Lazy (acumula transformaciones)
-
-df3.show()
-# ❌ ACCIÓN → Ejecuta todo el DAG</code></pre>
-
-                        <div
-                            style="background: var(--spark-orange); color: white; padding: 1rem; margin-top: 1rem; overflow: hidden;">
-                            <p style="margin: 0; font-size: clamp(0.75rem, 1.1vw, 0.9rem); overflow-wrap: break-word;">
-                                <strong>⚡ Ventaja:</strong> Catalyst puede optimizar el plan completo antes de ejecutar.
-                                Si detecta que solo necesitas 3 columnas, NO leerá las otras 17.
-                            </p>
-                        </div>
+                    <!-- Key insight -->
+                    <div class="fragment formula-box" style="margin-top: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                        💡 Nada se ejecuta hasta que llega una <span class="accent">Acción</span>
                     </div>
                 </div>
 
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
-                    "Ahora que sabemos el lenguaje (Transformaciones vs Acciones), veamos las trampas. Spark es perezoso
-                    (Lazy). Cuando le das una transformación, no hace nada. Solo dibuja un plan (DAG). Esto es genial
-                    para optimizar, pero confunde a quienes esperan ejecución inmediata."
+                    [El relato lo haces tú]
                 </aside>
             </section>
 
@@ -966,7 +1217,7 @@ df3.show()
 
                         <pre
                             style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Leer los 10M de registros
-df = spark.read.parquet("ventas_10M.parquet")
+df = spark.table("ventas_10M")
 
 # Filtrar transacciones grandes
 df_filtered = df.filter(col("monto") > 1000)
@@ -1095,7 +1346,7 @@ display(df_filtered)  # Databricks native viz</code></pre>
 
                         <pre
                             style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Leer datos
-df = spark.read.parquet("ventas_10M.parquet")
+df = spark.table("ventas_10M")
 
 # Crear una métrica (¡con un error!)
 df_metricas = df.select(
@@ -1243,7 +1494,7 @@ print("Pipeline construido exitosamente ✓")</code></pre>
 
                         <pre
                             style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Leer datos
-df = spark.read.parquet("ventas_10M.parquet")
+df = spark.table("ventas_10M")
 
 # Crear una lista para resultados
 resultados = []
@@ -1671,7 +1922,7 @@ df_resultado = (df
                         <div
                             style="background: var(--dark-bg); color: white; padding: clamp(1rem, 2vw, 1.5rem); margin: 1.5rem 0; overflow-x: auto;">
                             <p class="text-mono" style="margin: 0; font-size: clamp(0.7rem, 1vw, 0.9rem);">
-                                df = spark.read.parquet("data")<br>
+                                df = spark.table("data")<br>
                                 &nbsp;&nbsp;.repartition(128) # Explicit<br>
                                 <br>
                                 # O configura globalmente:<br>
