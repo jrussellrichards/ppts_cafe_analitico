@@ -652,6 +652,672 @@
             </aside>
         </section>
 
+        <!-- CHALLENGE SLIDE 1: La trampa de la memoria -->
+        <section data-background-color="#1e1e1e">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                <div style="background: #E25A1C; color: #ffffff; padding: 1rem 2rem; margin-bottom: 2rem; text-align: center; display: inline-block; align-self: flex-start;">
+                    <h2 style="margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: 0.05em;">
+                        ⚠️ CHALLENGE #1: Will it CRASH?
+                    </h2>
+                </div>
+
+                <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444;">
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; margin-bottom: 2rem; color: #ffffff; line-height: 1.5;">
+                        Tu compañero acaba de escribir este código para analizar los 10 millones de registros:
+                    </p>
+
+                    <pre style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Leer los 10M de registros
+df = spark.read.parquet("ventas_10M.parquet")
+
+# Filtrar transacciones grandes
+df_filtered = df.filter(col("monto") > 1000)
+
+# Convertir a Pandas para análisis
+pandas_df = df_filtered.toPandas()
+
+# Análisis con matplotlib
+pandas_df.plot(kind='scatter', x='fecha', y='monto')</code></pre>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <p style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; margin: 0; color: #ffffff;">
+                            ¿Qué pasará? 🤔
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Muy bien, hora de poner a prueba lo que hemos aprendido. Levanten la mano si piensan que este código va a funcionar bien... 
+                Ahora, levanten la mano si piensan que va a explotar.<br><br>
+                
+                Lean el código cuidadosamente. Tenemos 10 millones de filas en Parquet. Hacemos un filtro – hasta ahí bien, estamos usando Spark. 
+                Pero luego... ¿ven esa línea? .toPandas(). Esa línea inocente.<br><br>
+                
+                Cuéntenme: ¿qué hace .toPandas()? [Pausa para respuestas del público]<br><br>
+                
+                Exacto. Trae TODOS los datos filtrados al driver, a la memoria de su notebook. ¿Y cuántos registros quedan después del filtro en un dataset real? 
+                Probablemente 2-3 millones. Eso son varios GB de RAM.<br><br>
+                
+                Vamos a ver la respuesta... [Click para siguiente slide]"
+            </aside>
+        </section>
+
+        <!-- CHALLENGE SLIDE 1 - RESPUESTA -->
+        <section data-background-color="#1e1e1e">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444; position: relative; overflow: hidden;">
+                    <!-- Sello "CRASH" con Spark Orange -->
+                    <div style="position: absolute; top: -20px; right: -20px; transform: rotate(15deg); background: #E25A1C; color: #ffffff; padding: 2rem 4rem; font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; border: 8px solid #B8450F; box-shadow: 0 10px 30px rgba(226, 90, 28, 0.5); letter-spacing: 0.1em;">
+                        💥 CRASH
+                    </div>
+
+                    <h3 style="font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 700; margin-bottom: 2rem; color: #ffffff;">
+                        ❌ Driver Out of Memory (OOM)
+                    </h3>
+
+                    <div style="background: #000000; color: #ffffff; padding: 2rem; margin-bottom: 2rem; border-left: 8px solid #E25A1C;">
+                        <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.5; font-family: 'IBM Plex Mono', monospace;">
+                            <strong style="color: #E25A1C;">Error típico:</strong><br>
+                            <code style="color: #10B981; background: transparent; padding: 0;">
+                            java.lang.OutOfMemoryError: GC overhead limit exceeded
+                            </code>
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(226, 90, 28, 0.15); padding: 2rem; border-left: 4px solid #E25A1C; margin-bottom: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700; color: #ffffff;">
+                            ¿Por qué explota?
+                        </p>
+                        <ul style="font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 1.5; margin: 0; padding-left: 1.5rem; color: #ffffff;">
+                            <li style="margin-bottom: 0.5rem;"><code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.toPandas()</code> ejecuta el job distribuido y trae TODOS los resultados al driver</li>
+                            <li style="margin-bottom: 0.5rem;">El driver típico en Databricks tiene 8-16 GB de RAM</li>
+                            <li style="margin-bottom: 0.5rem;">2-3 millones de filas filtradas = 3-5 GB en memoria (sin compresión)</li>
+                            <li>Boom 💥 – OOM, cluster cuelga, perdiste 10 minutos de cómputo</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #4A90E2; color: #ffffff; padding: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1.1rem, 1.5vw, 1.3rem); font-weight: 700;">
+                            ✅ La solución correcta:
+                        </p>
+                        <pre style="background: #000000; color: #10B981; padding: 1.5rem; margin: 0; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Opción 1: Toma solo una muestra
+sample_df = df_filtered.limit(10000).toPandas()
+
+# Opción 2: Agrega primero, luego trae
+agg_df = df_filtered.groupBy("fecha").agg(sum("monto")).toPandas()
+
+# Opción 3: Guarda y visualiza en Databricks (sin Pandas)
+df_filtered.write.format("delta").save("/results")
+display(df_filtered)  # Databricks native viz</code></pre>
+                    </div>
+                </div>
+
+                <p style="text-align: center; color: #ffffff; font-size: clamp(1rem, 1.5vw, 1.3rem); margin-top: 2rem; font-style: italic; line-height: 1.5;">
+                    Regla de oro: <strong>Nunca</strong> traigas millones de filas al driver. Agrega primero, muestra después.
+                </p>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "[Revelar slide] ¡CRASH! 💥 Y miren ese sello – ese es el error más común que veo en equipos que migran de Pandas.<br><br>
+                
+                ¿Qué pasó? .toPandas() es una acción. Ejecuta todo el DAG, procesa los millones de filas en el cluster (hasta ahí bien), 
+                pero luego SERIALIZA todos esos resultados y los envía por la red al driver – tu notebook. 
+                El driver no es un supercomputador; es una máquina con 8-16 GB de RAM típicamente.<br><br>
+                
+                Cuando intentas meter 3-5 GB de datos en un proceso que ya tiene Spark, JVM, y tu código corriendo, 
+                la JVM empieza a hacer garbage collection frenético, y eventualmente explota con OutOfMemoryError.<br><br>
+                
+                La lección: En Pandas, ustedes piensan 'traigo todo a memoria y lo analizo'. En Spark, piensan al revés: 
+                'proceso en el cluster, REDUZCO los datos (agregación, filtros, límites), y solo entonces traigo el resumen al driver'.<br><br>
+                
+                Miren las soluciones correctas: .limit(10000) para traer solo una muestra, o mejor aún, 
+                agregar primero con groupBy() para reducir de 3M filas a quizás 365 filas (una por día). 
+                ESO sí puede venir al driver sin problemas. O mejor: usen display() de Databricks que visualiza sin traer datos a Pandas.<br><br>
+                
+                ¿Quién ha visto este error antes? [Pausa] Sí, es súper común. Ahora saben cómo evitarlo."
+            </aside>
+        </section>
+
+        <!-- CHALLENGE SLIDE 2: La ilusión del Lazy Eval -->
+        <section data-background-color="#1e1e1e">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                <div style="background: #E25A1C; color: #ffffff; padding: 1rem 2rem; margin-bottom: 2rem; text-align: center; display: inline-block; align-self: flex-start;">
+                    <h2 style="margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: 0.05em;">
+                        ⚠️ CHALLENGE #2: Will it CRASH?
+                    </h2>
+                </div>
+
+                <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444;">
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; margin-bottom: 2rem; color: #ffffff; line-height: 1.5;">
+                        Este código tiene un bug matemático obvio. ¿Explotará al ejecutarse?
+                    </p>
+
+                    <pre style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Leer datos
+df = spark.read.parquet("ventas_10M.parquet")
+
+# Crear una métrica (¡con un error!)
+df_metricas = df.select(
+    col("producto"),
+    col("ventas"),
+    (col("ganancia") / col("ventas_totales")).alias("margen"),
+    (col("precio") / 0).alias("precio_normalizado")  # ← 🚨 División por cero
+)
+
+# Aplicar filtro
+df_filtered = df_metricas.filter(col("margen") > 0.2)
+
+print("Pipeline construido exitosamente ✓")</code></pre>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <p style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; margin: 0; color: #ffffff;">
+                            ¿Qué pasará? 🤔
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Challenge número 2. Este es más sutil. Miren el código – hay un error matemático OBVIO ahí. 
+                Línea 9: división por cero. En cualquier lenguaje normal, eso explota inmediatamente, ¿verdad?<br><br>
+                
+                Levanten la mano si piensan que Python va a lanzar un ZeroDivisionError cuando ejecuten este script. 
+                [Pausa] Interesante. Ahora levanten la mano si piensan que NO va a explotar. [Pausa]<br><br>
+                
+                Aquí está la trampa: ¿ven alguna ACCIÓN en este código? Lean línea por línea. 
+                .read() – transformación lazy. .select() – transformación. .filter() – transformación. 
+                print() – eso no es de Spark, es de Python.<br><br>
+                
+                Entonces... ¿qué creen que pasará? [Pausa para generar tensión] Vamos a descubrirlo..."
+            </aside>
+        </section>
+
+        <!-- CHALLENGE SLIDE 2 - RESPUESTA -->
+        <section data-background-color="#1e1e1e">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444; position: relative; overflow: hidden;">
+                    <!-- Sello "SAFE" con Azul Acero -->
+                    <div style="position: absolute; top: -20px; right: -20px; transform: rotate(15deg); background: #4A90E2; color: #ffffff; padding: 2rem 4rem; font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; border: 8px solid #2E5B8F; box-shadow: 0 10px 30px rgba(74, 144, 226, 0.5); letter-spacing: 0.1em;">
+                        ✓ SAFE
+                    </div>
+
+                    <h3 style="font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 700; margin-bottom: 2rem; color: #ffffff;">
+                        ✅ No explota... todavía
+                    </h3>
+
+                    <div style="background: #000000; color: #ffffff; padding: 2rem; margin-bottom: 2rem; border-left: 8px solid #4A90E2;">
+                        <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.5; font-family: 'IBM Plex Mono', monospace;">
+                            <strong style="color: #4A90E2;">Output real:</strong><br>
+                            <code style="color: #10B981; background: transparent; padding: 0;">
+                            Pipeline construido exitosamente ✓
+                            </code>
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(74, 144, 226, 0.15); padding: 2rem; border-left: 4px solid #4A90E2; margin-bottom: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700; color: #ffffff;">
+                            ¿Por qué no explota?
+                        </p>
+                        <ul style="font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 1.5; margin: 0; padding-left: 1.5rem; color: #ffffff;">
+                            <li style="margin-bottom: 0.5rem;"><strong>Lazy Evaluation:</strong> Spark solo construye el DAG, NO ejecuta cálculos</li>
+                            <li style="margin-bottom: 0.5rem;">El error (<code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">/ 0</code>) existe en el plan lógico, pero nunca se evalúa</li>
+                            <li style="margin-bottom: 0.5rem;">Sin acción (<code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.count()</code>, <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.show()</code>, <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.write()</code>), no hay ejecución</li>
+                            <li>El mensaje "✓" se imprime porque Python ejecutó sin problemas – Spark no hizo nada aún</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #E25A1C; color: #ffffff; padding: 2rem; margin-bottom: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1.1rem, 1.5vw, 1.3rem); font-weight: 700;">
+                            ⚠️ Pero si agregamos una acción...
+                        </p>
+                        <pre style="background: #000000; color: #10B981; padding: 1.5rem; margin: 0; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python">df_filtered.show()  # ← AQUÍ explota
+# ArithmeticException: Division by zero</code></pre>
+                    </div>
+
+                    <div style="background: rgba(74, 144, 226, 0.2); color: #ffffff; padding: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700;">
+                            💡 La Lección Clave:
+                        </p>
+                        <p style="margin: 0; font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 1.5;">
+                            En Pandas, los errores explotan cuando defines la transformación. 
+                            En Spark, explotan cuando ejecutas la acción. 
+                            Esto significa que puedes tener pipelines enteros con bugs latentes que solo descubres en producción cuando los datos reales activan la acción.
+                        </p>
+                    </div>
+                </div>
+
+                <p style="text-align: center; color: #ffffff; font-size: clamp(1rem, 1.5vw, 1.3rem); margin-top: 2rem; font-style: italic; line-height: 1.5;">
+                    Pro tip: Usa <code style="background: rgba(74, 144, 226, 0.3); padding: 0.2em 0.5em; color: #ffffff;">df.explain()</code> para ver el plan sin ejecutarlo
+                </p>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "[Revelar slide] ¡SAFE! El código no explota. Y veo caras de confusión – perfecto, eso significa que están pensando.<br><br>
+                
+                ¿Por qué no explota si hay una división por cero clara? Porque Spark es LAZY. Cuando escriben df.select(...), 
+                Spark NO calcula nada. Solo construye un plan lógico – una receta de lo que HAY QUE hacer, no lo que se ha hecho.<br><br>
+                
+                Es como escribir una receta de cocina que dice 'agregar 5 litros de aceite hirviendo' – la receta no te quema, 
+                pero cuando la EJECUTES en la cocina, ahí sí hay problemas.<br><br>
+                
+                En este código, no hay ninguna acción. No hay .show(), .count(), .write(), nada que fuerce a Spark a ejecutar. 
+                Entonces Spark dice 'OK, tengo el plan, me voy a dormir'. El print() se ejecuta porque es Python nativo, 
+                y desde la perspectiva de Python, todo salió bien – Spark no se quejó.<br><br>
+                
+                PERO – y esto es crítico – si agregan df_filtered.show() al final, BOOM. ArithmeticException: Division by zero. 
+                Porque ahora Spark SÍ tiene que ejecutar el plan, llega a esa línea maldita de división por cero, y explota.<br><br>
+                
+                La lección: En Pandas, los bugs explotan cuando defines el código. En Spark, explotan cuando lo ejecutas. 
+                Esto significa que pueden tener pipelines completos en notebooks que PARECEN funcionar, pero tienen errores latentes. 
+                Solo los descubren cuando corren en producción con datos reales y una acción al final.<br><br>
+                
+                Pro tip: usen df.explain() o df.explain(True) para ver el plan físico sin ejecutarlo. 
+                Catalyst les mostrará qué va a hacer, y pueden detectar algunos errores antes de ejecutar. 
+                Pero los errores de runtime como división por cero solo se ven ejecutando con datos reales.<br><br>
+                
+                ¿Alguien ha tenido este problema – código que funciona en dev pero explota en prod? [Pausa] Sí, es común. 
+                Ahora saben por qué: lazy evaluation."
+            </aside>
+        </section>
+
+        <!-- CHALLENGE SLIDE 3: El bucle de la muerte -->
+        <section data-background-color="#1e1e1e">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                <div style="background: #E25A1C; color: #ffffff; padding: 1rem 2rem; margin-bottom: 2rem; text-align: center; display: inline-block; align-self: flex-start;">
+                    <h2 style="margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: 0.05em;">
+                        ⚠️ CHALLENGE #3: Will it be SLOW?
+                    </h2>
+                </div>
+
+                <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444;">
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; margin-bottom: 2rem; color: #ffffff; line-height: 1.5;">
+                        Tu compañero de Pandas escribió esto para procesar los 10M de registros:
+                    </p>
+
+                    <pre style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Leer datos
+df = spark.read.parquet("ventas_10M.parquet")
+
+# Crear una lista para resultados
+resultados = []
+
+# Procesar cada fila (estilo Pandas)
+for row in df.collect():
+    if row['monto'] > 1000:
+        margen = (row['ganancia'] / row['monto']) * 100
+        resultados.append({
+            'producto': row['producto'],
+            'margen': margen
+        })
+
+# Convertir a DataFrame de Spark
+df_resultado = spark.createDataFrame(resultados)</code></pre>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <p style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; margin: 0; color: #ffffff;">
+                            ¿Funcionará? ¿Será rápido? 🐌
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Challenge final. Este es el que más veo en equipos que vienen de Pandas. 
+                Miren este código – ¿les parece familiar? Es prácticamente un patrón clásico de Pandas: 
+                iterar fila por fila, aplicar lógica, guardar resultados.<br><br>
+                
+                Pregunta número 1: ¿Este código va a funcionar? ¿Va a explotar? [Pausa]<br>
+                Pregunta número 2 (la trampa): Si funciona... ¿será rápido o lento? [Pausa]<br><br>
+                
+                Piensen en lo que hemos aprendido. Tenemos 10 millones de filas. Hay un .collect() ahí – ya vimos qué hace eso. 
+                Luego hay un bucle for de Python iterando... ¿cuántas veces? 10 millones.<br><br>
+                
+                Levanten la mano si piensan que va a ser rápido. [Nadie levanta la mano, risas] 
+                Exacto. Pero vamos a ver EXACTAMENTE por qué es tan malo..."
+            </aside>
+        </section>
+
+        <!-- CHALLENGE SLIDE 3 - RESPUESTA -->
+        <section data-background-color="#1e1e1e">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444; position: relative; overflow: hidden;">
+                    <!-- Sello "SLOW" con Spark Orange -->
+                    <div style="position: absolute; top: -20px; right: -20px; transform: rotate(15deg); background: #E25A1C; color: #ffffff; padding: 2rem 4rem; font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; border: 8px solid #B8450F; box-shadow: 0 10px 30px rgba(226, 90, 28, 0.5); letter-spacing: 0.1em;">
+                        🐌 SLOW
+                    </div>
+
+                    <h3 style="font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 700; margin-bottom: 2rem; color: #ffffff;">
+                        ⚠️ Funciona... pero es 100-1000x más lento
+                    </h3>
+
+                    <div style="background: #000000; color: #ffffff; padding: 2rem; margin-bottom: 2rem; border-left: 8px solid #E25A1C;">
+                        <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.5; font-family: 'IBM Plex Mono', monospace;">
+                            <strong style="color: #E25A1C;">Tiempo estimado en cluster de 32 cores:</strong><br>
+                            <code style="color: #10B981; background: transparent; padding: 0;">
+                            Spark nativo: 8 segundos ⚡<br>
+                            Este bucle: 15-45 MINUTOS 🐌
+                            </code>
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(226, 90, 28, 0.15); padding: 2rem; border-left: 4px solid #E25A1C; margin-bottom: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700; color: #ffffff;">
+                            ¿Por qué es tan lento?
+                        </p>
+                        <ul style="font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 1.5; margin: 0; padding-left: 1.5rem; color: #ffffff;">
+                            <li style="margin-bottom: 0.5rem;"><code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.collect()</code> trae los 10M de filas al driver (ya vimos el problema)</li>
+                            <li style="margin-bottom: 0.5rem;">El bucle <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">for</code> es Python puro – se ejecuta en 1 solo core del driver</li>
+                            <li style="margin-bottom: 0.5rem;">NO usa los 32 cores del cluster – están ociosos mientras el driver trabaja solo</li>
+                            <li style="margin-bottom: 0.5rem;">Cada iteración tiene overhead de Python (interpretado, no compilado)</li>
+                            <li>10M iteraciones × 50 microsegundos cada una = 500+ segundos solo en overhead</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #2E7D32; color: #ffffff; padding: 2rem; margin-bottom: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700;">
+                            💀 El Anti-Pattern: "Pandas en Spark"
+                        </p>
+                        <p style="margin: 0; font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 1.5;">
+                            Este código convierte Spark en una versión CARA y LENTA de Pandas. 
+                            Estás pagando por un cluster de 32 cores, pero solo usas 1. 
+                            Es como rentar un Ferrari para manejar en primera velocidad.
+                        </p>
+                    </div>
+
+                    <div style="background: #4A90E2; color: #ffffff; padding: 2rem;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(1.1rem, 1.5vw, 1.3rem); font-weight: 700;">
+                            ✅ La versión correcta (Spark nativo):
+                        </p>
+                        <pre style="background: #000000; color: #10B981; padding: 1.5rem; margin: 0; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># TODO en el cluster, paralelizado, vectorizado
+df_resultado = (df
+    .filter(col("monto") > 1000)
+    .select(
+        col("producto"),
+        ((col("ganancia") / col("monto")) * 100).alias("margen")
+    )
+)
+
+# Tiempo: 8 segundos en 32 cores (vs 45 minutos)</code></pre>
+                    </div>
+                </div>
+
+                <p style="text-align: center; color: #ffffff; font-size: clamp(1rem, 1.5vw, 1.3rem); margin-top: 2rem; font-style: italic; line-height: 1.5;">
+                    Regla de oro: <strong>Nunca</strong> uses bucles Python para iterar DataFrames. Piensa declarativo, no imperativo.
+                </p>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "[Revelar slide] SLOW. Brutal, dolorosamente lento. Y miren esos números: 8 segundos vs 45 minutos. 
+                Eso no es una mejora incremental – es un cambio de orden de magnitud.<br><br>
+                
+                ¿Qué está pasando aquí? Déjenme pintarles la escena: Tienen un cluster con 32 cores, cada uno esperando para procesar datos. 
+                Ejecutan este código. ¿Qué pasa?<br><br>
+                
+                Paso 1: .collect() trae los 10 millones de filas del cluster distribuido al driver. 
+                Eso ya toma 2-3 minutos solo para transferir por la red y deserializar. Los 32 cores terminan su trabajo y se quedan ociosos.<br><br>
+                
+                Paso 2: El bucle for empieza. Esto se ejecuta en el intérprete de Python, en un SOLO core del driver. 
+                Los otros 31 cores del cluster están ahí, mirando, esperando trabajo. Pero no hay nada para ellos – 
+                todo el procesamiento está pasando en el driver en Python puro.<br><br>
+                
+                Paso 3: Python itera 10 millones de veces. Cada iteración tiene overhead: acceder al diccionario, 
+                hacer el if, calcular el margen, crear un dict nuevo, hacer append a la lista. 
+                En código compilado optimizado esto sería rápido, pero en Python interpretado, cada operación es costosa.<br><br>
+                
+                El resultado: 10 millones de iteraciones × ~50 microsegundos de overhead cada una = 500+ segundos solo en overhead, 
+                sin contar el trabajo real. Agreguemos el trabajo de transferir datos, garbage collection de Python manejando una lista gigante... 
+                fácilmente 15-45 minutos dependiendo de la RAM del driver.<br><br>
+                
+                Ahora comparen con la versión Spark nativa: .filter() y .select() son transformaciones que se distribuyen. 
+                Catalyst las optimiza, las divide en 128 tasks (asumiendo nuestra config recomendada), 
+                y las ejecuta en 32 cores simultáneamente. Cada core procesa ~300K filas en paralelo. 
+                Tiempo total: 8 segundos. Eso es 200-300x más rápido.<br><br>
+                
+                La lección profunda: Spark no es Pandas escalado. No pueden pensar 'voy a iterar fila por fila'. 
+                Tienen que pensar en operaciones vectorizadas, declarativas, que el optimizador puede distribuir. 
+                .filter(), .select(), .groupBy() – esas son sus primitivas. Los bucles for son veneno.<br><br>
+                
+                ¿Cuántos de ustedes tienen código con bucles for sobre DataFrames en producción ahora mismo? [Pausa] 
+                OK, tarea para esta semana: encuentren esos bucles y reescríbanlos con operaciones Spark nativas. 
+                Van a ver mejoras de 10-100x. Garantizado."
+            </aside>
+        </section>
+
+        <!-- SLIDE CENTRAL: Entendiendo las Particiones (Analogía Supermercado) -->
+        <section>
+            <div style="height: 100%; display: flex; flex-direction: column; padding: 2.5rem;">
+                <h2 style="margin: 0 0 2rem 0; text-align: center; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700;">
+                    El Arte del <span class="accent">Paralelismo</span>
+                </h2>
+
+                <!-- Bento Grid: 3 columnas x 2 filas -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1.5rem; flex: 1; min-height: 0;">
+                    
+                    <!-- Tarjeta 1: Visualización 1 línea vs 10 líneas (Grande - 2 filas) -->
+                    <div style="background: white; border: 2px solid var(--grid-gray); padding: 2rem; grid-row: span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;">
+                        <h3 style="margin: 0 0 2rem 0; font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; text-align: center;">
+                            🛒 10 Millones de Clientes Esperando
+                        </h3>
+                        
+                        <!-- Escenario Pandas: 1 línea larga -->
+                        <div style="width: 100%; margin-bottom: 3rem;">
+                            <p style="margin: 0 0 0.75rem 0; font-size: clamp(0.9rem, 1.2vw, 1rem); font-weight: 700; color: #DC2626;">
+                                ❌ Pandas: 1 Caja Abierta
+                            </p>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="background: #DC2626; color: white; padding: 0.75rem 1rem; font-size: clamp(1.2rem, 1.8vw, 1.5rem); font-weight: 700; border-radius: 4px; flex-shrink: 0;">
+                                    🏪
+                                </div>
+                                <div style="flex: 1; height: 40px; background: linear-gradient(90deg, rgba(220,38,38,0.3) 0%, rgba(220,38,38,0.1) 100%); border: 2px dashed #DC2626; display: flex; align-items: center; padding: 0 0.5rem; overflow: hidden;">
+                                    <span style="font-size: clamp(0.7rem, 1vw, 0.85rem); font-family: 'IBM Plex Mono', monospace; white-space: nowrap;">
+                                        👤👤👤👤👤👤👤👤👤👤👤👤👤👤👤👤👤👤👤👤...10M
+                                    </span>
+                                </div>
+                            </div>
+                            <p style="margin: 0.5rem 0 0 0; font-size: clamp(0.75rem, 1vw, 0.85rem); color: var(--text-secondary); text-align: center;">
+                                Tiempo: <strong style="color: #DC2626;">30 minutos</strong>
+                            </p>
+                        </div>
+
+                        <!-- Escenario Spark: 10 líneas cortas -->
+                        <div style="width: 100%;">
+                            <p style="margin: 0 0 0.75rem 0; font-size: clamp(0.9rem, 1.2vw, 1rem); font-weight: 700; color: #10B981;">
+                                ✅ Spark: 10 Cajas Abiertas
+                            </p>
+                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.25rem; margin-bottom: 0.5rem;">
+                                <!-- Primera fila de 5 cajas -->
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.25rem;">
+                                <!-- Segunda fila de 5 cajas -->
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <div style="background: #10B981; color: white; padding: 0.4rem; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 3px; flex-shrink: 0;">🏪</div>
+                                    <div style="flex: 1; height: 20px; background: rgba(16,185,129,0.2); border: 1px dashed #10B981; font-size: clamp(0.5rem, 0.7vw, 0.6rem); display: flex; align-items: center; justify-content: center;">👤👤</div>
+                                </div>
+                            </div>
+                            <p style="margin: 0.5rem 0 0 0; font-size: clamp(0.75rem, 1vw, 0.85rem); color: var(--text-secondary); text-align: center;">
+                                Tiempo: <strong style="color: #10B981;">3 minutos</strong> (10x más rápido)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 2: El Insight -->
+                    <div style="background: var(--spark-orange); border: 2px solid var(--spark-orange); padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;">
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1;">
+                            🏪
+                        </p>
+                        <p style="margin: 0; font-size: clamp(0.95rem, 1.4vw, 1.2rem); font-weight: 700; color: white; line-height: 1.5;">
+                            1 Partición<br>
+                            = 1 Fila de caja<br>
+                            = 1 Core ocupado
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 3: El Error del Skew -->
+                    <div style="background: rgba(220, 38, 38, 0.1); border: 2px solid #DC2626; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;">
+                        <div style="font-size: clamp(2.5rem, 4vw, 3.5rem); margin-bottom: 1rem;">⚠️</div>
+                        <h3 style="margin: 0 0 0.75rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700; color: #DC2626;">
+                            Data Skew
+                        </h3>
+                        <p style="margin: 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem); line-height: 1.5; color: var(--text-primary);">
+                            10 cajas abiertas<br>
+                            <span style="font-weight: 700; color: #DC2626;">pero 9 vacías</span><br>
+                            = Pandas caro
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 4: La Fórmula -->
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10B981; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
+                        <div style="font-size: clamp(2rem, 3vw, 2.5rem); margin-bottom: 0.5rem;">💡</div>
+                        <h3 style="margin: 0 0 0.75rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700; color: #10B981;">
+                            La Fórmula
+                        </h3>
+                        <p style="margin: 0; font-size: clamp(0.85rem, 1.2vw, 1rem); line-height: 1.6; color: var(--text-primary); font-family: 'IBM Plex Mono', monospace;">
+                            Cajas = <strong style="color: #10B981;">Cores × 2-4</strong>
+                        </p>
+                        <p style="margin: 0.75rem 0 0 0; font-size: clamp(0.75rem, 1vw, 0.85rem); color: var(--text-secondary);">
+                            Para 32 cores:<br>
+                            64-128 particiones
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 5: El Caso Real -->
+                    <div style="background: var(--dark-bg); color: white; border: 2px solid var(--text-primary); padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
+                        <div style="font-size: clamp(2rem, 3vw, 2.5rem); margin-bottom: 0.5rem;">📊</div>
+                        <h3 style="margin: 0 0 0.75rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700;">
+                            10M de Filas
+                        </h3>
+                        <p style="margin: 0; font-size: clamp(0.75rem, 1.05vw, 0.9rem); line-height: 1.6;">
+                            <strong style="color: #10B981;">✓ 128 particiones:</strong><br>
+                            78K filas/partición<br>
+                            <span style="font-size: clamp(0.7rem, 0.95vw, 0.8rem); color: var(--text-secondary);">Balance perfecto</span>
+                        </p>
+                        <p style="margin: 1rem 0 0 0; font-size: clamp(0.75rem, 1.05vw, 0.9rem); line-height: 1.6;">
+                            <strong style="color: #DC2626;">❌ 2000 particiones:</strong><br>
+                            5K filas/partición<br>
+                            <span style="font-size: clamp(0.7rem, 0.95vw, 0.8rem); color: var(--text-secondary);">Overhead > trabajo</span>
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Conclusión -->
+                <div style="background: var(--off-white); border-left: 4px solid var(--spark-orange); padding: 1.5rem; margin-top: 1.5rem; flex-shrink: 0;">
+                    <p style="margin: 0; font-size: clamp(1rem, 1.6vw, 1.4rem); font-weight: 700; line-height: 1.4; color: var(--text-primary);">
+                        La clave no es tener muchas cajas, sino <span class="accent">distribuir bien a los clientes</span> entre ellas
+                    </p>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador - Analogía del Supermercado:</strong><br>
+                "Olviden por un momento el código y la teoría. Vamos a hablar de algo que todos conocemos: hacer fila en el supermercado. 
+                Es viernes por la tarde, hay 10 millones... bueno, digamos 1000 clientes (pero imaginen que son 10 millones de filas de datos).<br><br>
+                
+                <strong>Escenario Pandas:</strong><br>
+                [Señalar la línea roja larga] El supermercado tiene solo UNA caja abierta. La cajera es increíblemente rápida – 
+                tiene un procesador Intel de última generación con 16 cores. Pero solo hay una caja abierta, así que todos esos cores, 
+                excepto uno, están mirando TikTok. La fila es kilométrica. La gente está frustrada. 
+                Y lo peor: si esa cajera se enferma o su terminal se cuelga, TODO el supermercado se detiene.<br><br>
+                
+                Eso es exactamente Pandas: no importa cuántos cores tenga tu laptop, Pandas solo puede usar uno a la vez para procesar tu DataFrame. 
+                Los otros 15 cores están ahí, ociosos, esperando trabajo que nunca llega. Tiempo total: 30 minutos para procesar todo.<br><br>
+                
+                <strong>Escenario Spark (Bien Particionado):</strong><br>
+                [Señalar las 10 líneas verdes] Ahora el gerente del supermercado es inteligente. Ve la fila kilométrica y dice: 
+                'Abrimos 10 cajas simultáneamente'. La fila original se DIVIDE en 10 trozos pequeños. 
+                Cada cajera (cada core) procesa su grupo de clientes en paralelo. ¿Resultado? Terminan en 3 minutos. 
+                No es magia – es simplemente paralelismo real.<br><br>
+                
+                Eso es Spark con buen particionamiento: divides tus 10 millones de filas en, digamos, 128 particiones 
+                (porque tienes 32 cores × 4). Cada core procesa su partición en paralelo. El speedup es casi lineal.<br><br>
+                
+                <strong>El Error Mortal: Data Skew (Desbalance):</strong><br>
+                [Señalar la tarjeta roja de skew] Pero aquí viene el error que mata el performance incluso en Spark. 
+                Imaginen esto: el gerente abre 10 cajas como planeado, pero hay un problema con la señalización. 
+                Todos los clientes van a la Caja 1. Las otras 9 cajas están vacías, con cajeras esperando.<br><br>
+                
+                La Caja 1 tiene una fila de 1000 personas. Las Cajas 2-10 tienen cero. ¿Cuánto tardan en procesar a todos? 
+                Los mismos 30 minutos que con una sola caja. Acaban de reinventar Pandas, pero pagando por 10 cajeras en lugar de una. 
+                Más caro, mismo resultado.<br><br>
+                
+                Esto es Data Skew en Spark: cuando no eliges bien tu clave de partición, o cuando tus datos tienen distribución desigual. 
+                Ejemplo real: si particionas por 'país' y el 80% de tus clientes son de USA, 
+                la partición 'USA' va a ser gigante y las otras (Islandia, Ecuador, etc.) van a ser minúsculas. 
+                Un core va a estar sobrecargado procesando USA mientras los otros 31 cores terminan en 2 segundos y se quedan esperando.<br><br>
+                
+                <strong>La Fórmula del Éxito:</strong><br>
+                [Señalar tarjeta verde] Cajas = Cores × 2 a 4. En nuestro supermercado, si tienes 32 cajeras disponibles, 
+                abres 64-128 cajas (sí, pueden rotar). ¿Por qué más cajas que cajeras? 
+                Porque mientras una cajera termina con un cliente y procesa el pago (latencia de red, espera de I/O), 
+                ya tiene otra fila lista para atender. Evitas idle time.<br><br>
+                
+                En datos: 32 cores × 4 = 128 particiones para 10M de filas = 78,000 filas por partición. 
+                Cada core procesa 78K filas – suficiente trabajo para justificar el overhead de scheduling, 
+                pero no tanto que se quede sin RAM.<br><br>
+                
+                <strong>El Anti-Pattern:</strong><br>
+                [Señalar tarjeta oscura] 2000 particiones para 10M de filas = 5000 filas por partición. 
+                Es como tener 2000 cajas en el supermercado para 1000 clientes. El overhead de abrir todas esas cajas, 
+                entrenar cajeras, coordinarlas... supera el beneficio. Cada partición termina en 50ms, 
+                pero el overhead de crear y coordinar la task es 200ms. Están perdiendo 4x en overhead puro.<br><br>
+                
+                <strong>La Lección del Supermercado:</strong><br>
+                La clave no es tener MUCHAS cajas. La clave es:<br>
+                1. Tener SUFICIENTES cajas (Particiones ≥ Cores)<br>
+                2. DISTRIBUIR BIEN a los clientes entre ellas (buena clave de partición, evitar skew)<br>
+                3. Que cada caja tenga SUFICIENTE trabajo (no over-partitioning)<br><br>
+                
+                Cuando dominen esto – cuando piensen en sus datos como 'clientes en filas del supermercado' – 
+                van a dejar de tener jobs que tardan horas. Van a tener jobs que tardan minutos. 
+                Y la diferencia no es código más complejo – es simplemente entender cómo distribuir el trabajo.<br><br>
+                
+                Pregunta final: ¿Alguien tiene un job lento en producción ahora mismo? [Pausa] 
+                Apuesto a que es uno de estos tres problemas: (1) una sola partición (Pandas disfrazado), 
+                (2) data skew (todas las filas en una partición), o (3) over-partitioning (2000 particiones para datos pequeños). 
+                Esta semana, revisen sus jobs lentos con esta analogía en mente. Les garantizo que encuentran el cuello de botella."
+            </aside>
+        </section>
+
         <!-- SLIDE 4: Lazy Evaluation & DAG -->
         <section>
             <h2 style="margin-bottom: 2rem; text-align: center;">Lazy Evaluation: <span class="accent">El Plan antes de la Acción</span></h2>
@@ -945,6 +1611,164 @@ df3.show()
                 
                 Resumen ejecutivo: Para 10M de registros en un cluster de 32 cores, usen 64-128 particiones, guarden como Parquet particionado por la clave de negocio más común, 
                 y eviten shuffles innecesarios filtrando temprano. Eso es el 80% del performance tuning."
+            </aside>
+        </section>
+
+        <!-- SLIDE: Spark en la Era de la IA -->
+        <section>
+            <div style="height: 100%; display: flex; flex-direction: column; padding: 2.5rem;">
+                <h2 style="margin: 0 0 2rem 0; text-align: center; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700;">
+                    Spark en la Era de la <span class="accent">IA</span>
+                </h2>
+
+                <!-- Bento Grid: 3 columnas -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; flex: 1; min-height: 0;">
+                    
+                    <!-- Tarjeta 1: El Problema -->
+                    <div style="background: rgba(220, 38, 38, 0.1); border: 2px solid #DC2626; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;">
+                        <div style="font-size: clamp(3.5rem, 6vw, 5rem); margin-bottom: 1.5rem;">⏱️</div>
+                        <h3 style="margin: 0 0 1.5rem 0; font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; color: #DC2626;">
+                            El Problema
+                        </h3>
+                        <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.6; color: var(--text-primary);">
+                            <strong>Inferencia secuencial en Pandas:</strong>
+                        </p>
+                        <div style="background: var(--dark-bg); color: white; padding: 1.5rem; margin-top: 1rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.85rem, 1.2vw, 1rem); line-height: 1.5;">
+                            10ms × 10M filas<br>
+                            <span style="color: #DC2626; font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 700; display: block; margin-top: 0.5rem;">= 27 Horas</span>
+                        </div>
+                        <p style="margin: 1rem 0 0 0; font-size: clamp(0.8rem, 1.1vw, 0.95rem); color: var(--text-secondary); font-style: italic;">
+                            Un solo core procesando<br>todo secuencialmente
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 2: La Solución - Pandas UDF -->
+                    <div style="background: rgba(226, 90, 28, 0.1); border: 2px solid var(--spark-orange); padding: 2rem; display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
+                        <div style="font-size: clamp(3.5rem, 6vw, 5rem); margin-bottom: 1.5rem; text-align: center;">⚡</div>
+                        <h3 style="margin: 0 0 1.5rem 0; font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; color: var(--spark-orange);">
+                            La Solución: Pandas UDF
+                        </h3>
+                        <p style="margin: 0 0 1rem 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.6; color: var(--text-primary);">
+                            Envuelve tu función de Python con <code style="background: var(--dark-bg); color: var(--spark-orange); padding: 0.2em 0.5em; border-radius: 3px; font-family: 'IBM Plex Mono', monospace;">@pandas_udf</code>
+                        </p>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: clamp(0.85rem, 1.2vw, 1rem); line-height: 1.7;">
+                            <li style="margin-bottom: 0.75rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">✓</span>Paraleliza tu código de LangChain/HuggingFace</li>
+                            <li style="margin-bottom: 0.75rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">✓</span>Spark distribuye batches a todos los cores</li>
+                            <li style="margin-bottom: 0.75rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">✓</span>Cada executor procesa su partición</li>
+                            <li><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">✓</span>Mismo código Python, 100x más rápido</li>
+                        </ul>
+                        <div style="background: #10B981; color: white; padding: 1rem; margin-top: 1.5rem; border-radius: 4px; text-align: center; font-weight: 700; font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
+                            27 horas → <span style="font-size: clamp(1.2rem, 2vw, 1.8rem);">15 minutos</span>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 3: Código Visual -->
+                    <div style="background: var(--dark-bg); border: 2px solid var(--text-primary); padding: 2rem; display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
+                        <h3 style="margin: 0 0 1.5rem 0; font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 700; color: white;">
+                            💻 Código: Vectorizar Texto
+                        </h3>
+                        <pre style="background: #000000; color: #10B981; padding: 1.5rem; margin: 0; font-size: clamp(0.75rem, 1.1vw, 0.95rem); border-left: 4px solid var(--spark-orange); font-family: 'IBM Plex Mono', monospace; line-height: 1.5; overflow-x: auto;"><code class="language-python">from pyspark.sql.functions import pandas_udf
+from sentence_transformers import SentenceTransformer
+
+# Tu función Python normal
+@pandas_udf("array&lt;float&gt;")
+def vectorize_text(texts: pd.Series) -&gt; pd.Series:
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    embeddings = model.encode(texts.tolist())
+    return pd.Series(embeddings.tolist())
+
+# Spark la distribuye en paralelo
+df_vectorized = df.withColumn(
+    "embedding",
+    vectorize_text(col("documento"))
+)</code></pre>
+                        <p style="margin: 1rem 0 0 0; font-size: clamp(0.75rem, 1.05vw, 0.9rem); color: var(--text-secondary); line-height: 1.5;">
+                            <strong style="color: var(--spark-orange);">Casos de uso:</strong><br>
+                            • Embeddings para RAG (50K PDFs)<br>
+                            • Sentiment Analysis (10M chats)<br>
+                            • Tokenización con spaCy/NLTK<br>
+                            • Inferencia de modelos ML
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Insight Final -->
+                <div style="background: var(--spark-orange); color: white; padding: 1.5rem 2rem; margin-top: 1.5rem; flex-shrink: 0; border-radius: 4px;">
+                    <p style="margin: 0; font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 700; line-height: 1.4; text-align: center;">
+                        💡 No uses Spark solo para SQL. Úsalo para <span style="border-bottom: 3px solid white;">escalar tu código de Python complejo</span> (Embeddings, Tokenización, Inferencia)
+                    </p>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador - Spark para IA:</strong><br>
+                "Antes de cerrar, déjenme conectar todo esto con nuestro trabajo diario en GenAI y Data Science. 
+                Sé que muchos de ustedes piensan que Spark es solo para mover tablas grandes o hacer joins. 
+                Pero para nuestros agentes de IA, Spark es un acelerador crítico.<br><br>
+                
+                <strong>El Problema Real:</strong><br>
+                Imaginen que necesitan vectorizar 50,000 PDFs para alimentar un sistema RAG. 
+                Cada documento tarda 10 milisegundos en procesarse con SentenceTransformers. 
+                En su laptop con Pandas, iteran fila por fila, documento por documento. 
+                10ms × 10 millones de chunks de texto = 27 horas de procesamiento. 
+                Y eso asumiendo que su laptop no se queda sin RAM a mitad del camino.<br><br>
+                
+                O necesitan correr Sentiment Analysis sobre 10 millones de chats de soporte. 
+                Su modelo de HuggingFace tarda 15ms por texto. Eso son 41 horas secuenciales. 
+                Para cuando termine, el reporte que necesitaban ya está obsoleto.<br><br>
+                
+                <strong>La Solución - Pandas UDF:</strong><br>
+                [Señalar la tarjeta naranja] Aquí es donde Pandas UDF cambia el juego. 
+                Es un decorador de PySpark que toma su función de Python – su código de LangChain, HuggingFace, spaCy, lo que sea – 
+                y le dice a Spark: 'Distribuye esto en paralelo'.<br><br>
+                
+                Miren el código: [Señalar tarjeta de código] Es su función Python normal. 
+                Toman un Series de Pandas (un batch de textos), llaman a su modelo, devuelven los embeddings. 
+                La única diferencia es ese decorador @pandas_udf arriba. 
+                Eso le dice a Spark: 'Esta función opera sobre batches de Pandas. Por favor, divídela en particiones y ejecuta en paralelo'.<br><br>
+                
+                Cuando ejecutan df.withColumn('embedding', vectorize_text(col('documento'))), ¿qué pasa?<br>
+                1. Spark divide sus 10M de documentos en 128 particiones (siguiendo nuestra config recomendada)<br>
+                2. Cada executor recibe una partición (~78K documentos)<br>
+                3. Dentro de cada executor, la función carga el modelo UNA VEZ y procesa su batch completo<br>
+                4. Los 32 cores procesan simultáneamente<br>
+                5. Resultado: 27 horas se convierten en 15-20 minutos<br><br>
+                
+                <strong>Casos de Uso Reales en Nuestro Equipo:</strong><br>
+                • <strong>RAG para Legal:</strong> Vectorizamos 200K documentos legales cada semana. 
+                Pandas UDF con SentenceTransformers nos llevó de 3 días de procesamiento a 2 horas.<br><br>
+                
+                • <strong>Sentiment Analysis de Redes Sociales:</strong> Analizamos 5M de tweets diarios con un modelo BERT fine-tuned. 
+                Sin Spark: imposible en tiempo real. Con Pandas UDF: procesamos todo en 30 minutos cada mañana.<br><br>
+                
+                • <strong>Tokenización Multilingüe:</strong> Procesamos chats de soporte en 12 idiomas con spaCy. 
+                Cada idioma necesita un modelo diferente. Pandas UDF carga el modelo correcto por idioma y procesa en paralelo. 
+                De 8 horas a 45 minutos.<br><br>
+                
+                <strong>El Insight Clave:</strong><br>
+                [Señalar el insight naranja] No limiten Spark a SQL y agregaciones. 
+                La verdadera magia es que pueden tomar su código complejo de Python – sus modelos de IA, sus pipelines de NLP, 
+                sus transformaciones custom – y Spark los distribuye automáticamente. 
+                Escriben código Python como siempre, pero se ejecuta en 32 cores en lugar de 1.<br><br>
+                
+                <strong>Advertencia Técnica:</strong><br>
+                Eso sí, hay consideraciones: Los modelos grandes (GPT-3.5, Llama-70B) no caben en RAM de cada executor. 
+                Para esos casos, usen servicios de inferencia externos (OpenAI API, Databricks Model Serving) 
+                y hagan requests en batch desde Pandas UDF. O mejor: fine-tuneen modelos más pequeños que SÍ quepan en memoria del executor.<br><br>
+                
+                También: si su UDF tiene mucha lógica Python pura, va a ser más lenta que funciones nativas de Spark. 
+                Pero para tareas de IA donde NO HAY alternativa nativa (embeddings, modelos custom, librerías de Python específicas), 
+                Pandas UDF es la única forma de paralelizar sin reescribir todo en Scala o Java.<br><br>
+                
+                <strong>Tarea para Esta Semana:</strong><br>
+                Identifiquen UN pipeline lento en su trabajo: vectorización, inferencia de modelo, procesamiento de NLP. 
+                Si actualmente tarda más de 1 hora, es candidato para Pandas UDF. 
+                Envuélvanlo con @pandas_udf, configuren sus particiones correctamente, y vean la mejora. 
+                Les garantizo que van a ver speedups de 10-100x.<br><br>
+                
+                Spark no es solo para ingeniería de datos. Es el motor de ejecución para escalar IA en producción. 
+                Ahora lo saben. Ahora úsenlo."
             </aside>
         </section>
 
