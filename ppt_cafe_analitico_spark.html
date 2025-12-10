@@ -436,6 +436,7 @@
 <div class="reveal">
     <div class="slides">
 
+
         <!-- SLIDE 1: Título -->
         <section>
             <div class="flex-center" style="height: 100%; flex-direction: column;">
@@ -452,13 +453,11 @@
             </div>
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Bienvenidos. Hoy vamos a cambiar fundamentalmente la forma en que piensan sobre el procesamiento de datos. 
-                Durante años han dominado Pandas – una herramienta brillante para análisis en memoria. 
-                Pero cuando escalan a 10 millones de registros o más, necesitan un cambio de paradigma. 
-                No se trata de aprender nueva sintaxis; se trata de entender cómo funciona un sistema distribuido por dentro. 
-                Al final de esta sesión, van a escribir código Spark que no solo funcione, sino que sea fundamentalmente eficiente."
+                "Bienvenidos a la Masterclass Técnica. Hoy vamos a romper la barrera mental entre programar para una máquina y programar para un cluster. Muchos de ustedes vienen de Pandas, donde todo ocurre en la RAM de su laptop. Hoy vamos a pensar en distribuido."
             </aside>
         </section>
+
+
 
         <!-- SLIDE 2: Single Node vs Distributed -->
         <section>
@@ -522,135 +521,222 @@
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Aquí está el cambio fundamental. En Pandas, ustedes piensan: 'Tengo un DataFrame, voy a iterar sobre él, aplicar una función, y obtener un resultado'. 
-                Es intuitivo porque es secuencial. Pero miren la fórmula de velocidad: están limitados por los cores de una sola máquina.<br><br>
-                
-                Spark cambia todo. Ya no le dicen al sistema CÓMO iterar. Le dicen QUÉ quieren (un filtro, una agregación), 
-                y Spark construye un plan de ejecución distribuido. La velocidad ahora depende de cuántas particiones pueden procesar en paralelo. 
-                Si tienen 8 cores y 8 particiones, procesan todo simultáneamente. Si tienen 1 partición... bueno, acaban de convertir Spark en Pandas caro.<br><br>
-                
-                Este es el insight número uno: Spark no es una versión grande de Pandas. Es un motor de ejecución distribuido con un optimizador de consultas (Catalyst). 
-                Piensen en SQL, no en Python loops."
+                "Pasar de Pandas a Spark no es solo cambiar de librería, es cambiar de cerebro. En el mundo Single Node, tu límite es tu RAM. En Spark, tu límite es tu presupuesto. Pero para aprovechar ese poder, tenemos que entender que ya no estamos iterando filas..."
             </aside>
         </section>
 
-        <!-- SLIDE 3: Row vs Columnar Storage -->
+
+
+        <!-- SLIDE 5: Anatomía - Driver, Workers, Executors -->
         <section>
-            <div style="height: 100%; display: flex; flex-direction: column; padding: 2rem;">
-                <h2 style="margin: 0 0 2rem 0; text-align: center; flex-shrink: 0;">
-                    Almacenamiento: <span class="accent">Row-Oriented vs Columnar</span>
-                </h2>
+            <h2 style="margin-bottom: 2rem; text-align: center;">Anatomía de un Cluster: <span class="accent">Driver → Executors → Tasks</span></h2>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; flex: 1; min-height: 0;">
-                    <!-- Row-Oriented -->
-                    <div style="background: white; border: 1px solid var(--grid-gray); padding: 1.5rem; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 1rem; min-height: 0; overflow: hidden;">
-                        <h3 style="margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 700;">
-                            Row-Oriented (CSV, Teradata)
-                        </h3>
-                        
-                        <div style="display: flex; justify-content: center; align-items: center; min-height: 140px;">
-                            <div style="width: clamp(90px, 13vw, 130px); height: clamp(120px, 20vh, 160px); position: relative; flex-shrink: 0;">
-                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white;"></div>
-                                <div style="width: 100%; height: 68%; border-left: 2px solid var(--text-primary); border-right: 2px solid var(--text-primary); margin-top: -8%; position: relative;">
-                                    <div style="position: absolute; top: 0; width: 100%; height: 100%;">
-                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.05);"></div>
-                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.1);"></div>
-                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.05);"></div>
-                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.1);"></div>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white; margin-top: -8%;"></div>
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <!-- Driver -->
+                <div style="margin-bottom: clamp(1.5rem, 3vw, 3rem);">
+                    <div class="arch-box-accent" style="padding: clamp(1rem, 2vw, 2rem); margin-bottom: 1rem; overflow: hidden;">
+                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
+                            <div class="number-callout accent-bg" style="color: white; border-color: var(--spark-orange);">1</div>
+                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
+                                <h3 style="margin-bottom: 0.5rem;">Driver (Cerebro)</h3>
+                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                                    Orquesta todo. Crea el DAG, lo optimiza con Catalyst, y divide el trabajo en Tasks.
+                                </p>
+                                <p class="text-mono" style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.1vw, 0.9rem); color: var(--text-secondary); overflow-wrap: break-word;">
+                                    Vive en tu notebook de Databricks
+                                </p>
                             </div>
-                        </div>
-                        
-                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.68rem, 1vw, 0.82rem); line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word;">
-                            Row1: [id, nombre, edad, ciudad, ...20 cols]<br>
-                            Row2: [id, nombre, edad, ciudad, ...20 cols]<br>
-                            Row3: [id, nombre, edad, ciudad, ...20 cols]
-                        </div>
-                        
-                        <ul style="list-style: none; padding: 0; margin: 0; font-size: clamp(0.75rem, 1.05vw, 0.92rem); line-height: 1.7;">
-                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Lee registros completos</li>
-                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Bueno para: OLTP, transacciones</li>
-                            <li><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Malo para: Analytics (lees datos innecesarios)</li>
-                        </ul>
-                        
-                        <div style="background: var(--dark-bg); color: white; padding: 1rem; overflow-wrap: break-word; word-wrap: break-word;">
-                            <p style="margin: 0; font-size: clamp(0.72rem, 1.05vw, 0.88rem); line-height: 1.5;">
-                                <strong>SELECT edad FROM tabla</strong><br>
-                                <span style="color: var(--spark-orange);">❌ Lee las 20 columnas</span>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Columnar -->
-                    <div style="background: white; border: 1px solid var(--grid-gray); padding: 1.5rem; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 1rem; min-height: 0; overflow: hidden;">
-                        <h3 style="margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 700;">
-                            Columnar (Parquet)
-                        </h3>
-                        
-                        <div style="display: flex; justify-content: center; align-items: center; min-height: 140px;">
-                            <div style="width: clamp(90px, 13vw, 130px); height: clamp(120px, 20vh, 160px); position: relative; flex-shrink: 0;">
-                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white;"></div>
-                                <div style="width: 100%; height: 68%; border-left: 2px solid var(--text-primary); border-right: 2px solid var(--text-primary); margin-top: -8%; position: relative;">
-                                    <div style="position: absolute; top: 0; width: 100%; height: 100%; display: flex;">
-                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.1);"></div>
-                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.2);"></div>
-                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.1);"></div>
-                                        <div style="flex: 1; margin: 0 2%; background: rgba(226,90,28,0.2);"></div>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white; margin-top: -8%;"></div>
-                            </div>
-                        </div>
-                        
-                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.68rem, 1vw, 0.82rem); line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word;">
-                            Col_id: [1, 2, 3, 4, ...]<br>
-                            Col_edad: [25, 30, 45, 22, ...]<br>
-                            Col_ciudad: ["NY", "LA", ...]
-                        </div>
-                        
-                        <ul style="list-style: none; padding: 0; margin: 0; font-size: clamp(0.75rem, 1.05vw, 0.92rem); line-height: 1.7;">
-                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Lee solo las columnas necesarias</li>
-                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Bueno para: Analytics, Agregaciones</li>
-                            <li><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Compresión brutal (valores repetidos)</li>
-                        </ul>
-                        
-                        <div style="background: var(--spark-orange); color: white; padding: 1rem; overflow-wrap: break-word; word-wrap: break-word;">
-                            <p style="margin: 0; font-size: clamp(0.72rem, 1.05vw, 0.88rem); line-height: 1.5;">
-                                <strong>SELECT edad FROM tabla</strong><br>
-                                ✓ Lee SOLO la columna 'edad' (Projection Pushdown)
-                            </p>
                         </div>
                     </div>
                 </div>
 
-                <div style="border-left: 4px solid var(--spark-orange); padding: 1rem 1.5rem; margin-top: 1.5rem; background: white; flex-shrink: 0;">
-                    <p style="margin: 0; font-size: clamp(1.1rem, 1.9vw, 1.6rem); font-weight: 700; line-height: 1.3;">
-                        Insight: Con 20 columnas, Parquet puede ser <span class="accent">20x más rápido</span> que CSV para queries analíticas.
-                    </p>
+                <!-- Executors -->
+                <div style="margin-bottom: clamp(1.5rem, 3vw, 3rem);">
+                    <div class="arch-box" style="padding: clamp(1rem, 2vw, 2rem); margin-bottom: 1rem; border-color: var(--text-primary); overflow: hidden;">
+                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
+                            <div class="number-callout" style="border-color: var(--text-primary);">2</div>
+                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
+                                <h3 style="margin-bottom: 0.5rem;">Executors (Trabajadores)</h3>
+                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                                    Procesos JVM distribuidos en el cluster. Cada uno tiene N cores y RAM asignada.
+                                </p>
+                                <p class="text-mono" style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.1vw, 0.9rem); color: var(--text-secondary); overflow-wrap: break-word;">
+                                    Ej: 4 executors × 8 cores cada uno = 32 cores totales
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks -->
+                <div>
+                    <div class="arch-box" style="padding: clamp(1rem, 2vw, 2rem); border-color: var(--text-primary); overflow: hidden;">
+                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
+                            <div class="number-callout" style="border-color: var(--text-primary);">3</div>
+                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
+                                <h3 style="margin-bottom: 0.5rem;">Tasks (Unidad Atómica)</h3>
+                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                                    Cada Task procesa UNA partición en UN core. Si tienes 32 cores y 100 particiones, 
+                                    se ejecutan 32 Tasks en paralelo, luego otras 32, hasta completar las 100.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-box" style="margin-top: clamp(1.5rem, 3vw, 3rem); font-size: clamp(1.2rem, 2.5vw, 1.8rem);">
+                    1 Partición = 1 Task = 1 Core (en un momento dado)
                 </div>
             </div>
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Ahora hablemos de por qué Parquet es mágico. Imaginen que tienen una tabla con 10 millones de filas y 20 columnas. 
-                Ustedes solo necesitan calcular el promedio de 'edad'.<br><br>
-                
-                En un formato row-oriented como CSV o Teradata tradicional, el sistema lee cada registro completo – las 20 columnas – 
-                solo para extraer una. Es como comprar todo el supermercado cuando solo necesitan leche.<br><br>
-                
-                Parquet almacena los datos por columna. Cuando Spark ve 'SELECT edad', activa algo llamado 'Projection Pushdown': 
-                lee ÚNICAMENTE los bytes de la columna 'edad'. Esto no es solo una mejora incremental – es un cambio de orden de magnitud. 
-                En nuestro caso real, pasar de CSV a Parquet redujo el tiempo de lectura de 45 segundos a 2 segundos.<br><br>
-                
-                Bonus: como todos los valores de una columna están juntos (ej: 'ciudad' = ['NY', 'NY', 'LA', 'NY'...]), 
-                la compresión es increíblemente efectiva. Parquet usa algoritmos como RLE (Run-Length Encoding) y dictionary encoding. 
-                Un archivo Parquet puede ser 10x más pequeño que el CSV equivalente.<br><br>
-                
-                Por eso en Databricks, SIEMPRE guarden sus datos procesados como Parquet o Delta (que es Parquet con transacciones ACID)."
+                "Ya tenemos las máquinas del cluster listas. ¿Pero quién es quién en este zoológico? No es una caja negra. Tenemos un cerebro (el Driver) y muchos músculos (los Executors). Hook importante: Ya tenemos las máquinas, ¿pero cómo les hablamos?"
             </aside>
         </section>
+
+
+        <!-- SLIDE: Transformaciones vs Acciones -->
+        <section>
+            <h2 style="margin-bottom: 2rem; text-align: center;">El Vocabulario de Spark: <span class="accent">Transformaciones vs. Acciones</span></h2>
+            
+            <div class="grid-container grid-2col">
+                <!-- Transformaciones -->
+                <div class="bento-card">
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <div style="font-size: clamp(3rem, 5vw, 4rem); margin-bottom: 0.5rem;">🗺️</div>
+                        <h3 style="margin-bottom: 1rem;">Transformaciones</h3>
+                    </div>
+                    <div style="flex: 1;">
+                        <p style="font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin-bottom: 1rem;">
+                            <strong>Instrucciones (Lazy)</strong><br>
+                            Son promesas de cálculo. Crean un nuevo DataFrame a partir del anterior.
+                        </p>
+                        <div style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;">
+                            <code style="color: #10B981;">.select()</code><br>
+                            <code style="color: #10B981;">.filter()</code><br>
+                            <code style="color: #10B981;">.groupBy()</code><br>
+                            <code style="color: #10B981;">.withColumn()</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="bento-card" style="border-left: 4px solid var(--spark-orange);">
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <div style="font-size: clamp(3rem, 5vw, 4rem); margin-bottom: 0.5rem;">🚀</div>
+                        <h3 style="margin-bottom: 1rem;">Acciones</h3>
+                    </div>
+                    <div style="flex: 1;">
+                        <p style="font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin-bottom: 1rem;">
+                            <strong>Ejecución (Eager)</strong><br>
+                            Disparan el trabajo real. Devuelven un resultado al driver o escriben a disco.
+                        </p>
+                        <div style="background: var(--dark-bg); color: var(--off-white); padding: 1rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;">
+                            <code style="color: var(--spark-orange);">.count()</code><br>
+                            <code style="color: var(--spark-orange);">.show()</code><br>
+                            <code style="color: var(--spark-orange);">.write()</code><br>
+                            <code style="color: var(--spark-orange);">.collect()</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insight -->
+            <div style="margin-top: 2rem; background: var(--off-white); border: 2px solid var(--spark-orange); padding: 1.5rem; text-align: center;">
+                <p style="margin: 0; font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700;">
+                    <span class="accent">Insight:</span> Spark no mueve un dedo hasta que ve una Acción.
+                </p>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Ya sabemos que tenemos un Driver y muchos Executors. Pero, ¿cómo le dice el Driver a los Executors qué hacer? No usamos bucles for. Usamos un vocabulario específico dividido en dos mundos: Transformaciones (planos) y Acciones (gatillos). El Driver no mueve un dedo hasta ver una Acción."
+            </aside>
+        </section>
+
+
+
+        <!-- SLIDE 4: Lazy Evaluation & DAG -->
+        <section>
+            <h2 style="margin-bottom: 2rem; text-align: center;">Lazy Evaluation: <span class="accent">El Plan antes de la Acción</span></h2>
+
+            <div class="grid-container" style="grid-template-columns: 2fr 1fr; gap: clamp(1.5rem, 3vw, 3rem);">
+                <!-- Left: DAG Diagram -->
+                <div>
+                    <h3 style="margin-bottom: 1.5rem;">El DAG (Directed Acyclic Graph)</h3>
+                    <div style="display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 2rem); align-items: center;">
+                        <!-- Transformations -->
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                            <div class="dag-node" style="background: rgba(226,90,28,0.1);">
+                                read.parquet()
+                            </div>
+                            <div class="dag-arrow"></div>
+                            <div class="dag-node">
+                                .filter()
+                            </div>
+                            <div class="dag-arrow"></div>
+                            <div class="dag-node">
+                                .groupBy()
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <p class="text-secondary" style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
+                                Transformaciones (lazy – no ejecutan nada)
+                            </p>
+                        </div>
+                        <div style="font-size: clamp(2rem, 4vw, 3rem); color: var(--spark-orange);">↓</div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="dag-node accent-bg">
+                                .count() / .show()
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <p class="text-secondary" style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
+                                Acción (trigger – ejecuta todo el DAG)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accent-border" style="margin-top: 1.5rem; padding: clamp(1rem, 2vw, 1.5rem); overflow: hidden;">
+                        <p style="margin: 0; font-size: clamp(0.85rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
+                            <strong>Catalyst Optimizer:</strong> Analiza el DAG completo y lo reescribe para eficiencia máxima 
+                            (predicate pushdown, column pruning, join reordering).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Code Example -->
+                <div class="bento-card">
+                    <h3 style="margin-bottom: 1rem;">Ejemplo</h3>
+                    <pre style="background: var(--dark-bg); color: var(--off-white); padding: clamp(1rem, 2vw, 1.5rem); font-size: clamp(0.7rem, 1vw, 0.85rem); overflow-x: auto;"><code>df = spark.read.parquet("data.parquet")
+# ✓ Lazy (no ejecuta)
+
+df2 = df.filter(col("edad") > 25)
+# ✓ Lazy (solo añade al DAG)
+
+df3 = df2.groupBy("ciudad").count()
+# ✓ Lazy (acumula transformaciones)
+
+df3.show()
+# ❌ ACCIÓN → Ejecuta todo el DAG</code></pre>
+
+                    <div style="background: var(--spark-orange); color: white; padding: 1rem; margin-top: 1rem; overflow: hidden;">
+                        <p style="margin: 0; font-size: clamp(0.75rem, 1.1vw, 0.9rem); overflow-wrap: break-word;">
+                            <strong>⚡ Ventaja:</strong> Catalyst puede optimizar el plan completo antes de ejecutar. 
+                            Si detecta que solo necesitas 3 columnas, NO leerá las otras 17.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Ahora que sabemos el lenguaje (Transformaciones vs Acciones), veamos las trampas. Spark es perezoso (Lazy). Cuando le das una transformación, no hace nada. Solo dibuja un plan (DAG). Esto es genial para optimizar, pero confunde a quienes esperan ejecución inmediata."
+            </aside>
+        </section>
+
+
 
         <!-- CHALLENGE SLIDE 1: La trampa de la memoria -->
         <section data-background-color="#1e1e1e">
@@ -688,20 +774,11 @@ pandas_df.plot(kind='scatter', x='fecha', y='monto')</code></pre>
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Muy bien, hora de poner a prueba lo que hemos aprendido. Levanten la mano si piensan que este código va a funcionar bien... 
-                Ahora, levanten la mano si piensan que va a explotar.<br><br>
-                
-                Lean el código cuidadosamente. Tenemos 10 millones de filas en Parquet. Hacemos un filtro – hasta ahí bien, estamos usando Spark. 
-                Pero luego... ¿ven esa línea? .toPandas(). Esa línea inocente.<br><br>
-                
-                Cuéntenme: ¿qué hace .toPandas()? [Pausa para respuestas del público]<br><br>
-                
-                Exacto. Trae TODOS los datos filtrados al driver, a la memoria de su notebook. ¿Y cuántos registros quedan después del filtro en un dataset real? 
-                Probablemente 2-3 millones. Eso son varios GB de RAM.<br><br>
-                
-                Vamos a ver la respuesta... [Click para siguiente slide]"
+                "La teoría suena genial. Pero en la práctica, esa 'pereza' y el modelo distribuido pueden ser trampas mortales. Challenge #1: Will it CRASH? Miren este código..."
             </aside>
         </section>
+
+
 
         <!-- CHALLENGE SLIDE 1 - RESPUESTA -->
         <section data-background-color="#1e1e1e">
@@ -760,25 +837,11 @@ display(df_filtered)  # Databricks native viz</code></pre>
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "[Revelar slide] ¡CRASH! 💥 Y miren ese sello – ese es el error más común que veo en equipos que migran de Pandas.<br><br>
-                
-                ¿Qué pasó? .toPandas() es una acción. Ejecuta todo el DAG, procesa los millones de filas en el cluster (hasta ahí bien), 
-                pero luego SERIALIZA todos esos resultados y los envía por la red al driver – tu notebook. 
-                El driver no es un supercomputador; es una máquina con 8-16 GB de RAM típicamente.<br><br>
-                
-                Cuando intentas meter 3-5 GB de datos en un proceso que ya tiene Spark, JVM, y tu código corriendo, 
-                la JVM empieza a hacer garbage collection frenético, y eventualmente explota con OutOfMemoryError.<br><br>
-                
-                La lección: En Pandas, ustedes piensan 'traigo todo a memoria y lo analizo'. En Spark, piensan al revés: 
-                'proceso en el cluster, REDUZCO los datos (agregación, filtros, límites), y solo entonces traigo el resumen al driver'.<br><br>
-                
-                Miren las soluciones correctas: .limit(10000) para traer solo una muestra, o mejor aún, 
-                agregar primero con groupBy() para reducir de 3M filas a quizás 365 filas (una por día). 
-                ESO sí puede venir al driver sin problemas. O mejor: usen display() de Databricks que visualiza sin traer datos a Pandas.<br><br>
-                
-                ¿Quién ha visto este error antes? [Pausa] Sí, es súper común. Ahora saben cómo evitarlo."
+                "¡CRASH! Si levantaron la mano, bien hecho. El problema no fue el filtro, fue la ACCIÓN .toPandas(). Intentaron traer el océano a un vaso de agua (el Driver). Jamás hagan esto con Big Data."
             </aside>
         </section>
+
+
 
         <!-- CHALLENGE SLIDE 2: La ilusión del Lazy Eval -->
         <section data-background-color="#1e1e1e">
@@ -820,19 +883,11 @@ print("Pipeline construido exitosamente ✓")</code></pre>
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Challenge número 2. Este es más sutil. Miren el código – hay un error matemático OBVIO ahí. 
-                Línea 9: división por cero. En cualquier lenguaje normal, eso explota inmediatamente, ¿verdad?<br><br>
-                
-                Levanten la mano si piensan que Python va a lanzar un ZeroDivisionError cuando ejecuten este script. 
-                [Pausa] Interesante. Ahora levanten la mano si piensan que NO va a explotar. [Pausa]<br><br>
-                
-                Aquí está la trampa: ¿ven alguna ACCIÓN en este código? Lean línea por línea. 
-                .read() – transformación lazy. .select() – transformación. .filter() – transformación. 
-                print() – eso no es de Spark, es de Python.<br><br>
-                
-                Entonces... ¿qué creen que pasará? [Pausa para generar tensión] Vamos a descubrirlo..."
+                "Aprendimos que las acciones masivas matan el Driver. Ahora, ¿qué pasa con los errores de lógica pura? Challenge #2: División por cero. ¿Explota o no explota?"
             </aside>
         </section>
+
+
 
         <!-- CHALLENGE SLIDE 2 - RESPUESTA -->
         <section data-background-color="#1e1e1e">
@@ -895,33 +950,11 @@ print("Pipeline construido exitosamente ✓")</code></pre>
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "[Revelar slide] ¡SAFE! El código no explota. Y veo caras de confusión – perfecto, eso significa que están pensando.<br><br>
-                
-                ¿Por qué no explota si hay una división por cero clara? Porque Spark es LAZY. Cuando escriben df.select(...), 
-                Spark NO calcula nada. Solo construye un plan lógico – una receta de lo que HAY QUE hacer, no lo que se ha hecho.<br><br>
-                
-                Es como escribir una receta de cocina que dice 'agregar 5 litros de aceite hirviendo' – la receta no te quema, 
-                pero cuando la EJECUTES en la cocina, ahí sí hay problemas.<br><br>
-                
-                En este código, no hay ninguna acción. No hay .show(), .count(), .write(), nada que fuerce a Spark a ejecutar. 
-                Entonces Spark dice 'OK, tengo el plan, me voy a dormir'. El print() se ejecuta porque es Python nativo, 
-                y desde la perspectiva de Python, todo salió bien – Spark no se quejó.<br><br>
-                
-                PERO – y esto es crítico – si agregan df_filtered.show() al final, BOOM. ArithmeticException: Division by zero. 
-                Porque ahora Spark SÍ tiene que ejecutar el plan, llega a esa línea maldita de división por cero, y explota.<br><br>
-                
-                La lección: En Pandas, los bugs explotan cuando defines el código. En Spark, explotan cuando lo ejecutas. 
-                Esto significa que pueden tener pipelines completos en notebooks que PARECEN funcionar, pero tienen errores latentes. 
-                Solo los descubren cuando corren en producción con datos reales y una acción al final.<br><br>
-                
-                Pro tip: usen df.explain() o df.explain(True) para ver el plan físico sin ejecutarlo. 
-                Catalyst les mostrará qué va a hacer, y pueden detectar algunos errores antes de ejecutar. 
-                Pero los errores de runtime como división por cero solo se ven ejecutando con datos reales.<br><br>
-                
-                ¿Alguien ha tenido este problema – código que funciona en dev pero explota en prod? [Pausa] Sí, es común. 
-                Ahora saben por qué: lazy evaluation."
+                "¡SAFE! No explota... todavía. ¿Por qué? Porque Spark es Lazy. El error está en el plan, pero sin una Acción, el plan no se ejecuta. El error está latente, esperando a producción."
             </aside>
         </section>
+
+
 
         <!-- CHALLENGE SLIDE 3: El bucle de la muerte -->
         <section data-background-color="#1e1e1e">
@@ -965,20 +998,11 @@ df_resultado = spark.createDataFrame(resultados)</code></pre>
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Challenge final. Este es el que más veo en equipos que vienen de Pandas. 
-                Miren este código – ¿les parece familiar? Es prácticamente un patrón clásico de Pandas: 
-                iterar fila por fila, aplicar lógica, guardar resultados.<br><br>
-                
-                Pregunta número 1: ¿Este código va a funcionar? ¿Va a explotar? [Pausa]<br>
-                Pregunta número 2 (la trampa): Si funciona... ¿será rápido o lento? [Pausa]<br><br>
-                
-                Piensen en lo que hemos aprendido. Tenemos 10 millones de filas. Hay un .collect() ahí – ya vimos qué hace eso. 
-                Luego hay un bucle for de Python iterando... ¿cuántas veces? 10 millones.<br><br>
-                
-                Levanten la mano si piensan que va a ser rápido. [Nadie levanta la mano, risas] 
-                Exacto. Pero vamos a ver EXACTAMENTE por qué es tan malo..."
+                "Ya vimos crashes y bugs latentes. Ahora el peor de todos: el código que funciona pero no termina nunca. Challenge #3: El bucle for."
             </aside>
         </section>
+
+
 
         <!-- CHALLENGE SLIDE 3 - RESPUESTA -->
         <section data-background-color="#1e1e1e">
@@ -1051,41 +1075,11 @@ df_resultado = (df
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "[Revelar slide] SLOW. Brutal, dolorosamente lento. Y miren esos números: 8 segundos vs 45 minutos. 
-                Eso no es una mejora incremental – es un cambio de orden de magnitud.<br><br>
-                
-                ¿Qué está pasando aquí? Déjenme pintarles la escena: Tienen un cluster con 32 cores, cada uno esperando para procesar datos. 
-                Ejecutan este código. ¿Qué pasa?<br><br>
-                
-                Paso 1: .collect() trae los 10 millones de filas del cluster distribuido al driver. 
-                Eso ya toma 2-3 minutos solo para transferir por la red y deserializar. Los 32 cores terminan su trabajo y se quedan ociosos.<br><br>
-                
-                Paso 2: El bucle for empieza. Esto se ejecuta en el intérprete de Python, en un SOLO core del driver. 
-                Los otros 31 cores del cluster están ahí, mirando, esperando trabajo. Pero no hay nada para ellos – 
-                todo el procesamiento está pasando en el driver en Python puro.<br><br>
-                
-                Paso 3: Python itera 10 millones de veces. Cada iteración tiene overhead: acceder al diccionario, 
-                hacer el if, calcular el margen, crear un dict nuevo, hacer append a la lista. 
-                En código compilado optimizado esto sería rápido, pero en Python interpretado, cada operación es costosa.<br><br>
-                
-                El resultado: 10 millones de iteraciones × ~50 microsegundos de overhead cada una = 500+ segundos solo en overhead, 
-                sin contar el trabajo real. Agreguemos el trabajo de transferir datos, garbage collection de Python manejando una lista gigante... 
-                fácilmente 15-45 minutos dependiendo de la RAM del driver.<br><br>
-                
-                Ahora comparen con la versión Spark nativa: .filter() y .select() son transformaciones que se distribuyen. 
-                Catalyst las optimiza, las divide en 128 tasks (asumiendo nuestra config recomendada), 
-                y las ejecuta en 32 cores simultáneamente. Cada core procesa ~300K filas en paralelo. 
-                Tiempo total: 8 segundos. Eso es 200-300x más rápido.<br><br>
-                
-                La lección profunda: Spark no es Pandas escalado. No pueden pensar 'voy a iterar fila por fila'. 
-                Tienen que pensar en operaciones vectorizadas, declarativas, que el optimizador puede distribuir. 
-                .filter(), .select(), .groupBy() – esas son sus primitivas. Los bucles for son veneno.<br><br>
-                
-                ¿Cuántos de ustedes tienen código con bucles for sobre DataFrames en producción ahora mismo? [Pausa] 
-                OK, tarea para esta semana: encuentren esos bucles y reescríbanlos con operaciones Spark nativas. 
-                Van a ver mejoras de 10-100x. Garantizado."
+                "Funciona... pero es 1000x más lento. Han forzado a Spark (Ferrari) a comportarse como Python (triciclo). Nunca iteren filas en Spark. Usen la API declarativa."
             </aside>
         </section>
+
+
 
         <!-- SLIDE CENTRAL: Entendiendo las Particiones (Analogía Supermercado) -->
         <section>
@@ -1249,251 +1243,12 @@ df_resultado = (df
             </div>
 
             <aside class="notes">
-                <strong>Script del Orador - Analogía del Supermercado:</strong><br>
-                "Olviden por un momento el código y la teoría. Vamos a hablar de algo que todos conocemos: hacer fila en el supermercado. 
-                Es viernes por la tarde, hay 10 millones... bueno, digamos 1000 clientes (pero imaginen que son 10 millones de filas de datos).<br><br>
-                
-                <strong>Escenario Pandas:</strong><br>
-                [Señalar la línea roja larga] El supermercado tiene solo UNA caja abierta. La cajera es increíblemente rápida – 
-                tiene un procesador Intel de última generación con 16 cores. Pero solo hay una caja abierta, así que todos esos cores, 
-                excepto uno, están mirando TikTok. La fila es kilométrica. La gente está frustrada. 
-                Y lo peor: si esa cajera se enferma o su terminal se cuelga, TODO el supermercado se detiene.<br><br>
-                
-                Eso es exactamente Pandas: no importa cuántos cores tenga tu laptop, Pandas solo puede usar uno a la vez para procesar tu DataFrame. 
-                Los otros 15 cores están ahí, ociosos, esperando trabajo que nunca llega. Tiempo total: 30 minutos para procesar todo.<br><br>
-                
-                <strong>Escenario Spark (Bien Particionado):</strong><br>
-                [Señalar las 10 líneas verdes] Ahora el gerente del supermercado es inteligente. Ve la fila kilométrica y dice: 
-                'Abrimos 10 cajas simultáneamente'. La fila original se DIVIDE en 10 trozos pequeños. 
-                Cada cajera (cada core) procesa su grupo de clientes en paralelo. ¿Resultado? Terminan en 3 minutos. 
-                No es magia – es simplemente paralelismo real.<br><br>
-                
-                Eso es Spark con buen particionamiento: divides tus 10 millones de filas en, digamos, 128 particiones 
-                (porque tienes 32 cores × 4). Cada core procesa su partición en paralelo. El speedup es casi lineal.<br><br>
-                
-                <strong>El Error Mortal: Data Skew (Desbalance):</strong><br>
-                [Señalar la tarjeta roja de skew] Pero aquí viene el error que mata el performance incluso en Spark. 
-                Imaginen esto: el gerente abre 10 cajas como planeado, pero hay un problema con la señalización. 
-                Todos los clientes van a la Caja 1. Las otras 9 cajas están vacías, con cajeras esperando.<br><br>
-                
-                La Caja 1 tiene una fila de 1000 personas. Las Cajas 2-10 tienen cero. ¿Cuánto tardan en procesar a todos? 
-                Los mismos 30 minutos que con una sola caja. Acaban de reinventar Pandas, pero pagando por 10 cajeras en lugar de una. 
-                Más caro, mismo resultado.<br><br>
-                
-                Esto es Data Skew en Spark: cuando no eliges bien tu clave de partición, o cuando tus datos tienen distribución desigual. 
-                Ejemplo real: si particionas por 'país' y el 80% de tus clientes son de USA, 
-                la partición 'USA' va a ser gigante y las otras (Islandia, Ecuador, etc.) van a ser minúsculas. 
-                Un core va a estar sobrecargado procesando USA mientras los otros 31 cores terminan en 2 segundos y se quedan esperando.<br><br>
-                
-                <strong>La Fórmula del Éxito:</strong><br>
-                [Señalar tarjeta verde] Cajas = Cores × 2 a 4. En nuestro supermercado, si tienes 32 cajeras disponibles, 
-                abres 64-128 cajas (sí, pueden rotar). ¿Por qué más cajas que cajeras? 
-                Porque mientras una cajera termina con un cliente y procesa el pago (latencia de red, espera de I/O), 
-                ya tiene otra fila lista para atender. Evitas idle time.<br><br>
-                
-                En datos: 32 cores × 4 = 128 particiones para 10M de filas = 78,000 filas por partición. 
-                Cada core procesa 78K filas – suficiente trabajo para justificar el overhead de scheduling, 
-                pero no tanto que se quede sin RAM.<br><br>
-                
-                <strong>El Anti-Pattern:</strong><br>
-                [Señalar tarjeta oscura] 2000 particiones para 10M de filas = 5000 filas por partición. 
-                Es como tener 2000 cajas en el supermercado para 1000 clientes. El overhead de abrir todas esas cajas, 
-                entrenar cajeras, coordinarlas... supera el beneficio. Cada partición termina en 50ms, 
-                pero el overhead de crear y coordinar la task es 200ms. Están perdiendo 4x en overhead puro.<br><br>
-                
-                <strong>La Lección del Supermercado:</strong><br>
-                La clave no es tener MUCHAS cajas. La clave es:<br>
-                1. Tener SUFICIENTES cajas (Particiones ≥ Cores)<br>
-                2. DISTRIBUIR BIEN a los clientes entre ellas (buena clave de partición, evitar skew)<br>
-                3. Que cada caja tenga SUFICIENTE trabajo (no over-partitioning)<br><br>
-                
-                Cuando dominen esto – cuando piensen en sus datos como 'clientes en filas del supermercado' – 
-                van a dejar de tener jobs que tardan horas. Van a tener jobs que tardan minutos. 
-                Y la diferencia no es código más complejo – es simplemente entender cómo distribuir el trabajo.<br><br>
-                
-                Pregunta final: ¿Alguien tiene un job lento en producción ahora mismo? [Pausa] 
-                Apuesto a que es uno de estos tres problemas: (1) una sola partición (Pandas disfrazado), 
-                (2) data skew (todas las filas en una partición), o (3) over-partitioning (2000 particiones para datos pequeños). 
-                Esta semana, revisen sus jobs lentos con esta analogía en mente. Les garantizo que encuentran el cuello de botella."
-            </aside>
-        </section>
-
-        <!-- SLIDE 4: Lazy Evaluation & DAG -->
-        <section>
-            <h2 style="margin-bottom: 2rem; text-align: center;">Lazy Evaluation: <span class="accent">El Plan antes de la Acción</span></h2>
-
-            <div class="grid-container" style="grid-template-columns: 2fr 1fr; gap: clamp(1.5rem, 3vw, 3rem);">
-                <!-- Left: DAG Diagram -->
-                <div>
-                    <h3 style="margin-bottom: 1.5rem;">El DAG (Directed Acyclic Graph)</h3>
-                    <div style="display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 2rem); align-items: center;">
-                        <!-- Transformations -->
-                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                            <div class="dag-node" style="background: rgba(226,90,28,0.1);">
-                                read.parquet()
-                            </div>
-                            <div class="dag-arrow"></div>
-                            <div class="dag-node">
-                                .filter()
-                            </div>
-                            <div class="dag-arrow"></div>
-                            <div class="dag-node">
-                                .groupBy()
-                            </div>
-                        </div>
-                        <div style="text-align: center;">
-                            <p class="text-secondary" style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
-                                Transformaciones (lazy – no ejecutan nada)
-                            </p>
-                        </div>
-                        <div style="font-size: clamp(2rem, 4vw, 3rem); color: var(--spark-orange);">↓</div>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div class="dag-node accent-bg">
-                                .count() / .show()
-                            </div>
-                        </div>
-                        <div style="text-align: center;">
-                            <p class="text-secondary" style="margin: 0; font-size: clamp(0.8rem, 1.2vw, 1rem); overflow-wrap: break-word;">
-                                Acción (trigger – ejecuta todo el DAG)
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="accent-border" style="margin-top: 1.5rem; padding: clamp(1rem, 2vw, 1.5rem); overflow: hidden;">
-                        <p style="margin: 0; font-size: clamp(0.85rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
-                            <strong>Catalyst Optimizer:</strong> Analiza el DAG completo y lo reescribe para eficiencia máxima 
-                            (predicate pushdown, column pruning, join reordering).
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Right: Code Example -->
-                <div class="bento-card">
-                    <h3 style="margin-bottom: 1rem;">Ejemplo</h3>
-                    <pre style="background: var(--dark-bg); color: var(--off-white); padding: clamp(1rem, 2vw, 1.5rem); font-size: clamp(0.7rem, 1vw, 0.85rem); overflow-x: auto;"><code>df = spark.read.parquet("data.parquet")
-# ✓ Lazy (no ejecuta)
-
-df2 = df.filter(col("edad") > 25)
-# ✓ Lazy (solo añade al DAG)
-
-df3 = df2.groupBy("ciudad").count()
-# ✓ Lazy (acumula transformaciones)
-
-df3.show()
-# ❌ ACCIÓN → Ejecuta todo el DAG</code></pre>
-
-                    <div style="background: var(--spark-orange); color: white; padding: 1rem; margin-top: 1rem; overflow: hidden;">
-                        <p style="margin: 0; font-size: clamp(0.75rem, 1.1vw, 0.9rem); overflow-wrap: break-word;">
-                            <strong>⚡ Ventaja:</strong> Catalyst puede optimizar el plan completo antes de ejecutar. 
-                            Si detecta que solo necesitas 3 columnas, NO leerá las otras 17.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Esto es lo que confunde a la gente que viene de Pandas. En Pandas, cuando escriben df.filter(...), 
-                el sistema ejecuta inmediatamente. En Spark, NADA se ejecuta hasta que llaman a una 'acción' como .show(), .count(), o .write().<br><br>
-                
-                ¿Por qué es esto brillante? Porque Spark construye un grafo dirigido acíclico (DAG) de todas las transformaciones que quieren hacer. 
-                Luego, el Catalyst Optimizer – que es esencialmente un motor de optimización de consultas SQL – analiza ese DAG completo y lo reescribe.<br><br>
-                
-                Ejemplo práctico: Ustedes escriben .filter(col('edad') > 25) después de leer un Parquet. Catalyst detecta esto y hace 'predicate pushdown': 
-                en lugar de leer TODOS los datos y luego filtrar, lee SOLO las particiones donde edad > 25 está almacenado (gracias a los metadatos de Parquet).<br><br>
-                
-                O imaginen que seleccionan 3 columnas al final. Catalyst hace 'column pruning': reescribe el plan para que NUNCA se lean las otras columnas. 
-                Esto no es magia – es un optimizador de consultas de clase SQL Server/Oracle, pero para código Python.<br><br>
-                
-                Regla de oro: Mientras más transformaciones encadenen antes de la acción, más oportunidades tiene Catalyst de optimizar. 
-                No ejecuten .count() en loops – están destruyendo el plan de optimización."
+                "Hemos visto cómo matar el rendimiento. Ahora veamos cómo revivirlo. El concepto más avanzado y crucial de Spark: Las Particiones. Piensen en un supermercado..."
             </aside>
         </section>
 
-        <!-- SLIDE 5: Anatomía - Driver, Workers, Executors -->
-        <section>
-            <h2 style="margin-bottom: 2rem; text-align: center;">Anatomía de un Cluster: <span class="accent">Driver → Executors → Tasks</span></h2>
 
-            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
-                <!-- Driver -->
-                <div style="margin-bottom: clamp(1.5rem, 3vw, 3rem);">
-                    <div class="arch-box-accent" style="padding: clamp(1rem, 2vw, 2rem); margin-bottom: 1rem; overflow: hidden;">
-                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
-                            <div class="number-callout accent-bg" style="color: white; border-color: var(--spark-orange);">1</div>
-                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
-                                <h3 style="margin-bottom: 0.5rem;">Driver (Cerebro)</h3>
-                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
-                                    Orquesta todo. Crea el DAG, lo optimiza con Catalyst, y divide el trabajo en Tasks.
-                                </p>
-                                <p class="text-mono" style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.1vw, 0.9rem); color: var(--text-secondary); overflow-wrap: break-word;">
-                                    Vive en tu notebook de Databricks
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Executors -->
-                <div style="margin-bottom: clamp(1.5rem, 3vw, 3rem);">
-                    <div class="arch-box" style="padding: clamp(1rem, 2vw, 2rem); margin-bottom: 1rem; border-color: var(--text-primary); overflow: hidden;">
-                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
-                            <div class="number-callout" style="border-color: var(--text-primary);">2</div>
-                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
-                                <h3 style="margin-bottom: 0.5rem;">Executors (Trabajadores)</h3>
-                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
-                                    Procesos JVM distribuidos en el cluster. Cada uno tiene N cores y RAM asignada.
-                                </p>
-                                <p class="text-mono" style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.1vw, 0.9rem); color: var(--text-secondary); overflow-wrap: break-word;">
-                                    Ej: 4 executors × 8 cores cada uno = 32 cores totales
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tasks -->
-                <div>
-                    <div class="arch-box" style="padding: clamp(1rem, 2vw, 2rem); border-color: var(--text-primary); overflow: hidden;">
-                        <div class="flex-center" style="flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem);">
-                            <div class="number-callout" style="border-color: var(--text-primary);">3</div>
-                            <div style="flex: 1; min-width: clamp(200px, 50%, 500px);">
-                                <h3 style="margin-bottom: 0.5rem;">Tasks (Unidad Atómica)</h3>
-                                <p style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); overflow-wrap: break-word;">
-                                    Cada Task procesa UNA partición en UN core. Si tienes 32 cores y 100 particiones, 
-                                    se ejecutan 32 Tasks en paralelo, luego otras 32, hasta completar las 100.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="formula-box" style="margin-top: clamp(1.5rem, 3vw, 3rem); font-size: clamp(1.2rem, 2.5vw, 1.8rem);">
-                    1 Partición = 1 Task = 1 Core (en un momento dado)
-                </div>
-            </div>
-
-            <aside class="notes">
-                <strong>Script del Orador:</strong><br>
-                "Vamos a desmitificar la arquitectura. Cuando ejecutan un job de Spark, hay tres niveles de jerarquía:<br><br>
-                
-                1. <strong>El Driver</strong> – Este es su notebook de Databricks. El driver no procesa datos. Su trabajo es: 
-                (a) Parsear su código, (b) Construir el DAG, (c) Pasárselo a Catalyst para optimizarlo, 
-                (d) Dividir el trabajo en 'Stages' y 'Tasks', y (e) Enviar esas Tasks a los Executors. 
-                Piensen en el driver como el arquitecto que diseña el plano, pero no construye la casa.<br><br>
-                
-                2. <strong>Los Executors</strong> – Son procesos JVM que viven en las máquinas del cluster. 
-                En Databricks, cuando configuran un cluster con '4 workers de 8 cores', están creando 4 executors, 
-                cada uno con 8 cores. Esos executors reciben las Tasks del driver y las ejecutan en paralelo.<br><br>
-                
-                3. <strong>Las Tasks</strong> – Esta es la unidad atómica de trabajo. Cada Task procesa exactamente UNA partición de datos. 
-                Si tienen 100 particiones y 32 cores totales, Spark ejecuta 32 Tasks simultáneamente. 
-                Cuando esas 32 terminan, ejecuta otras 32, y así hasta completar las 100.<br><br>
-                
-                La fórmula mágica: 1 Partición = 1 Task = 1 Core. Esta es la base del paralelismo en Spark. 
-                Si tienen 1000 particiones pero solo 8 cores, van a ejecutar 125 waves (rondas) de 8 tasks. 
-                Si tienen 2 particiones y 32 cores, 30 cores van a estar ociosos. El balanceo de particiones ES el performance tuning."
-            </aside>
-        </section>
 
         <!-- SLIDE 6: Particiones y Best Practices -->
         <section>
@@ -1588,31 +1343,117 @@ df3.show()
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Llegamos al tema más crítico para optimización: las particiones. Este es donde veo el 90% de los errores en producción.<br><br>
-                
-                Escenario común: Tienen una tabla de 10 millones de registros. Spark por defecto usa 200 particiones (spark.sql.shuffle.partitions). 
-                Eso significa 50,000 filas por partición. Suena razonable, ¿verdad? Pero luego alguien lee en un blog 'más particiones = más paralelismo' 
-                y lo aumentan a 2000. Ahora cada partición tiene 5,000 filas.<br><br>
-                
-                El problema: Cada Task tiene overhead. Spark necesita schedulear la task, serializarla, enviarla al executor, deserializarla, 
-                ejecutarla, y recoger el resultado. Ese overhead puede ser de 100-200ms. Si el procesamiento real de 5,000 filas toma 50ms, 
-                están gastando MÁS tiempo en overhead que en trabajo real. Es como contratar 100 personas para que cada una mueva una caja: 
-                el tiempo de coordinarlas supera el beneficio.<br><br>
-                
-                La regla de oro: Particiones = Cores × 2 a 4. ¿Por qué el multiplicador? Porque permite que mientras un core termina una task, 
-                ya tenga otra lista para ejecutar (evita idle time). Para un cluster de 32 cores, 64-128 particiones es óptimo. 
-                Eso da ~78K-156K filas por partición en un dataset de 10M – el sweet spot para balancear paralelismo y overhead.<br><br>
-                
-                Y el tema del shuffle: cuando hacen groupBy() o join(), Spark necesita redistribuir datos por la red para agrupar registros con la misma clave. 
-                Eso es costoso. La estrategia: (1) Filtren lo más posible ANTES del shuffle para reducir datos a mover. 
-                (2) Si están juntando una tabla grande con una pequeña (< 10MB), usen broadcast() para copiar la tabla pequeña a cada executor 
-                en lugar de shufflear la grande. (3) Si hacen joins recurrentes en la misma clave, consideren pre-particionar los datos con .partitionBy() 
-                al guardarlos como Parquet. Eso elimina el shuffle en queries posteriores.<br><br>
-                
-                Resumen ejecutivo: Para 10M de registros en un cluster de 32 cores, usen 64-128 particiones, guarden como Parquet particionado por la clave de negocio más común, 
-                y eviten shuffles innecesarios filtrando temprano. Eso es el 80% del performance tuning."
+                "Del supermercado a la fórmula matemática. ¿Cuántas particiones necesito? La regla de oro es: Cores x 2 a 4. No adivinen. Calculen."
             </aside>
         </section>
+
+
+
+        <!-- SLIDE 3: Row vs Columnar Storage -->
+        <section>
+            <div style="height: 100%; display: flex; flex-direction: column; padding: 2rem;">
+                <h2 style="margin: 0 0 2rem 0; text-align: center; flex-shrink: 0;">
+                    Almacenamiento: <span class="accent">Row-Oriented vs Columnar</span>
+                </h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; flex: 1; min-height: 0;">
+                    <!-- Row-Oriented -->
+                    <div style="background: white; border: 1px solid var(--grid-gray); padding: 1.5rem; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 1rem; min-height: 0; overflow: hidden;">
+                        <h3 style="margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 700;">
+                            Row-Oriented (CSV, Teradata)
+                        </h3>
+                        
+                        <div style="display: flex; justify-content: center; align-items: center; min-height: 140px;">
+                            <div style="width: clamp(90px, 13vw, 130px); height: clamp(120px, 20vh, 160px); position: relative; flex-shrink: 0;">
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white;"></div>
+                                <div style="width: 100%; height: 68%; border-left: 2px solid var(--text-primary); border-right: 2px solid var(--text-primary); margin-top: -8%; position: relative;">
+                                    <div style="position: absolute; top: 0; width: 100%; height: 100%;">
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.05);"></div>
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.1);"></div>
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.05);"></div>
+                                        <div style="height: 18%; border-top: 1px dashed var(--text-secondary); margin: 2% 0; background: rgba(0,0,0,0.1);"></div>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white; margin-top: -8%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.68rem, 1vw, 0.82rem); line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word;">
+                            Row1: [id, nombre, edad, ciudad, ...20 cols]<br>
+                            Row2: [id, nombre, edad, ciudad, ...20 cols]<br>
+                            Row3: [id, nombre, edad, ciudad, ...20 cols]
+                        </div>
+                        
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: clamp(0.75rem, 1.05vw, 0.92rem); line-height: 1.7;">
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Lee registros completos</li>
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Bueno para: OLTP, transacciones</li>
+                            <li><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Malo para: Analytics (lees datos innecesarios)</li>
+                        </ul>
+                        
+                        <div style="background: var(--dark-bg); color: white; padding: 1rem; overflow-wrap: break-word; word-wrap: break-word;">
+                            <p style="margin: 0; font-size: clamp(0.72rem, 1.05vw, 0.88rem); line-height: 1.5;">
+                                <strong>SELECT edad FROM tabla</strong><br>
+                                <span style="color: var(--spark-orange);">❌ Lee las 20 columnas</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Columnar -->
+                    <div style="background: white; border: 1px solid var(--grid-gray); padding: 1.5rem; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 1rem; min-height: 0; overflow: hidden;">
+                        <h3 style="margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 700;">
+                            Columnar (Parquet)
+                        </h3>
+                        
+                        <div style="display: flex; justify-content: center; align-items: center; min-height: 140px;">
+                            <div style="width: clamp(90px, 13vw, 130px); height: clamp(120px, 20vh, 160px); position: relative; flex-shrink: 0;">
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white;"></div>
+                                <div style="width: 100%; height: 68%; border-left: 2px solid var(--text-primary); border-right: 2px solid var(--text-primary); margin-top: -8%; position: relative;">
+                                    <div style="position: absolute; top: 0; width: 100%; height: 100%; display: flex;">
+                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.1);"></div>
+                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.2);"></div>
+                                        <div style="flex: 1; border-right: 1px dashed var(--spark-orange); margin: 0 2%; background: rgba(226,90,28,0.1);"></div>
+                                        <div style="flex: 1; margin: 0 2%; background: rgba(226,90,28,0.2);"></div>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; height: 16%; border: 2px solid var(--text-primary); border-radius: 50%; background: white; margin-top: -8%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.68rem, 1vw, 0.82rem); line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word;">
+                            Col_id: [1, 2, 3, 4, ...]<br>
+                            Col_edad: [25, 30, 45, 22, ...]<br>
+                            Col_ciudad: ["NY", "LA", ...]
+                        </div>
+                        
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: clamp(0.75rem, 1.05vw, 0.92rem); line-height: 1.7;">
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Lee solo las columnas necesarias</li>
+                            <li style="margin-bottom: 0.5rem;"><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Bueno para: Analytics, Agregaciones</li>
+                            <li><span style="color: var(--spark-orange); font-weight: 700; margin-right: 0.5rem;">–</span>Compresión brutal (valores repetidos)</li>
+                        </ul>
+                        
+                        <div style="background: var(--spark-orange); color: white; padding: 1rem; overflow-wrap: break-word; word-wrap: break-word;">
+                            <p style="margin: 0; font-size: clamp(0.72rem, 1.05vw, 0.88rem); line-height: 1.5;">
+                                <strong>SELECT edad FROM tabla</strong><br>
+                                ✓ Lee SOLO la columna 'edad' (Projection Pushdown)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-left: 4px solid var(--spark-orange); padding: 1rem 1.5rem; margin-top: 1.5rem; background: white; flex-shrink: 0;">
+                    <p style="margin: 0; font-size: clamp(1.1rem, 1.9vw, 1.6rem); font-weight: 700; line-height: 1.3;">
+                        Insight: Con 20 columnas, Parquet puede ser <span class="accent">20x más rápido</span> que CSV para queries analíticas.
+                    </p>
+                </div>
+            </div>
+
+            <aside class="notes">
+                <strong>Script del Orador:</strong><br>
+                "Optimizamos el procesamiento con particiones. Ahora optimicemos el almacenamiento. ¿Cómo guardamos los datos para que Spark vuele? Row vs Columnar."
+            </aside>
+        </section>
+
+
 
         <!-- SLIDE: Spark en la Era de la IA -->
         <section>
@@ -1702,75 +1543,12 @@ df_vectorized = df.withColumn(
             </div>
 
             <aside class="notes">
-                <strong>Script del Orador - Spark para IA:</strong><br>
-                "Antes de cerrar, déjenme conectar todo esto con nuestro trabajo diario en GenAI y Data Science. 
-                Sé que muchos de ustedes piensan que Spark es solo para mover tablas grandes o hacer joins. 
-                Pero para nuestros agentes de IA, Spark es un acelerador crítico.<br><br>
-                
-                <strong>El Problema Real:</strong><br>
-                Imaginen que necesitan vectorizar 50,000 PDFs para alimentar un sistema RAG. 
-                Cada documento tarda 10 milisegundos en procesarse con SentenceTransformers. 
-                En su laptop con Pandas, iteran fila por fila, documento por documento. 
-                10ms × 10 millones de chunks de texto = 27 horas de procesamiento. 
-                Y eso asumiendo que su laptop no se queda sin RAM a mitad del camino.<br><br>
-                
-                O necesitan correr Sentiment Analysis sobre 10 millones de chats de soporte. 
-                Su modelo de HuggingFace tarda 15ms por texto. Eso son 41 horas secuenciales. 
-                Para cuando termine, el reporte que necesitaban ya está obsoleto.<br><br>
-                
-                <strong>La Solución - Pandas UDF:</strong><br>
-                [Señalar la tarjeta naranja] Aquí es donde Pandas UDF cambia el juego. 
-                Es un decorador de PySpark que toma su función de Python – su código de LangChain, HuggingFace, spaCy, lo que sea – 
-                y le dice a Spark: 'Distribuye esto en paralelo'.<br><br>
-                
-                Miren el código: [Señalar tarjeta de código] Es su función Python normal. 
-                Toman un Series de Pandas (un batch de textos), llaman a su modelo, devuelven los embeddings. 
-                La única diferencia es ese decorador @pandas_udf arriba. 
-                Eso le dice a Spark: 'Esta función opera sobre batches de Pandas. Por favor, divídela en particiones y ejecuta en paralelo'.<br><br>
-                
-                Cuando ejecutan df.withColumn('embedding', vectorize_text(col('documento'))), ¿qué pasa?<br>
-                1. Spark divide sus 10M de documentos en 128 particiones (siguiendo nuestra config recomendada)<br>
-                2. Cada executor recibe una partición (~78K documentos)<br>
-                3. Dentro de cada executor, la función carga el modelo UNA VEZ y procesa su batch completo<br>
-                4. Los 32 cores procesan simultáneamente<br>
-                5. Resultado: 27 horas se convierten en 15-20 minutos<br><br>
-                
-                <strong>Casos de Uso Reales en Nuestro Equipo:</strong><br>
-                • <strong>RAG para Legal:</strong> Vectorizamos 200K documentos legales cada semana. 
-                Pandas UDF con SentenceTransformers nos llevó de 3 días de procesamiento a 2 horas.<br><br>
-                
-                • <strong>Sentiment Analysis de Redes Sociales:</strong> Analizamos 5M de tweets diarios con un modelo BERT fine-tuned. 
-                Sin Spark: imposible en tiempo real. Con Pandas UDF: procesamos todo en 30 minutos cada mañana.<br><br>
-                
-                • <strong>Tokenización Multilingüe:</strong> Procesamos chats de soporte en 12 idiomas con spaCy. 
-                Cada idioma necesita un modelo diferente. Pandas UDF carga el modelo correcto por idioma y procesa en paralelo. 
-                De 8 horas a 45 minutos.<br><br>
-                
-                <strong>El Insight Clave:</strong><br>
-                [Señalar el insight naranja] No limiten Spark a SQL y agregaciones. 
-                La verdadera magia es que pueden tomar su código complejo de Python – sus modelos de IA, sus pipelines de NLP, 
-                sus transformaciones custom – y Spark los distribuye automáticamente. 
-                Escriben código Python como siempre, pero se ejecuta en 32 cores en lugar de 1.<br><br>
-                
-                <strong>Advertencia Técnica:</strong><br>
-                Eso sí, hay consideraciones: Los modelos grandes (GPT-3.5, Llama-70B) no caben en RAM de cada executor. 
-                Para esos casos, usen servicios de inferencia externos (OpenAI API, Databricks Model Serving) 
-                y hagan requests en batch desde Pandas UDF. O mejor: fine-tuneen modelos más pequeños que SÍ quepan en memoria del executor.<br><br>
-                
-                También: si su UDF tiene mucha lógica Python pura, va a ser más lenta que funciones nativas de Spark. 
-                Pero para tareas de IA donde NO HAY alternativa nativa (embeddings, modelos custom, librerías de Python específicas), 
-                Pandas UDF es la única forma de paralelizar sin reescribir todo en Scala o Java.<br><br>
-                
-                <strong>Tarea para Esta Semana:</strong><br>
-                Identifiquen UN pipeline lento en su trabajo: vectorización, inferencia de modelo, procesamiento de NLP. 
-                Si actualmente tarda más de 1 hora, es candidato para Pandas UDF. 
-                Envuélvanlo con @pandas_udf, configuren sus particiones correctamente, y vean la mejora. 
-                Les garantizo que van a ver speedups de 10-100x.<br><br>
-                
-                Spark no es solo para ingeniería de datos. Es el motor de ejecución para escalar IA en producción. 
-                Ahora lo saben. Ahora úsenlo."
+                <strong>Script del Orador:</strong><br>
+                "Ya tenemos datos rápidos y procesamiento eficiente. ¿Para qué usamos todo este poder hoy? Spark es el motor oculto de la IA Generativa a escala..."
             </aside>
         </section>
+
+
 
         <!-- SLIDE 7: Checklist Final -->
         <section>
@@ -1826,27 +1604,10 @@ df_vectorized = df.withColumn(
 
             <aside class="notes">
                 <strong>Script del Orador:</strong><br>
-                "Para cerrar, aquí está su checklist de acción inmediata para optimizar sus pipelines de Databricks:<br><br>
-                
-                1. <strong>Formato:</strong> Esta semana, identifiquen sus tablas CSV más usadas y conviertan a Parquet particionado. 
-                El ROI es inmediato – verán mejoras de 5-10x en lectura.<br><br>
-                
-                2. <strong>Particiones:</strong> Revisen su configuración de spark.sql.shuffle.partitions. 
-                Si está en 200 (default) y tienen 32+ cores, suban a 64-128. Si tienen over-partitioning (2000+), bajen drásticamente.<br><br>
-                
-                3. <strong>Código:</strong> Busquen .iterrows(), .apply(), bucles for sobre DataFrames. Esos son anti-patterns de Pandas. 
-                Reescriban usando .select(), .filter(), .groupBy() – transformaciones que Catalyst puede optimizar.<br><br>
-                
-                4. <strong>Joins:</strong> Identifiquen sus tablas de lookup pequeñas (países, categorías) y marquen con broadcast(). 
-                Para joins grandes recurrentes, particionen al escribir con .partitionBy('clave_común').<br><br>
-                
-                La mentalidad final: Spark no es Pandas grande. Es un motor de consultas distribuido con un optimizador de clase SQL. 
-                Tratenlo como tal – escriban código declarativo, dejen que Catalyst optimice, y diseñen para paralelismo. 
-                Con estas prácticas, sus jobs de 10M de registros deberían ejecutar en minutos, no horas.<br><br>
-                
-                Ahora, abramos para preguntas. ¿Qué casos de uso específicos tienen? Vamos a aplicar estos principios a sus pipelines reales."
+                "Hemos cubierto mucho terreno. Desde la arquitectura hasta la IA. Llévense esta foto mental: Formato correcto, Particiones balanceadas, y Mentalidad Lazy. Checklis final."
             </aside>
         </section>
+
 
     </div>
 </div>
