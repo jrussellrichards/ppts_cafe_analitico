@@ -479,57 +479,6 @@
             </section>
 
 
-            <!-- SLIDE: Agenda / Roadmap -->
-            <section>
-                <h2 style="margin-bottom: 3rem; text-align: center;">Nuestra <span class="accent">Ruta</span> Hoy</h2>
-
-                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <div style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 800px; width: 100%;">
-                        
-                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
-                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">1</div>
-                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
-                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">El Problema: ¿Por qué necesitamos Spark?</p>
-                            </div>
-                        </div>
-
-                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
-                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">2</div>
-                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
-                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">La Arquitectura: Driver, Executors, Particiones</p>
-                            </div>
-                        </div>
-
-                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
-                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">3</div>
-                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
-                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">El Lenguaje: Transformaciones, Acciones, Lazy Eval</p>
-                            </div>
-                        </div>
-
-                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
-                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">4</div>
-                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
-                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">Las Trampas: Challenges Interactivos</p>
-                            </div>
-                        </div>
-
-                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
-                            <div style="background: var(--spark-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;">5</div>
-                            <div style="flex: 1; background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 1.5rem; border-radius: 8px;">
-                                <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500;">Las Mejores Prácticas: Optimización Real</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <aside class="notes">
-                    <strong>Script del Orador:</strong><br>
-                    [El relato lo haces tú]
-                </aside>
-            </section>
-
-
             <!-- SLIDE: The Hook (Emotional Pain) -->
             <section>
                 <div
@@ -666,14 +615,12 @@
 
             <!-- SLIDE: Primer Cambio Mental -->
             <section>
-                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
-                    <div style="font-size: clamp(5rem, 12vw, 10rem);">🧠</div>
-                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;">
-                        Primer <span class="accent">Cambio Mental</span>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(6rem, 15vw, 12rem); margin-bottom: 1rem; opacity: 0.9;">🧠</div>
+                    <p style="font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1rem;">Cambio Mental #1</p>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; line-height: 1.2;">
+                        Una máquina<br>→ <span class="accent">Muchas máquinas</span>
                     </h2>
-                    <p style="font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--text-secondary);">
-                        De una máquina a muchas
-                    </p>
                 </div>
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
@@ -682,130 +629,101 @@
             </section>
 
 
-            <!-- SLIDE 2: Single Node vs Distributed -->
+            <!-- SLIDE: Single Node - Lo que conoces -->
             <section>
-                <h2 style="margin-bottom: 2rem; text-align: center;">El Cambio Mental: <span class="accent">Single Node
-                        → Distributed</span></h2>
-
-                <div class="grid-container grid-2col">
-                    <!-- Pandas/Single Node -->
-                    <div class="bento-card fragment">
-                        <div>
-                            <h3 style="margin-bottom: 1.5rem;">Pandas (Single Node)</h3>
-                            <div style="margin: 1.5rem 0;">
-                                <div class="arch-box" style="min-height: clamp(150px, 20vh, 200px);">
-                                    <div style="text-align: center;">
-                                        <div style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem;">💻</div>
-                                        <p class="text-mono" style="margin: 0;">CPU + RAM</p>
-                                        <p
-                                            style="font-size: clamp(0.8rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 0.5rem;">
-                                            Todo en una máquina
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
-                                <li>Iteración explícita (.apply, .iterrows)</li>
-                                <li>Límite: RAM disponible</li>
-                                <li>Ejecución inmediata</li>
-                            </ul>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    <div style="font-size: clamp(5rem, 10vw, 8rem);">💻</div>
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;">
+                        Pandas: <span style="color: var(--text-secondary);">Single Node</span>
+                    </h2>
+                    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem;">
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 2rem; border-radius: 8px; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                            Todo en RAM
                         </div>
-                        <div class="formula-box" style="font-size: clamp(0.9rem, 1.5vw, 1.2rem);">
-                            Velocidad = f(CPU cores)
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 2rem; border-radius: 8px; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                            1 CPU
                         </div>
-                    </div>
-
-                    <!-- Spark/Distributed -->
-                    <div class="bento-card fragment">
-                        <div>
-                            <h3 style="margin-bottom: 1.5rem;">Spark (Distributed)</h3>
-                            <div style="margin: 1.5rem 0;">
-                                <div class="flex-center" style="gap: clamp(0.5rem, 1vw, 1rem);">
-                                    <div class="arch-box-accent"
-                                        style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1.5rem, 2.5vw, 2rem); padding: 0.5rem;">
-                                        💻</div>
-                                    <div class="arch-box"
-                                        style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1rem, 2vw, 1.5rem); padding: 0.5rem;">
-                                        ⚙️</div>
-                                    <div class="arch-box"
-                                        style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1rem, 2vw, 1.5rem); padding: 0.5rem;">
-                                        ⚙️</div>
-                                    <div class="arch-box"
-                                        style="width: clamp(60px, 10vw, 80px); height: clamp(60px, 10vw, 80px); font-size: clamp(1rem, 2vw, 1.5rem); padding: 0.5rem;">
-                                        ⚙️</div>
-                                </div>
-                                <div style="text-align: center; margin-top: 1rem;">
-                                    <p class="text-mono" style="margin: 0;">
-                                        <span class="accent">Driver</span> + Workers (Executors)
-                                    </p>
-                                </div>
-                            </div>
-                            <ul style="font-size: clamp(0.9rem, 1.3vw, 1.1rem);">
-                                <li>Transformaciones declarativas</li>
-                                <li>Límite: Cluster (escalable)</li>
-                                <li>Lazy evaluation (plan + acción)</li>
-                            </ul>
-                        </div>
-                        <div class="formula-box" style="font-size: clamp(0.9rem, 1.5vw, 1.2rem);">
-                            Velocidad = f(Particiones × Cores)
+                        <div style="background: white; border: 2px solid var(--grid-gray); padding: 1.2rem 2rem; border-radius: 8px; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                            Límite: Tu laptop
                         </div>
                     </div>
                 </div>
-
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
-                    "Pasar de Pandas a Spark no es solo cambiar de librería, es cambiar de cerebro. En el mundo Single
-                    Node, tu límite es tu RAM. En Spark, tu límite es tu presupuesto. Pero para aprovechar ese poder,
-                    tenemos que entender que ya no estamos iterando filas..."
+                    [El relato lo haces tú]
                 </aside>
             </section>
 
 
-            <!-- SLIDE: Particiones -->
+            <!-- SLIDE: Distributed - El nuevo mundo -->
             <section>
-                <h2 style="margin-bottom: 3rem; text-align: center;"><span class="accent">Particiones</span></h2>
-
-                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3rem;">
-                    
-                    <!-- DataFrame Completo -->
-                    <div class="fragment" style="text-align: center;">
-                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">DataFrame (10 GB)</p>
-                        <div style="background: var(--spark-orange); color: white; padding: clamp(2rem, 4vw, 3rem); border-radius: 8px; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; min-width: clamp(300px, 60vw, 600px);">
-                            📊 DATASET COMPLETO
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    <div style="display: flex; gap: 1rem; font-size: clamp(3rem, 6vw, 5rem);">
+                        <span>💻</span><span>💻</span><span>💻</span><span>💻</span>
+                    </div>
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;">
+                        Spark: <span class="accent">Distributed</span>
+                    </h2>
+                    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem;">
+                        <div style="background: white; border: 2px solid var(--spark-orange); padding: 1.2rem 2rem; border-radius: 8px; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                            Datos repartidos
                         </div>
-                    </div>
-
-                    <!-- Flecha hacia abajo -->
-                    <div class="fragment" style="font-size: clamp(2rem, 4vw, 3rem); color: var(--text-secondary);">
-                        ↓
-                    </div>
-
-                    <!-- Particiones divididas -->
-                    <div class="fragment" style="text-align: center;">
-                        <p style="margin-bottom: 1rem; font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--text-secondary);">Dividido en Particiones (~128 MB c/u)</p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; max-width: clamp(400px, 80vw, 800px);">
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P1
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P2
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P3
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P4
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                P5
-                            </div>
-                            <div style="background: #10B981; color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 8px; font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 500;">
-                                ...
-                            </div>
+                        <div style="background: white; border: 2px solid var(--spark-orange); padding: 1.2rem 2rem; border-radius: 8px; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                            N CPUs
+                        </div>
+                        <div style="background: white; border: 2px solid var(--spark-orange); padding: 1.2rem 2rem; border-radius: 8px; font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                            Límite: El cluster
                         </div>
                     </div>
                 </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
 
+
+            <!-- SLIDE: Transición Particiones -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(6rem, 15vw, 12rem); margin-bottom: 1rem;">📦</div>
+                    <h2 style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 700;">
+                        <span class="accent">Particiones</span>
+                    </h2>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: ¿Qué son las Particiones? -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;">
+                        ¿Qué son las <span class="accent">Particiones</span>?
+                    </h2>
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--text-secondary); max-width: 700px;">
+                        Divisiones lógicas de tus datos para procesamiento paralelo
+                    </p>
+                    
+                    <!-- Visualización -->
+                    <div class="fragment" style="margin-top: 1rem;">
+                        <p style="font-size: clamp(0.9rem, 1.3vw, 1.1rem); color: var(--text-secondary); margin-bottom: 1rem;">DataFrame (10 GB) →</p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                            <div style="background: var(--spark-orange); color: white; padding: 1.5rem 2rem; border-radius: 8px; font-weight: 600;">P1<br><span style="font-size: 0.8rem; opacity: 0.8;">~128MB</span></div>
+                            <div style="background: var(--spark-orange); color: white; padding: 1.5rem 2rem; border-radius: 8px; font-weight: 600;">P2<br><span style="font-size: 0.8rem; opacity: 0.8;">~128MB</span></div>
+                            <div style="background: var(--spark-orange); color: white; padding: 1.5rem 2rem; border-radius: 8px; font-weight: 600;">P3<br><span style="font-size: 0.8rem; opacity: 0.8;">~128MB</span></div>
+                            <div style="background: var(--spark-orange); color: white; padding: 1.5rem 2rem; border-radius: 8px; font-weight: 600;">...</div>
+                            <div style="background: var(--spark-orange); color: white; padding: 1.5rem 2rem; border-radius: 8px; font-weight: 600;">P80<br><span style="font-size: 0.8rem; opacity: 0.8;">~128MB</span></div>
+                        </div>
+                    </div>
+
+                    <div class="formula-box fragment" style="margin-top: 2rem; font-size: clamp(1rem, 1.6vw, 1.3rem);">
+                        1 Partición = 1 Task = 1 Core (en paralelo)
+                    </div>
+                </div>
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
                     [El relato lo haces tú]
@@ -815,14 +733,12 @@
 
             <!-- SLIDE: Segundo Cambio Mental -->
             <section>
-                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
-                    <div style="font-size: clamp(5rem, 12vw, 10rem);">📊</div>
-                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;">
-                        Segundo <span class="accent">Cambio Mental</span>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(6rem, 15vw, 12rem); margin-bottom: 1rem; opacity: 0.9;">📊</div>
+                    <p style="font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1rem;">Cambio Mental #2</p>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; line-height: 1.2;">
+                        Filas<br>→ <span class="accent">Columnas</span>
                     </h2>
-                    <p style="font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--text-secondary);">
-                        De filas a columnas
-                    </p>
                 </div>
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
@@ -1820,7 +1736,7 @@ display(df_filtered)  # Databricks native viz</code></pre>
                     <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444;">
                         <p
                             style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; margin-bottom: 2rem; color: #ffffff; line-height: 1.5;">
-                            Este código tiene un bug matemático obvio. ¿Explotará al ejecutarse?
+                            Este código tiene un bug matemático obvio. ¿Dónde morirá la ejecución de este código?
                         </p>
 
                         <pre
@@ -1953,7 +1869,7 @@ print("Pipeline construido exitosamente ✓")</code></pre>
 
 
 
-            <!-- CHALLENGE SLIDE 3: El bucle de la muerte -->
+            <!-- CHALLENGE SLIDE 3: Narrow vs Wide en acción -->
             <section data-background-color="#1e1e1e">
                 <div
                     style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
@@ -1961,39 +1877,50 @@ print("Pipeline construido exitosamente ✓")</code></pre>
                         style="background: #E25A1C; color: #ffffff; padding: 1rem 2rem; margin-bottom: 2rem; text-align: center; display: inline-block; align-self: flex-start;">
                         <h2
                             style="margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: 0.05em;">
-                            ⚠️ CHALLENGE #3: Will it be SLOW?
+                            ⚠️ CHALLENGE #3: ¿Cuál es más rápido?
                         </h2>
                     </div>
 
                     <div style="background: #2d2d2d; padding: 3rem; border: 1px solid #444;">
                         <p
-                            style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; margin-bottom: 2rem; color: #ffffff; line-height: 1.5;">
-                            Tu compañero de Pandas escribió esto para procesar los 10M de registros:
+                            style="font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 300; margin-bottom: 2rem; color: #ffffff; line-height: 1.5;">
+                            Ambos procesan la misma tabla de <strong style="color: var(--spark-orange);">50 millones</strong> de registros:
                         </p>
 
-                        <pre
-                            style="background: #000000; color: #10B981; padding: 2rem; font-size: clamp(0.9rem, 1.3vw, 1.1rem); margin: 2rem 0; border-left: 8px solid #E25A1C; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># Leer datos
-df = spark.table("ventas_10M")
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <!-- Opción A -->
+                            <div style="background: #000000; padding: 1.5rem; border-radius: 8px;">
+                                <p style="color: var(--spark-orange); font-weight: 700; margin: 0 0 1rem 0;">Opción A</p>
+                                <pre style="color: #10B981; font-size: clamp(0.75rem, 1vw, 0.9rem); margin: 0; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code>df = spark.table("ventas")
 
-# Crear una lista para resultados
-resultados = []
+resultado = (df
+  .groupBy("categoria")
+  .count()
+)
 
-# Procesar cada fila (estilo Pandas)
-for row in df.collect():
-    if row['monto'] > 1000:
-        margen = (row['ganancia'] / row['monto']) * 100
-        resultados.append({
-            'producto': row['producto'],
-            'margen': margen
-        })
+display(resultado)</code></pre>
+                            </div>
 
-# Convertir a DataFrame de Spark
-df_resultado = spark.createDataFrame(resultados)</code></pre>
+                            <!-- Opción B -->
+                            <div style="background: #000000; padding: 1.5rem; border-radius: 8px;">
+                                <p style="color: var(--spark-orange); font-weight: 700; margin: 0 0 1rem 0;">Opción B</p>
+                                <pre style="color: #10B981; font-size: clamp(0.75rem, 1vw, 0.9rem); margin: 0; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code>df = spark.table("ventas")
+
+resultado = (df
+  .filter(col("monto") > 1000)
+  .filter(col("activo") == True)
+  .filter(col("region") == "LATAM")
+  .agg(sum("monto"))
+)
+
+display(resultado)</code></pre>
+                            </div>
+                        </div>
 
                         <div style="text-align: center; margin-top: 3rem;">
                             <p
                                 style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; margin: 0; color: #ffffff;">
-                                ¿Funcionará? ¿Será rápido? 🐌
+                                ¿A o B? 🤔
                             </p>
                         </div>
                     </div>
@@ -2001,8 +1928,7 @@ df_resultado = spark.createDataFrame(resultados)</code></pre>
 
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
-                    "Ya vimos crashes y bugs latentes. Ahora el peor de todos: el código que funciona pero no termina
-                    nunca. Challenge #3: El bucle for."
+                    "Ambos leen la misma tabla de 50 millones de filas. Uno hace groupBy + count, el otro hace 3 filtros + sum. ¿Cuál termina primero?"
                 </aside>
             </section>
 
@@ -2014,91 +1940,65 @@ df_resultado = spark.createDataFrame(resultados)</code></pre>
                     style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
                     <div
                         style="background: #2d2d2d; padding: 3rem; border: 1px solid #444; position: relative; overflow: hidden;">
-                        <!-- Sello "SLOW" con Spark Orange -->
+                        <!-- Sello -->
                         <div
-                            style="position: absolute; top: -20px; right: -20px; transform: rotate(15deg); background: #E25A1C; color: #ffffff; padding: 2rem 4rem; font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; border: 8px solid #B8450F; box-shadow: 0 10px 30px rgba(226, 90, 28, 0.5); letter-spacing: 0.1em;">
-                            🐌 SLOW
+                            style="position: absolute; top: -20px; right: -20px; transform: rotate(15deg); background: #10B981; color: #ffffff; padding: 2rem 4rem; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; border: 8px solid #0D9668; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5); letter-spacing: 0.1em;">
+                            ✅ B GANA
                         </div>
 
                         <h3
                             style="font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 700; margin-bottom: 2rem; color: #ffffff;">
-                            ⚠️ Funciona... pero es 100-1000x más lento
+                            🎯 Narrow vs Wide: La diferencia real
                         </h3>
 
-                        <div
-                            style="background: #000000; color: #ffffff; padding: 2rem; margin-bottom: 2rem; border-left: 8px solid #E25A1C;">
-                            <p
-                                style="margin: 0; font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.5; font-family: 'IBM Plex Mono', monospace;">
-                                <strong style="color: #E25A1C;">Tiempo estimado en cluster de 32 cores:</strong><br>
-                                <code style="color: #10B981; background: transparent; padding: 0;">
-                            Spark nativo: 8 segundos ⚡<br>
-                            Este bucle: 15-45 MINUTOS 🐌
-                            </code>
-                            </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                            <!-- Opción A - Lenta -->
+                            <div style="background: rgba(220, 38, 38, 0.2); padding: 1.5rem; border-radius: 8px; border: 2px solid #DC2626;">
+                                <p style="color: #DC2626; font-weight: 700; margin: 0 0 1rem 0;">❌ Opción A (groupBy)</p>
+                                <p style="color: #ffffff; font-size: clamp(0.85rem, 1.1vw, 0.95rem); margin: 0; line-height: 1.6;">
+                                    <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #DC2626;">.groupBy()</code> = <strong>Wide</strong><br><br>
+                                    → Shuffle de <strong>50M filas</strong> por red<br>
+                                    → Reorganiza datos por categoría<br>
+                                    → Espera sincronización global
+                                </p>
+                            </div>
+
+                            <!-- Opción B - Rápida -->
+                            <div style="background: rgba(16, 185, 129, 0.2); padding: 1.5rem; border-radius: 8px; border: 2px solid #10B981;">
+                                <p style="color: #10B981; font-weight: 700; margin: 0 0 1rem 0;">✅ Opción B (filters)</p>
+                                <p style="color: #ffffff; font-size: clamp(0.85rem, 1.1vw, 0.95rem); margin: 0; line-height: 1.6;">
+                                    <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.filter()</code> = <strong>Narrow</strong><br><br>
+                                    → 3 filtros en pipeline local<br>
+                                    → <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.sum()</code> parcial por partición<br>
+                                    → Shuffle mínimo al final
+                                </p>
+                            </div>
                         </div>
 
                         <div
-                            style="background: rgba(226, 90, 28, 0.15); padding: 2rem; border-left: 4px solid #E25A1C; margin-bottom: 2rem;">
-                            <p
-                                style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700; color: #ffffff;">
-                                ¿Por qué es tan lento?
-                            </p>
-                            <ul
-                                style="font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 1.5; margin: 0; padding-left: 1.5rem; color: #ffffff;">
-                                <li style="margin-bottom: 0.5rem;"><code
-                                        style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.collect()</code>
-                                    trae los 10M de filas al driver (ya vimos el problema)</li>
-                                <li style="margin-bottom: 0.5rem;">El bucle <code
-                                        style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">for</code>
-                                    es Python puro – se ejecuta en 1 solo core del driver</li>
-                                <li style="margin-bottom: 0.5rem;">NO usa los 32 cores del cluster – están ociosos
-                                    mientras el driver trabaja solo</li>
-                                <li style="margin-bottom: 0.5rem;">Cada iteración tiene overhead de Python
-                                    (interpretado, no compilado)</li>
-                                <li>10M iteraciones × 50 microsegundos cada una = 500+ segundos solo en overhead</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: #2E7D32; color: #ffffff; padding: 2rem; margin-bottom: 2rem;">
-                            <p style="margin: 0 0 1rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700;">
-                                💀 El Anti-Pattern: "Pandas en Spark"
-                            </p>
-                            <p style="margin: 0; font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 1.5;">
-                                Este código convierte Spark en una versión CARA y LENTA de Pandas.
-                                Estás pagando por un cluster de 32 cores, pero solo usas 1.
-                                Es como rentar un Ferrari para manejar en primera velocidad.
+                            style="background: rgba(226, 90, 28, 0.15); padding: 1.5rem; border-left: 4px solid #E25A1C; margin-bottom: 2rem;">
+                            <p style="margin: 0; font-size: clamp(1rem, 1.4vw, 1.2rem); color: #ffffff; line-height: 1.6;">
+                                <strong style="color: var(--spark-orange);">¿Por qué?</strong> Los 3 <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.filter()</code> se ejecutan en cada partición <strong>sin mover datos</strong>. 
+                                El <code style="background: rgba(0,0,0,0.4); padding: 0.2em 0.4em; color: #10B981;">.sum()</code> primero suma localmente, luego solo mueve los totales parciales (muy pocos bytes).
                             </p>
                         </div>
 
-                        <div style="background: #4A90E2; color: #ffffff; padding: 2rem;">
-                            <p style="margin: 0 0 1rem 0; font-size: clamp(1.1rem, 1.5vw, 1.3rem); font-weight: 700;">
-                                ✅ La versión correcta (Spark nativo):
+                        <div style="background: #4A90E2; color: #ffffff; padding: 1.5rem;">
+                            <p style="margin: 0; font-size: clamp(1rem, 1.4vw, 1.2rem); font-weight: 700;">
+                                📐 Muchas operaciones Narrow &gt; Pocas operaciones Wide
                             </p>
-                            <pre
-                                style="background: #000000; color: #10B981; padding: 1.5rem; margin: 0; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; line-height: 1.6;"><code class="language-python"># TODO en el cluster, paralelizado, vectorizado
-df_resultado = (df
-    .filter(col("monto") > 1000)
-    .select(
-        col("producto"),
-        ((col("ganancia") / col("monto")) * 100).alias("margen")
-    )
-)
-
-# Tiempo: 8 segundos en 32 cores (vs 45 minutos)</code></pre>
                         </div>
                     </div>
 
                     <p
                         style="text-align: center; color: #ffffff; font-size: clamp(1rem, 1.5vw, 1.3rem); margin-top: 2rem; font-style: italic; line-height: 1.5;">
-                        Regla de oro: <strong>Nunca</strong> uses bucles Python para iterar DataFrames. Piensa
-                        declarativo, no imperativo.
+                        El número de operaciones no importa. Lo que importa es <strong>cuánto mueves por red</strong>.
                     </p>
                 </div>
 
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
-                    "Funciona... pero es 1000x más lento. Han forzado a Spark (Ferrari) a comportarse como Python
-                    (triciclo). Nunca iteren filas en Spark. Usen la API declarativa."
+                    "B gana aunque tiene más operaciones. Los 3 filters son Narrow - se ejecutan en pipeline sin mover datos. El groupBy es Wide - tiene que reorganizar 50 millones de filas por red. La cantidad de operaciones no importa, lo que importa es el tipo."
                 </aside>
             </section>
 
@@ -2108,7 +2008,7 @@ df_resultado = (df
                 <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
                     <div style="background: #E25A1C; color: #ffffff; padding: 1rem 2rem; margin-bottom: 2rem; text-align: center; display: inline-block; align-self: flex-start;">
                         <h2 style="margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: 0.05em;">
-                            ⚠️ CHALLENGE #4: ¿Cuántos datos leerás?
+                            ⚠️ CHALLENGE #4: Simplicidad
                         </h2>
                     </div>
 
@@ -2130,7 +2030,7 @@ display(df)  # ¿Qué tan malo es esto?</code></pre>
 
                         <div style="text-align: center; margin-top: 2rem;">
                             <p style="font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; margin: 0; color: #ffffff;">
-                                ¿Cuántos GB se leen? 🤔
+                                ¿Podemos hacerlo mejor? 🤔
                             </p>
                         </div>
                     </div>
@@ -2189,6 +2089,94 @@ df = spark.table("clientes_propensos").select("id_cliente", "renta")
                 <aside class="notes">
                     <strong>Script del Orador:</strong><br>
                     "Parquet es columnar: solo lee las columnas que pides. SELECT * lee TODO. En este caso, 19x más datos de los necesarios."
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Conclusiones -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 2rem;">
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin-bottom: 1rem;">
+                        Lo que <span class="accent">Aprendimos</span>
+                    </h2>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 800px; text-align: left;">
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="font-size: 2rem;">🧠</div>
+                            <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); margin: 0;">
+                                Pensar en <strong class="accent">distribuido</strong>, no en single-node
+                            </p>
+                        </div>
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="font-size: 2rem;">📊</div>
+                            <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); margin: 0;">
+                                Pensar en <strong class="accent">columnas</strong>, no en filas
+                            </p>
+                        </div>
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="font-size: 2rem;">🦥</div>
+                            <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); margin: 0;">
+                                Spark es <strong class="accent">perezoso</strong> - planifica antes de ejecutar
+                            </p>
+                        </div>
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="font-size: 2rem;">⚠️</div>
+                            <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); margin: 0;">
+                                Minimiza <strong class="accent">shuffles</strong> = Maximiza rendimiento
+                            </p>
+                        </div>
+                        <div class="fragment" style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="font-size: 2rem;">🎯</div>
+                            <p style="font-size: clamp(1.1rem, 1.8vw, 1.4rem); margin: 0;">
+                                <strong class="accent">.select()</strong> siempre, nunca SELECT *
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: Cierre -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(6rem, 15vw, 12rem); margin-bottom: 2rem;">🚀</div>
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin-bottom: 2rem;">
+                        ¡Ahora a <span class="accent">practicar</span>!
+                    </h2>
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.8rem); color: var(--text-secondary); max-width: 700px; line-height: 1.6;">
+                        La mejor forma de aprender Spark<br>es rompiéndolo... y arreglándolo
+                    </p>
+                    <div class="fragment" style="margin-top: 3rem; background: var(--dark-bg); color: white; padding: 1.5rem 3rem; border-radius: 8px;">
+                        <p style="margin: 0; font-size: clamp(1rem, 1.5vw, 1.3rem);">
+                            💡 Experimenta con tus propios datos en Databricks
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
+                </aside>
+            </section>
+
+
+            <!-- SLIDE: ANEXOS -->
+            <section>
+                <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: clamp(5rem, 12vw, 10rem); margin-bottom: 2rem;">📚</div>
+                    <h2 style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 700;">
+                        <span class="accent">Anexos</span>
+                    </h2>
+                    <p style="font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--text-secondary); margin-top: 1rem;">
+                        Material adicional de referencia
+                    </p>
+                </div>
+                <aside class="notes">
+                    <strong>Script del Orador:</strong><br>
+                    [El relato lo haces tú]
                 </aside>
             </section>
 
